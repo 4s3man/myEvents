@@ -1,0 +1,10 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="jumbotron">
+        <div class="container">
+            {{ 'title.user_register'|trans }}
+            {% include 'form/form.html.twig' %}
+        </div>
+    </div>
+{% endblock %}

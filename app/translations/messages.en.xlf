@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+<!-- USER -->
+            <trans-unit id="title.user_register">
+                <source>title.user_register</source>
+                <target>Register, today!</target>
+            </trans-unit>
+            <trans-unit id="title.user_login">
+                <source>title.user_login</source>
+                <target>Log in, to your events site</target>
+            </trans-unit>
+<!-- USER_END -->
+            <trans-unit id="title.homepage">
+                <source>title.homepage</source>
+                <target>Made by Jakub Kułaga</target>
+            </trans-unit>
+            <trans-unit id="title.bookmarks_list">
+                <source>title.bookmarks_list</source>
+                <target>Bookmarks List</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
