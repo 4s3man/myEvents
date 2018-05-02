@@ -34,7 +34,6 @@ class TagType extends AbstractType
                 new Assert\Length(
                     [
                           'max' => 4,
-                          'maxMessage'=>'wuta wuta',
                       ]
                 ),
                 ],
