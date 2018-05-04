@@ -18,6 +18,6 @@ $app->register(new WebProfilerServiceProvider(), array(
     'profiler.cache_dir' => __DIR__.'/../var/cache/profiler',
 ));
 $app['twig.options'] = array(
-    'debug'=> true,
+    'debug' => true,
 );
 $app->register(new DoctrineProfilerServiceProvider());

@@ -1,12 +1,12 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: kuba
+ * User: Kuba
  * Date: 24.04.18
  * Time: 21:45
  */
 
-namespace Model;
+namespace Controller;
 
 use Form\TagType;
 use Repositiory\userRepository;
@@ -15,6 +15,9 @@ use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class UserController
+ */
 class UserController implements ControllerProviderInterface
 {
     /**
@@ -26,13 +29,7 @@ class UserController implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
-    // USUŃ
-    //        $controller->get('/{stuff}', [ $this, 'passArg'])
-    //            ->assert('stuff', '^((?!add).)*$')
-    //            ->bind('yesstuff');
-
-
-        $controller =$app['controllers_factory'];
+        $controller = $app['controllers_factory'];
         $controller->get('/login', [ $this, 'loginAction'])
             ->method('POST|GET')
             ->bind('login');
@@ -43,6 +40,13 @@ class UserController implements ControllerProviderInterface
         return $controller;
     }
 
+    /**
+     * @param Application $app
+     *
+     * @param Request     $request
+     *
+     * @return mixed
+     */
     public function loginAction(Application $app, Request $request)
     {
         return $app['twig']->render(
@@ -53,6 +57,13 @@ class UserController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * @param Application $app
+     *
+     * @param Request     $request
+     *
+     * @return mixed
+     */
     public function registerAction(Application $app, Request $request)
     {
         $tag = [];

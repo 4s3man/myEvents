@@ -1,20 +1,28 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: kuba
+ * User: Kuba Kułaga
  * Date: 29.04.18
  * Time: 10:38
  */
 
-namespace Model;
+namespace Controller;
 
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Symfony\Component\HttpFoundation\Request;
-use Silex\ControllerCollection;
 
+/**
+ * Class CalendarController
+ */
 class CalendarController implements ControllerProviderInterface
 {
+    /**
+     * CalendarController routing
+     *
+     * @param Application $app
+     *
+     * @return mixed | \Silex\ControllerCollection
+     */
     public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
@@ -27,6 +35,16 @@ class CalendarController implements ControllerProviderInterface
         return $controller;
     }
 
+    /**
+     * Action run by controller
+     * Showing calendar
+     *
+     * @param Application $app
+     *
+     * @param String      $userId
+     *
+     * @return mixed
+     */
     public function showCalendar(Application $app, $userId)
     {
         return $app['twig']->render(
@@ -37,6 +55,16 @@ class CalendarController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * Action run by controller
+     * Adding event
+     *
+     * @param Application $app
+     *
+     * @param String      $userId
+     *
+     * @return mixed
+     */
     public function addEvent(Application $app, $userId)
     {
         return $app['twig']->render(
@@ -47,6 +75,16 @@ class CalendarController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * Action for controller
+     * Showing list of editable events
+     *
+     * @param Application $app
+     *
+     * @param String      $userId
+     *
+     * @return mixed
+     */
     public function showAllEvents(Application $app, $userId)
     {
         return $app['twig']->render(
@@ -57,6 +95,17 @@ class CalendarController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * Action for controller
+     * Showing single event
+     *
+     * @param Application $app
+     *
+     * @param String      $userId
+     * @param String      $eventId
+     *
+     * @return mixed
+     */
     public function showEvent(Application $app, $userId, $eventId)
     {
         return $app['twig']->render(
@@ -68,6 +117,17 @@ class CalendarController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * Action for controller
+     * Showing single event edit panel
+     *
+     * @param Application $app
+     *
+     * @param String      $userId
+     * @param String      $eventId
+     *
+     * @return mixed
+     */
     public function editEvent(Application $app, $userId, $eventId)
     {
         return $app['twig']->render(

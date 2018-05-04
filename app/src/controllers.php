@@ -1,7 +1,7 @@
-<?php
+<?php /** @noinspection PhpInconsistentReturnPointsInspection */
 
-use Model\UserController;
-use Model\CalendarController;
+use Controller\UserController;
+use Controller\CalendarController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,11 +12,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 $app->get('/', function () use ($app) {
     return $app->redirect($app['url_generator']->generate('register'), 301);
-
-    return $app['twig']->render('index.html.twig');
 })
-->bind('homepage')
-;
+->bind('homepage');
 
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {

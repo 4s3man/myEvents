@@ -4,7 +4,7 @@
         <body>
 <!-- USER -->
             <trans-unit id="title.user_register">
-                <source>title.user</source>
+                <source>title.user_register</source>
                 <target>Zarejestruj się, już dziś!</target>
             </trans-unit>
             <trans-unit id="title.user_login">

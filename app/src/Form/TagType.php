@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: kuba
+ * User: Kuba
  * Date: 25.04.18
  * Time: 23:07
  */
@@ -15,27 +15,33 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * Used by formBuilder->createBuilder()->getForm() functions
+ *
+ * Class TagType
+ */
 class TagType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
             'name',
             TextType::class,
             [
-                'label'=>'label.name',
-                'required'=>true,
+                'label' => 'label.name',
+                'required' => true,
                 'attr' => [
                     'max_length' => 128,
-                    'value'=>'gimeThatSheet',
-                    'class'=>'dafuk',
+                    'value' => '',
                 ],
-                'constraints'=>[
-                new Assert\Length(
-                    [
-                          'max' => 4,
-                      ]
-                ),
+                'constraints' => [
+                    new Assert\Length(
+                        [ 'max' => 4, ]
+                    ),
                 ],
             ]
         );
@@ -43,11 +49,14 @@ class TagType extends AbstractType
             'submit',
             SubmitType::class,
             [
-                'label'=>'label.submit',
+                'label' => 'label.submit',
             ]
         );
     }
 
+    /**
+     * @return string
+     */
     public function getBlockPrefix()
     {
         return 'tag_type';
