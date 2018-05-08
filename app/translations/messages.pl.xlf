@@ -11,7 +11,6 @@
                 <source>title.user_login</source>
                 <target>Zaloguj się do aplikacji myEvents</target>
             </trans-unit>
-
 <!-- USER_END -->
             <trans-unit id="title.homepage">
                 <source>title.homepage</source>
@@ -33,6 +32,39 @@
                 <source>label.submit</source>
                 <target>submit that sheet</target>
             </trans-unit>
+<!-- POWAZNIE -->
+            <!-- REGISTER -->
+                <trans-unit id="label.first_name">
+                    <source>label.first_name</source>
+                    <target>imie</target>
+                </trans-unit>
+                <trans-unit id="label.last_name">
+                    <source>label.last_name</source>
+                    <target>nazwisko</target>
+                </trans-unit>
+                <trans-unit id="label.email">
+                    <source>label.email</source>
+                    <target>email</target>
+                </trans-unit>
+                <trans-unit id="label.login">
+                    <source>label.login</source>
+                    <target>login</target>
+                </trans-unit>
+                <trans-unit id="label.password">
+                    <source>label.password</source>
+                    <target>hasło</target>
+                </trans-unit>
+                <trans-unit id="label.retype_password">
+                    <source>label.retype_password</source>
+                    <target>powtórz hasło</target>
+                </trans-unit>
+                <trans-unit id="label.register">
+                    <source>label.register</source>
+                    <target>zarejestruj się</target>
+                </trans-unit>
+        <!-- REGISTER END -->
+
+
         </body>
     </file>
 </xliff>

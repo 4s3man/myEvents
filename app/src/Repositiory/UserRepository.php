@@ -13,20 +13,18 @@ use Doctrine\DBAL\Connection;
 /**
  * Class UserRepository
  */
-class UserRepository
+class UserRepository extends Repository
 {
     /**
-     * @var \Doctrine\DBAL\Connection $db
+     * Prepare first query part
+     *
+     * @return \Doctrine\DBAL\Query\QueryBuilder
      */
-    protected $db;
-
-    /**
-     * userRepository constructor.
-     * @param \Doctrine\DBAL\Connection $db
-     */
-    public function __construct(Connection $db)
+    public function queryAll()
     {
-        $this->db = $db;
+        return $this->db->createQueryBuilder()
+            ->select('u.username', 'u.email', 'u.password', 'u.id','u.firs_name', 'u.last_name', 'u.admin_privileges')
+            ->from('users', 'u');
     }
 
     /**
@@ -36,8 +34,10 @@ class UserRepository
      */
     public function save($data)
     {
-        if (isset($data['name'])) {
-            $this->db->insert('si_tags', $data);
+        if(isset($data['retype_password'])){
+            unset($data['retype_password']);
         }
+            $this->db->insert('users', $data);
     }
+
 }

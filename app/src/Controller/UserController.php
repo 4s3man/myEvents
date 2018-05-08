@@ -10,7 +10,7 @@ namespace Controller;
 
 use Form\RegisterType;
 use Form\TagType;
-use Repositiory\userRepository;
+use Repositiory\UserRepository;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\ControllerCollection;
@@ -74,7 +74,7 @@ class UserController implements ControllerProviderInterface
     public function registerAction(Application $app, Request $request)
     {
         $tag = [];
-        $form = $app['form.factory']->createBuilder(RegisterType::class, $tag)->getForm();
+        $form = $app['form.factory']->createBuilder(RegisterType::class, $tag, ['repository' => new UserRepository($app['db'])] )->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

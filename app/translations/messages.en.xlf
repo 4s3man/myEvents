@@ -20,6 +20,39 @@
                 <source>title.bookmarks_list</source>
                 <target>Bookmarks List</target>
             </trans-unit>
+<!-- POWAZNIE -->
+            <!-- REGISTER -->
+                <trans-unit id="label.first_name">
+                    <source>label.first_name</source>
+                    <target>first name</target>
+                </trans-unit>
+                <trans-unit id="label.last_name">
+                    <source>label.last_name</source>
+                    <target>last name</target>
+                </trans-unit>
+                <trans-unit id="label.email">
+                    <source>label.email</source>
+                    <target>email</target>
+                </trans-unit>
+                <trans-unit id="label.login">
+                    <source>label.login</source>
+                    <target>login</target>
+                </trans-unit>
+                <trans-unit id="label.password">
+                    <source>label.password</source>
+                    <target>password</target>
+                </trans-unit>
+                <trans-unit id="label.retype_password">
+                    <source>label.retype_password</source>
+                    <target>retype password</target>
+                </trans-unit>
+                <trans-unit id="label.register">
+                    <source>label.register</source>
+                    <target>register</target>
+                </trans-unit>
+            <!-- REGISTER -->
+
+
         </body>
     </file>
 </xliff>
