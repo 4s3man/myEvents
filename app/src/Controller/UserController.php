@@ -8,6 +8,7 @@
 
 namespace Controller;
 
+use Form\RegisterType;
 use Form\TagType;
 use Repositiory\userRepository;
 use Silex\Api\ControllerProviderInterface;
@@ -30,6 +31,8 @@ class UserController implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
+
+        $controller->get('/',[$this, 'loggedRedirect']);
         $controller->get('/login', [ $this, 'loginAction'])
             ->method('POST|GET')
             ->bind('login');
@@ -38,6 +41,10 @@ class UserController implements ControllerProviderInterface
             ->bind('register');
 
         return $controller;
+    }
+
+    public function loggedRedirect(Application $app){
+        return $app->redirect($app['url_generator']->generate('register'));
     }
 
     /**
@@ -67,8 +74,9 @@ class UserController implements ControllerProviderInterface
     public function registerAction(Application $app, Request $request)
     {
         $tag = [];
-        $form = $app['form.factory']->createBuilder(TagType::class, $tag)->getForm();
+        $form = $app['form.factory']->createBuilder(RegisterType::class, $tag)->getForm();
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $repository = new userRepository($app['db']);
             $tag = $form->getData();

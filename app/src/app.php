@@ -45,7 +45,7 @@ $app->register(
         'db.options' => [
             'driver'    => 'pdo_mysql',
             'host'      => 'localhost',
-            'dbname'    => 'tryApp',
+            'dbname'    => 'skelet',
             'user'      => 'root',
             'password'  => 'admin',
             'charset'   => 'utf8',
