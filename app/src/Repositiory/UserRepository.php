@@ -8,12 +8,10 @@
 
 namespace Repositiory;
 
-use Doctrine\DBAL\Connection;
-
 /**
  * Class UserRepository
  */
-class UserRepository extends Repository
+class UserRepository extends AbstractRepository
 {
     /**
      * Prepare first query part
@@ -23,7 +21,7 @@ class UserRepository extends Repository
     public function queryAll()
     {
         return $this->db->createQueryBuilder()
-            ->select('u.username', 'u.email', 'u.password', 'u.id','u.firs_name', 'u.last_name', 'u.admin_privileges')
+            ->select('u.username', 'u.email', 'u.password', 'u.id', 'u.first_name', 'u.last_name', 'u.admin_privileges')
             ->from('users', 'u');
     }
 
@@ -34,10 +32,9 @@ class UserRepository extends Repository
      */
     public function save($data)
     {
-        if(isset($data['retype_password'])){
+        if (isset($data['retype_password'])) {
             unset($data['retype_password']);
         }
             $this->db->insert('users', $data);
     }
-
 }

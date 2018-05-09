@@ -96,15 +96,7 @@ class DefaultView implements ViewInterface
     {
         $this->calculateStartAndEndPage();
 
-        return $this->previous().
-               $this->first().
-               $this->secondIfStartIs3().
-               $this->dotsIfStartIsOver3().
-               $this->pages().
-               $this->dotsIfEndIsUnder3ToLast().
-               $this->secondToLastIfEndIs3ToLast().
-               $this->last().
-               $this->next();
+        return $this->previous().$this->first().$this->secondIfStartIs3().$this->dotsIfStartIsOver3().$this->pages().$this->dotsIfEndIsUnder3ToLast().$this->secondToLastIfEndIs3ToLast().$this->last().$this->next();
     }
 
     private function calculateStartAndEndPage()

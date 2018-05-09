@@ -62,6 +62,10 @@
                     <source>label.register</source>
                     <target>zarejestruj się</target>
                 </trans-unit>
+                <trans-unit id="message.registered_succes">
+                    <source>message.registered_succes</source>
+                    <target>Zarejestrowano pomyślnie!</target>
+                </trans-unit>
         <!-- REGISTER END -->
 
 

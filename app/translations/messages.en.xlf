@@ -50,6 +50,10 @@
                     <source>label.register</source>
                     <target>register</target>
                 </trans-unit>
+                <trans-unit id="message.registered_succes">
+                    <source>message.registered_succes</source>
+                    <target>Registered succesfully!</target>
+                </trans-unit>
             <!-- REGISTER -->
 
 

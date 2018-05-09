@@ -27,7 +27,7 @@ class DefaultTemplate extends Template
         'page_template'      => '<a href="%href%"%rel%>%text%</a>',
         'span_template'      => '<span class="%class%">%text%</span>',
         'rel_previous'        => 'prev',
-        'rel_next'            => 'next'
+        'rel_next'            => 'next',
     );
 
     public function container()
@@ -47,7 +47,7 @@ class DefaultTemplate extends Template
         $search = array('%href%', '%text%', '%rel%');
 
         $href = $this->generateRoute($page);
-        $replace = $rel ? array($href, $text, ' rel="' . $rel . '"') : array($href, $text, '');
+        $replace = $rel ? array($href, $text, ' rel="'.$rel.'"') : array($href, $text, '');
 
         return str_replace($search, $replace, $this->option('page_template'));
     }

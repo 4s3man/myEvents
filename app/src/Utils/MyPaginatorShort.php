@@ -9,7 +9,7 @@
 namespace Utils;
 
 use Pagerfanta\Pagerfanta;
-use Pagerfanta\View\DefaultView;
+use Pagerfanta\View\TwitterBootstrap4View;
 use Pagerfanta\Adapter\DoctrineDbalAdapter;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Silex\Application;
@@ -17,25 +17,20 @@ use Silex\Application;
 /**
  * Class DataPaginator
  */
-class DataPaginator
+class MyPaginatorShort
 {
     public $paginator;
     public $data;
 
     /**
-     * DataPaginator constructor.
-     * @param Application  $app
-     *
+     * MyPaginatorShort constructor.
+     * @param Application $app
      * @param QueryBuilder $queryAll
-     *
-     * @param DefaultView  $view
-     *
-     * @param int          $maxPerPage
-     * @param int          $page
-     *
-     * @param string       $url
+     * @param $maxPerPage
+     * @param string $url
+     * @param int $page
      */
-    public function __construct(Application $app, QueryBuilder $queryAll, DefaultView $view, $maxPerPage, $page = 1, $url = 'tag_index_paginated')
+    public function __construct(Application $app, QueryBuilder $queryAll, $maxPerPage, $url = 'tag_index_paginated', $page = 1)
     {
         $modifier = function ($queryBuilder) {
             $queryBuilder->select('COUNT(DISTINCT id) AS total_results')
@@ -46,6 +41,7 @@ class DataPaginator
 
             return $app['url_generator']->generate($url, ['page' => $page]);
         };
+        $view = new TwitterBootstrap4View();
 
         $adapter = new DoctrineDbalAdapter($queryAll, $modifier);
         $pagerfanta = new Pagerfanta($adapter);

@@ -61,7 +61,8 @@ class SolariumAdapter implements AdapterInterface
 
     private function getClientInvalidMessage($client)
     {
-        return sprintf('The client object should be a Solarium_Client or Solarium\Core\Client\Client instance, %s given',
+        return sprintf(
+            'The client object should be a Solarium_Client or Solarium\Core\Client\Client instance, %s given',
             get_class($client)
         );
     }
@@ -81,7 +82,8 @@ class SolariumAdapter implements AdapterInterface
 
     private function getQueryInvalidMessage($query)
     {
-        return sprintf('The query object should be a Solarium_Query_Select or Solarium\QueryType\Select\Query\Query instance, %s given',
+        return sprintf(
+            'The query object should be a Solarium_Query_Select or Solarium\QueryType\Select\Query\Query instance, %s given',
             get_class($query)
         );
     }

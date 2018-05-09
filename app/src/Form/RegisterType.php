@@ -8,6 +8,7 @@
 
 namespace Form;
 
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\AbstractType;
@@ -19,7 +20,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Validator\Constraints as CustomAsssert;
-
 
 /**
  * Class RegisterType
@@ -95,6 +95,7 @@ class RegisterType extends AbstractType
                     new CustomAsssert\Uniqueness([
                         'groups' => [ 'register_default' ],
                         'repository' => isset($options['repository']) ? $options['repository'] : null,
+                        'uniqueColumn' => 'email',
                     ]),
                 ],
             ]
@@ -105,7 +106,16 @@ class RegisterType extends AbstractType
             [
                 'label' => 'label.login',
                 'required' => true,
-                'constraints' => $this->textAsserts(),
+                'constraints' => array_merge(
+                    $this->textAsserts(),
+                    [
+                        new CustomAsssert\Uniqueness([
+                            'groups' => [ 'register_default' ],
+                            'repository' => isset($options['repository']) ? $options['repository'] : null,
+                            'uniqueColumn' => 'username',
+                        ]),
+                    ]
+                ),
             ]
         );
         $builder->add(
@@ -135,15 +145,16 @@ class RegisterType extends AbstractType
             ]
         );
 
-//        $builder->addEventListener(
-//            FormEvents::PRE_SUBMIT,
-//            function (FormEvent $event) {
-//                $form = $event->getForm();
-//                $data = $event->getData();
-//                unset($data['retype_password']);
-//                $event->setData($data);
-//            }
-//        );
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) {
+                $form = $event->getForm();
+                $data = $event->getData();
+                if ($data['password'] !== $data['retype_password']) {
+                    $form->addError(new FormError('error.passwords_not_match'));
+                }
+            }
+        );
     }
 
     /**

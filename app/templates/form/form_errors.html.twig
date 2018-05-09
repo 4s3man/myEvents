@@ -9,7 +9,7 @@
     {% if form.parent %}<span class="help-block">{% else %}<div class="alert alert-danger">{% endif %}
         <ul class="list-unstyled">
         {%- for error in errors -%}
-            <li>{{ error.message }}</li>
+            <li>{{ error.message}}</li>
         {%- endfor -%}
     </ul>
         {% if form.parent %}</span>{% else %}</div>{% endif %}

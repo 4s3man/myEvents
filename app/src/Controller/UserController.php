@@ -9,12 +9,12 @@
 namespace Controller;
 
 use Form\RegisterType;
-use Form\TagType;
 use Repositiory\UserRepository;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
+use Utils\MyPaginatorShort;
 
 /**
  * Class UserController
@@ -32,29 +32,37 @@ class UserController implements ControllerProviderInterface
     {
         $controller = $app['controllers_factory'];
 
-        $controller->get('/',[$this, 'loggedRedirect']);
+        $controller->get('/', [$this, 'loggedRedirect']);
         $controller->get('/login', [ $this, 'loginAction'])
             ->method('POST|GET')
             ->bind('login');
         $controller->get('/register', [$this, 'registerAction'])
             ->method('POST|GET')
             ->bind('register');
+        $controller->get('/index', [$this, 'indexAction'])
+            ->bind('userIndex');
 
         return $controller;
     }
 
-    public function loggedRedirect(Application $app){
+    /**
+     * TODO: redirect depending on Session logged
+     *
+     * @param Application $app
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function loggedRedirect(Application $app)
+    {
         return $app->redirect($app['url_generator']->generate('register'));
     }
 
     /**
      * @param Application $app
      *
-     * @param Request     $request
-     *
      * @return mixed
      */
-    public function loginAction(Application $app, Request $request)
+    public function loginAction(Application $app)
     {
         return $app['twig']->render(
             'user/login.html.twig',
@@ -74,7 +82,7 @@ class UserController implements ControllerProviderInterface
     public function registerAction(Application $app, Request $request)
     {
         $tag = [];
-        $form = $app['form.factory']->createBuilder(RegisterType::class, $tag, ['repository' => new UserRepository($app['db'])] )->getForm();
+        $form = $app['form.factory']->createBuilder(RegisterType::class, $tag, ['repository' => new UserRepository($app['db'])])->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -85,7 +93,7 @@ class UserController implements ControllerProviderInterface
                 'messages',
                 [
                     'type' => 'success',
-                    'message' => 'message.element_successfully_added',
+                    'message' => 'message.registered_succes',
                 ]
             );
         }
@@ -94,6 +102,26 @@ class UserController implements ControllerProviderInterface
             'user/register.html.twig',
             [
                 'form' => $form->createView(),
+            ]
+        );
+    }
+
+
+    public function indexAction(Application $app)
+    {
+        $userRepository = new UserRepository($app['db']);
+        $paginator = new MyPaginatorShort(
+            $app,
+            $userRepository->queryAll(),
+            5,
+            'userIndex'
+            );
+
+        return $app['twig']->render(
+            'user/index.html.twig',
+            [
+                'paginator' => $paginator->paginator,
+                'data' => $paginator->data,
             ]
         );
     }

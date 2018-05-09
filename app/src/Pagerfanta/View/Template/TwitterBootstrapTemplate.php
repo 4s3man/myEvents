@@ -12,27 +12,29 @@
 namespace Pagerfanta\View\Template;
 
 /**
- * @author Loïc Frémont <loic@mobizel.com>
+ * @author Pablo Díez <pablodip@gmail.com>
  */
-class SemanticUiTemplate extends Template
+class TwitterBootstrapTemplate extends Template
 {
     static protected $defaultOptions = array(
         'prev_message'        => '&larr; Previous',
         'next_message'        => 'Next &rarr;',
         'dots_message'        => '&hellip;',
         'active_suffix'       => '',
-        'css_container_class' => 'ui stackable fluid pagination menu',
-        'css_item_class'      => 'item',
+        'css_container_class' => 'pagination',
         'css_prev_class'      => 'prev',
         'css_next_class'      => 'next',
         'css_disabled_class'  => 'disabled',
         'css_dots_class'      => 'disabled',
         'css_active_class'    => 'active',
+        'rel_previous'        => 'prev',
+        'rel_next'            => 'next',
     );
 
     public function container()
     {
-        return sprintf('<div class="%s">%%pages%%</div>',
+        return sprintf(
+            '<div class="%s"><ul>%%pages%%</ul></div>',
             $this->option('css_container_class')
         );
     }
@@ -51,11 +53,11 @@ class SemanticUiTemplate extends Template
         return $this->pageWithTextAndClass($page, $text, $class);
     }
 
-    private function pageWithTextAndClass($page, $text, $class)
+    private function pageWithTextAndClass($page, $text, $class, $rel = null)
     {
         $href = $this->generateRoute($page);
 
-        return $this->link($class, $href, $text);
+        return $this->linkLi($class, $href, $text, $rel);
     }
 
     public function previousDisabled()
@@ -63,7 +65,7 @@ class SemanticUiTemplate extends Template
         $class = $this->previousDisabledClass();
         $text = $this->option('prev_message');
 
-        return $this->div($class, $text);
+        return $this->spanLi($class, $text);
     }
 
     private function previousDisabledClass()
@@ -75,8 +77,9 @@ class SemanticUiTemplate extends Template
     {
         $text = $this->option('prev_message');
         $class = $this->option('css_prev_class');
+        $rel = $this->option('rel_previous');
 
-        return $this->pageWithTextAndClass($page, $text, $class);
+        return $this->pageWithTextAndClass($page, $text, $class, $rel);
     }
 
     public function nextDisabled()
@@ -84,7 +87,7 @@ class SemanticUiTemplate extends Template
         $class = $this->nextDisabledClass();
         $text = $this->option('next_message');
 
-        return $this->div($class, $text);
+        return $this->spanLi($class, $text);
     }
 
     private function nextDisabledClass()
@@ -96,8 +99,9 @@ class SemanticUiTemplate extends Template
     {
         $text = $this->option('next_message');
         $class = $this->option('css_next_class');
+        $rel = $this->option('rel_next');
 
-        return $this->pageWithTextAndClass($page, $text, $class);
+        return $this->pageWithTextAndClass($page, $text, $class, $rel);
     }
 
     public function first()
@@ -115,7 +119,7 @@ class SemanticUiTemplate extends Template
         $text = trim($page.' '.$this->option('active_suffix'));
         $class = $this->option('css_active_class');
 
-        return $this->div($class, $text);
+        return $this->spanLi($class, $text);
     }
 
     public function separator()
@@ -123,20 +127,21 @@ class SemanticUiTemplate extends Template
         $class = $this->option('css_dots_class');
         $text = $this->option('dots_message');
 
-        return $this->div($class, $text);
+        return $this->spanLi($class, $text);
     }
 
-    private function link($class, $href, $text)
+    protected function linkLi($class, $href, $text, $rel = null)
     {
-        $item_class = $this->option('css_item_class');
+        $liClass = $class ? sprintf(' class="%s"', $class) : '';
+        $rel = $rel ? sprintf(' rel="%s"', $rel) : '';
 
-        return sprintf('<a class="%s %s" href="%s">%s</a>', $item_class, $class, $href, $text);
+        return sprintf('<li%s><a href="%s"%s>%s</a></li>', $liClass, $href, $rel, $text);
     }
 
-    private function div($class, $text)
+    protected function spanLi($class, $text)
     {
-        $item_class = $this->option('css_item_class');
+        $liClass = $class ? sprintf(' class="%s"', $class) : '';
 
-        return sprintf('<div class="%s %s">%s</div>', $item_class, $class, $text);
+        return sprintf('<li%s><span>%s</span></li>', $liClass, $text);
     }
 }

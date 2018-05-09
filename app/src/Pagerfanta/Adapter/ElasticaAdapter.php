@@ -80,7 +80,7 @@ class ElasticaAdapter implements AdapterInterface
     {
         return $this->resultSet = $this->searchable->search($this->query, array_merge($this->options, array(
             'from' => $offset,
-            'size' => $length
+            'size' => $length,
         )));
     }
 }

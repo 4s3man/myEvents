@@ -8,7 +8,6 @@
 
 namespace Validator\Constraints;
 
-
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -18,17 +17,20 @@ use Symfony\Component\Validator\ConstraintValidator;
 class UniquenessValidator extends ConstraintValidator
 {
     /**
-     * @param mixed $value
+     * @param mixed      $value
      * @param Constraint $constraint
      */
     public function validate($value, Constraint $constraint)
     {
-        if($constraint->repository){
+        if (!$constraint->repository || !$constraint->uniqueColumn) {
             return;
         }
+        $result = $constraint->repository->findForUniqueness($value, $constraint->uniqueColumn);
 
-        $this->context->buildViolation($constraint->message)
-            ->setParameter('{{value}}', $value)
-            ->addViolation();
+        if ($result && count($result)) {
+            $this->context->buildViolation($constraint->message)
+                ->setParameter('{{value}}', $value)
+                ->addViolation();
+        }
     }
 }
