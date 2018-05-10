@@ -1,2 +1,2 @@
 <?php
-exec('chmod 777 ~/skelet/app/var/');
+exec('chmod 777 /home/epi/16_kulaga/skelet/app/var/');
