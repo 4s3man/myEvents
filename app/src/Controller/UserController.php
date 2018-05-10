@@ -39,7 +39,8 @@ class UserController implements ControllerProviderInterface
         $controller->get('/register', [$this, 'registerAction'])
             ->method('POST|GET')
             ->bind('register');
-        $controller->get('/index', [$this, 'indexAction'])
+        $controller->get('/index/page/{page}', [$this, 'indexAction'])
+            ->method('POST|GET')
             ->bind('userIndex');
 
         return $controller;
@@ -107,21 +108,22 @@ class UserController implements ControllerProviderInterface
     }
 
 
-    public function indexAction(Application $app)
+    public function indexAction(Application $app, $page = 1)
     {
         $userRepository = new UserRepository($app['db']);
         $paginator = new MyPaginatorShort(
             $app,
             $userRepository->queryAll(),
             5,
-            'userIndex'
+            'userIndex',
+            $page
             );
-
+//        dump($paginator);
         return $app['twig']->render(
             'user/index.html.twig',
             [
                 'paginator' => $paginator->paginator,
-                'data' => $paginator->data,
+                'users' => $paginator->data,
             ]
         );
     }

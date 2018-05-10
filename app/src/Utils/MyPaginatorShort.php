@@ -30,7 +30,7 @@ class MyPaginatorShort
      * @param string $url
      * @param int $page
      */
-    public function __construct(Application $app, QueryBuilder $queryAll, $maxPerPage, $url = 'tag_index_paginated', $page = 1)
+    public function __construct(Application $app, QueryBuilder $queryAll, $maxPerPage, $url, $page = 1)
     {
         $modifier = function ($queryBuilder) {
             $queryBuilder->select('COUNT(DISTINCT id) AS total_results')

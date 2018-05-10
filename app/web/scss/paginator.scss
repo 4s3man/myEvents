@@ -1,0 +1,16 @@
+.paginator-items{
+  display: flex;
+  flex-flow: row wrap;
+}
+.paginator-item{
+  display: flex;
+  padding: 0px 10px;
+  justify-content: flex-start;
+  &.email{
+    min-width: 300px;
+  }
+  &.username{
+    min-width: 80px;
+  }
+}
+

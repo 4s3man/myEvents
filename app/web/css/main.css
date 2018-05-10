@@ -27,12 +27,13 @@ FUN COLORS
   padding: 15px 5px 0px 5px;
 }
 .sidebar-menu-item i {
-  color: #ebebeb;
   font-size: 3em;
+  color: #ebebeb;
 }
 .sidebar-menu-item i:hover {
   color: #a84e44;
-  transition: color 500s;
+  transform: scale(1.05);
+  transition: color 500ms, transform 500ms;
 }
 
 @media (max-width: 768px) {
@@ -50,6 +51,27 @@ FUN COLORS
 .fullWidthHeight {
   width: 100%;
   height: 100%;
+}
+
+.form_submit:hover {
+  background-color: #f2f1f0;
+}
+
+.paginator-items {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.paginator-item {
+  display: flex;
+  padding: 0px 10px;
+  justify-content: flex-start;
+}
+.paginator-item.email {
+  min-width: 300px;
+}
+.paginator-item.username {
+  min-width: 80px;
 }
 
 html {
@@ -80,4 +102,4 @@ body {
   background-color: red;
 }
 
-/*# sourceMappingURL=web/css/main.css.map */
+/*# sourceMappingURL=file:///home/kuba/PhpstormProjects/skelet/app/web/css/main.css.map */

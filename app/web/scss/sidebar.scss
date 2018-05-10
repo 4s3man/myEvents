@@ -3,7 +3,6 @@
     background-color: #122b1e;
     border-right: #ebebeb 2px dotted;
   }
-
   .sidebar-menu {
     width: 100%;
     height: auto;
@@ -16,11 +15,12 @@
     text-align: center;
     padding: 15px 5px 0px 5px;
     i {
-      color: #ebebeb;
       font-size: 3em;
+      color: #ebebeb;
       &:hover{
         color: #a84e44;
-        transition: color 500s;
+        transform: scale(1.05);
+        transition: color 500ms, transform 500ms;
       }
     }
   }

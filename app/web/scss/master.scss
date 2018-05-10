@@ -13,6 +13,8 @@ $madium: 768px;
 
 @import "sidebar";
 @import "content";
+@import "form";
+@import "paginator";
 
 html{
   min-height: 100%;
