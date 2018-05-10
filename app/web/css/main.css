@@ -1,0 +1,83 @@
+/*
+FUN COLORS
+#a86744
+#56798e
+#5644a8
+#44a869
+#a84e44
+#a88044
+ */
+.logged > .admin-sidebar {
+  grid-area: sidebar;
+  background-color: #122b1e;
+  border-right: #ebebeb 2px dotted;
+}
+
+.sidebar-menu {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+}
+
+.sidebar-menu-item {
+  width: 100%;
+  text-align: center;
+  padding: 15px 5px 0px 5px;
+}
+.sidebar-menu-item i {
+  color: #ebebeb;
+  font-size: 3em;
+}
+.sidebar-menu-item i:hover {
+  color: #a84e44;
+  transition: color 500s;
+}
+
+@media (max-width: 768px) {
+  .sidebar-menu-item i {
+    font-size: 2em;
+  }
+}
+.content {
+  grid-area: content;
+  background-color: #0c5460;
+  min-height: 100vh;
+  padding: 5%;
+}
+
+.fullWidthHeight {
+  width: 100%;
+  height: 100%;
+}
+
+html {
+  min-height: 100%;
+  position: relative;
+}
+
+body {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-areas: "content";
+  grid-auto-rows: auto;
+  color: #ebebeb;
+  height: 100%;
+}
+
+.logged {
+  display: grid;
+  grid-template-columns: 1fr 12fr;
+  grid-template-areas: "sidebar content";
+  grid-auto-rows: auto;
+}
+
+.form_submmit {
+  background-color: red !important;
+}
+.form_submmit:hover {
+  background-color: red;
+}
+
+/*# sourceMappingURL=web/css/main.css.map */

@@ -142,6 +142,9 @@ class RegisterType extends AbstractType
             SubmitType::class,
             [
                 'label' => 'label.register',
+                'attr' => [
+                    'class' => 'form_submit',
+                ]
             ]
         );
 

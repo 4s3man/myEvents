@@ -1,0 +1,35 @@
+.logged > .admin-sidebar {
+    grid-area: sidebar;
+    background-color: #122b1e;
+    border-right: #ebebeb 2px dotted;
+  }
+
+  .sidebar-menu {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+  }
+  .sidebar-menu-item {
+    width: 100%;
+    text-align: center;
+    padding: 15px 5px 0px 5px;
+    i {
+      color: #ebebeb;
+      font-size: 3em;
+      &:hover{
+        color: #a84e44;
+        transition: color 500s;
+      }
+    }
+  }
+
+@media (min-width: 1px) and (max-width: 547px) {
+
+}
+@media (max-width: 768px){
+  .sidebar-menu-item i{
+    font-size: 2em;
+  }
+}

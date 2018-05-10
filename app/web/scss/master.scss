@@ -1,0 +1,40 @@
+/*
+FUN COLORS
+#a86744
+#56798e
+#5644a8
+#44a869
+#a84e44
+#a88044
+ */
+//@import '../font-awesome-4.7.0/scss/font-awesome.scss';
+$small: 574px;
+$madium: 768px;
+
+@import "sidebar";
+@import "content";
+
+html{
+  min-height: 100%;
+  position: relative;
+}
+body{
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-areas: "content";
+  grid-auto-rows: auto;
+  color:#ebebeb;
+  height:100%;
+}
+.logged{
+  display: grid;
+  grid-template-columns: 1fr 12fr;
+  grid-template-areas: "sidebar content";
+  grid-auto-rows: auto;
+}
+.form_submmit{
+  background-color: red !important;
+  &:hover{
+    background-color: red;
+  }
+}
