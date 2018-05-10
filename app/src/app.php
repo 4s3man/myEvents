@@ -45,9 +45,9 @@ $app->register(
         'db.options' => [
             'driver'    => 'pdo_mysql',
             'host'      => 'localhost',
-            'dbname'    => 'skelet',
-            'user'      => 'root',
-            'password'  => 'admin',
+            'dbname'    => '16_kulaga',
+            'user'      => '16_kulaga',
+            'password'  => 'J7c7t9e5h3',
             'charset'   => 'utf8',
             'driverOptions' => [
                 1002 => 'SET NAMES utf8',
