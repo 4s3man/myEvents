@@ -4,7 +4,7 @@ ini_set('display_errors', 0);
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-umask(0002);
+umask(0000);
 
 $app = require __DIR__.'/../src/app.php';
 require __DIR__.'/../config/prod.php';
