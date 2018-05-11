@@ -28,9 +28,12 @@
         })();
     </script>
 </head>
-<body class="logged">
+<body class="{#TODO if user is logged: class logged #}{% if userId is defined %}logged{% endif %}">
 {% include 'default/_flash_messages.html.twig' %}
-    {% include 'sidebar/sidebar.html.twig' %}
+{#TODO If user is logged#}
+{% if userId is defined %}
+        {% include 'sidebar/sidebar.html.twig' %}
+{% endif %}
     <div class="content">
         {% block content %}
         {% endblock %}

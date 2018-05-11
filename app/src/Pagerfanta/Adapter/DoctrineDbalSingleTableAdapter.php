@@ -50,7 +50,7 @@ class DoctrineDbalSingleTableAdapter extends DoctrineDbalAdapter
 
         return function (QueryBuilder $queryBuilder) use ($select) {
             $queryBuilder->select($select)
-                         ->setMaxResults(1);
+                ->setMaxResults(1);
         };
     }
 

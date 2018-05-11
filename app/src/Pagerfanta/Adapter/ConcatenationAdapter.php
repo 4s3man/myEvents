@@ -30,11 +30,13 @@ class ConcatenationAdapter implements AdapterInterface
     {
         foreach ($adapters as $index => $adapter) {
             if (!($adapter instanceof AdapterInterface)) {
-                throw new InvalidArgumentException(sprintf(
-                    'Argument $adapters[%s] expected to be a \Pagerfanta\Adapter\AdapterInterface instance, a %s given',
-                    $index,
-                    is_object($adapter) ? sprintf('%s instance', get_class($adapter)) : gettype($adapter)
-                ));
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Argument $adapters[%s] expected to be a \Pagerfanta\Adapter\AdapterInterface instance, a %s given',
+                        $index,
+                        is_object($adapter) ? sprintf('%s instance', get_class($adapter)) : gettype($adapter)
+                    )
+                );
             }
         }
 
@@ -55,6 +57,7 @@ class ConcatenationAdapter implements AdapterInterface
 
     /**
      * {@inheritdoc}
+     *
      * @return array
      */
     public function getSlice($offset, $length)

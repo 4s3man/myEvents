@@ -78,9 +78,13 @@ class ElasticaAdapter implements AdapterInterface
      */
     public function getSlice($offset, $length)
     {
-        return $this->resultSet = $this->searchable->search($this->query, array_merge($this->options, array(
-            'from' => $offset,
-            'size' => $length,
-        )));
+        return $this->resultSet = $this->searchable->search(
+            $this->query, array_merge(
+                $this->options, array(
+                'from' => $offset,
+                'size' => $length,
+                )
+            )
+        );
     }
 }

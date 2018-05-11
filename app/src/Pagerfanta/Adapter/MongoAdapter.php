@@ -1,4 +1,6 @@
-<?php /** @noinspection ALL */
+<?php /**
+       * @noinspection ALL 
+       */
 
 /*
  * This file is part of the Pagerfanta package.

@@ -1,21 +1,24 @@
 <div class="admin-sidebar">
     <nav class="sidebar-menu">
         <div class="sidebar-menu-item">
-            <a href="{{ url('userIndex', {'page':1}) }}">
+            <a href="{{ url('settingsIndex',{'userId':userId, 'page':1}) }}">
+                <i class="fa fa-cogs" aria-hidden="true"></i>
+            </a>
+        </div>
+        <div class="sidebar-menu-item">
+            <a href="{{ url('userIndex',{'userId':userId, 'page':1}) }}">
                 <i class="fa fa-address-book" aria-hidden="true"></i>
             </a>
         </div>
         <div class="sidebar-menu-item">
-            <a href="">
+            <a href="{{ url('eventsIndex', {'userId':userId, 'page':1} ) }}">
                 <i class="fa fa-calendar" aria-hidden="true"></i>
             </a>
         </div>
         <div class="sidebar-menu-item">
-            <a href="">
+            <a href="{{ url('home', { 'userId':userId }) }}">
                 <i class="fa fa-home" aria-hidden="true"></i>
             </a>
         </div>
-        <div class="sidebar-menu-item"><a href=""></a></div>
-        <div class="sidebar-menu-item"><a href=""></a></div>
     </nav>
 </div>

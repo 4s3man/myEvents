@@ -9,12 +9,14 @@
 namespace Controller;
 
 use Form\RegisterType;
+use Pagerfanta\Pagerfanta;
 use Repositiory\UserRepository;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Utils\MyPaginatorShort;
+use Pagerfanta\View\TwitterBootstrap4View;
 
 /**
  * Class UserController
@@ -32,16 +34,18 @@ class UserController implements ControllerProviderInterface
     {
         $controller = $app['controllers_factory'];
 
-        $controller->get('/', [$this, 'loggedRedirect']);
+        $controller->get('/', [$this, 'loggedRedirectAction']);
         $controller->get('/login', [ $this, 'loginAction'])
             ->method('POST|GET')
             ->bind('login');
         $controller->get('/register', [$this, 'registerAction'])
             ->method('POST|GET')
             ->bind('register');
-        $controller->get('/index/page/{page}', [$this, 'indexAction'])
+        $controller->get('{userId}/index/page/{page}', [$this, 'indexAction'])
             ->method('POST|GET')
             ->bind('userIndex');
+        $controller->get('{userId}/add', [$this, 'addAction'])
+            ->bind('userAdd');
 
         return $controller;
     }
@@ -53,7 +57,7 @@ class UserController implements ControllerProviderInterface
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function loggedRedirect(Application $app)
+    public function loggedRedirectAction(Application $app)
     {
         return $app->redirect($app['url_generator']->generate('register'));
     }
@@ -107,24 +111,75 @@ class UserController implements ControllerProviderInterface
         );
     }
 
-
-    public function indexAction(Application $app, $page = 1)
+    /**
+     * List users and available actions
+     *
+     * @param Application $app
+     *
+     * @param int         $userId
+     * @param int         $page
+     *
+     * @return mixed
+     */
+    public function indexAction(Application $app, $userId, $page = 1)
     {
         $userRepository = new UserRepository($app['db']);
-        $paginator = new MyPaginatorShort(
-            $app,
-            $userRepository->queryAll(),
-            5,
-            'userIndex',
-            $page
-            );
-//        dump($paginator);
+
+        $paginator = new MyPaginatorShort($userRepository->queryAll(), 5, $page);
+        $pagerfanta = $paginator->pagerfanta;
+        $view = $this->makeView($app, $pagerfanta, $userId, $page);
+
         return $app['twig']->render(
             'user/index.html.twig',
             [
-                'paginator' => $paginator->paginator,
-                'users' => $paginator->data,
+                'userId' => $userId,
+                'paginator' => $view,
+                'users' => $pagerfanta->getCurrentPageResults(),
             ]
         );
+    }
+
+    /**
+     * Add user to this calendar associated witch userId
+     *
+     * @param Application $app
+     * @param int         $userId
+     *
+     * @return mixed
+     */
+    public function addAction(Application $app, $userId)
+    {
+        return $app['twig']->render(
+            'user/add.html.twig',
+            [
+                'userId' => $userId,
+            ]
+        );
+    }
+
+    /**
+     * Make Pagerfanta view html
+     *
+     * @param Application $app
+     * @param Pagerfanta  $pagerfanta
+     *
+     * @param int         $userId
+     * @param int         $page
+     *
+     * @return String
+     */
+    private function makeView(Application $app, $pagerfanta, $userId, $page)
+    {
+        $view = new TwitterBootstrap4View();
+        $routeGenerator = function ($page) use ($app, $userId, $page) {
+
+            return $app['url_generator']->generate('userIndex', ['userId' => $userId, 'page' => $page]);
+        };
+        $options = array(
+            'prev_message' => '&larr;'.$app['translator']->trans('paginator.prev'),
+            'next_message' => $app['translator']->trans('paginator.next').'&rarr;',
+        );
+
+        return $view->render($pagerfanta, $routeGenerator, $options);
     }
 }

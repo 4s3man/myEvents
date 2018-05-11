@@ -9,7 +9,6 @@
 namespace Utils;
 
 use Pagerfanta\Pagerfanta;
-use Pagerfanta\View\TwitterBootstrap4View;
 use Pagerfanta\Adapter\DoctrineDbalAdapter;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Silex\Application;
@@ -19,41 +18,30 @@ use Silex\Application;
  */
 class MyPaginatorShort
 {
-    public $paginator;
-    public $data;
+    public $pagerfanta = null;
 
     /**
      * MyPaginatorShort constructor.
-     * @param Application $app
+     *
      * @param QueryBuilder $queryAll
      * @param $maxPerPage
-     * @param string $url
-     * @param int $page
+     * @param int          $page
      */
-    public function __construct(Application $app, QueryBuilder $queryAll, $maxPerPage, $url, $page = 1)
+    public function __construct(QueryBuilder $queryAll, $maxPerPage, $page = 1)
     {
         $modifier = function ($queryBuilder) {
             $queryBuilder->select('COUNT(DISTINCT id) AS total_results')
                 ->setMaxResults(1);
         };
 
-        $routeGenerator = function ($page) use ($app, $url) {
-
-            return $app['url_generator']->generate($url, ['page' => $page]);
-        };
-        $view = new TwitterBootstrap4View();
-
         $adapter = new DoctrineDbalAdapter($queryAll, $modifier);
         $pagerfanta = new Pagerfanta($adapter);
         $pagerfanta->setMaxPerPage($maxPerPage);
-        $page = $this->assertCurrentPageOk($pagerfanta, $page);
-        $pagerfanta->setCurrentPage($page);
-        $options = array(
-                'prev_message' => '&larr;'.$app['translator']->trans('paginator.prev'),
-                'next_message' => $app['translator']->trans('paginator.next').'&rarr;',
-            );
-        $this->paginator = $view->render($pagerfanta, $routeGenerator, $options);
-        $this->data = $pagerfanta->getCurrentPageResults();
+        if($pagerfanta->haveToPaginate()) {
+            $page = $this->assertCurrentPageOk($pagerfanta, $page);
+            $pagerfanta->setCurrentPage($page);
+        }
+        $this->pagerfanta = $pagerfanta;
     }
 
     /**

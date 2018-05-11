@@ -515,11 +515,13 @@ class Pagerfanta implements \Countable, \IteratorAggregate, PagerfantaInterface
         }
 
         if ($this->getNbResults() < $position) {
-            throw new OutOfBoundsException(sprintf(
-                'Item requested at position %d, but there are only %d items.',
-                $position,
-                $this->getNbResults()
-            ));
+            throw new OutOfBoundsException(
+                sprintf(
+                    'Item requested at position %d, but there are only %d items.',
+                    $position,
+                    $this->getNbResults()
+                )
+            );
         }
 
         return (int) ceil($position/$this->getMaxPerPage());

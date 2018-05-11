@@ -9,7 +9,6 @@
 namespace Validator\Constraints;
 
 use Repositiory\AbstractRepository;
-use Repositiory\Repository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
 
@@ -42,6 +41,7 @@ class Uniqueness extends Constraint
 
     /**
      * Uniqueness constructor.
+     *
      * @param null $options
      */
     public function __construct($options = null)

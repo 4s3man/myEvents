@@ -7,28 +7,39 @@
                 <h3>{{ 'title.user_login'|trans }}</h3>
             </header>
             <form action="">
-            <nav class="row_menu"></nav>
+            <nav class="row_menu">
+                <div class="btn btn-light">
+                    <a href="{{ url('userAdd', {'userId':userId} ) }}">{{ 'link.user_add'|trans }}</a>
+                </div>
+            </nav>
             <section class="paginator">
                     <h3 class="paginator-title">{{ 'title.user_index_paginator' }}</h3>
+                {% if users is defined and users|length %}
                 <div class="paginator-content">
-                    {% for user in users%}
-                        <div class="paginator-items">
-                            <div class="paginator-item number">
-                                <input type="checkbox">
-                                {{ loop.index }}
+                        {% for user in users %}
+                            <div class="paginator-items">
+                                <div class="paginator-item number">
+                                    <input type="checkbox">
+                                </div>
+                                <div class="paginator-item username">
+                                    {{ user.username }}
+                                </div>
+                                <div class="paginator-item email">{{ user.email }}</div>
+                                <div class="paginator-item first_name">{{ user.first_name }}</div>
+                                <div class="paginator-item last_name">{{ user.last_name }}</div>
                             </div>
-                            <div class="paginator-item username">
-                                {{ user.username }}
-                            </div>
-                            <div class="paginator-item email">{{ user.email }}</div>
-                            <div class="paginator-item first_name">{{ user.first_name }}</div>
-                            <div class="paginator-item last_name">{{ user.last_name }}</div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
                 </div>
-                <div class="pagintor-footer">
-                    {{ paginator|raw }}
-                </div>
+                {% if paginator is defined %}
+                    <div class="pagintor-footer">
+                        {{ paginator|raw }}
+                    </div>
+                {% endif %}
+            {% else %}
+                    <div class="paginator-noSites">
+                        <h2>{{ 'paginator.noSites_were_found'|trans }}</h2>
+                    </div>
+            {% endif %}
             </section>
             </form>
         </article>

@@ -23,6 +23,7 @@ abstract class AbstractRepository
 
     /**
      * userRepository constructor.
+     *
      * @param \Doctrine\DBAL\Connection $db
      */
     public function __construct(Connection $db)

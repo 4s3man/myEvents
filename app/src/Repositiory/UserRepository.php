@@ -21,7 +21,7 @@ class UserRepository extends AbstractRepository
     public function queryAll()
     {
         return $this->db->createQueryBuilder()
-            ->select('u.username', 'u.email', 'u.password', 'u.id', 'u.first_name', 'u.last_name', 'u.admin_privileges')
+            ->select('u.username', 'u.email', 'u.password', 'u.id', 'u.first_name', 'u.last_name', 'u.user_role')
             ->from('users', 'u');
     }
 
@@ -32,9 +32,7 @@ class UserRepository extends AbstractRepository
      */
     public function save($data)
     {
-        if (isset($data['retype_password'])) {
-            unset($data['retype_password']);
-        }
-            $this->db->insert('users', $data);
+        //TODO stworzyć url i id kalendarza, wpisać je i user id do tabeli users has calendars
+        $this->db->insert('users', $data);
     }
 }

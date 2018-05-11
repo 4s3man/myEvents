@@ -8,6 +8,7 @@
 
 namespace Form;
 
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -92,11 +93,13 @@ class RegisterType extends AbstractType
                             'groups' => [ 'register_default' ],
                         ]
                     ),
-                    new CustomAsssert\Uniqueness([
+                    new CustomAsssert\Uniqueness(
+                        [
                         'groups' => [ 'register_default' ],
                         'repository' => isset($options['repository']) ? $options['repository'] : null,
                         'uniqueColumn' => 'email',
-                    ]),
+                        ]
+                    ),
                 ],
             ]
         );
@@ -107,33 +110,31 @@ class RegisterType extends AbstractType
                 'label' => 'label.login',
                 'required' => true,
                 'constraints' => array_merge(
-                    $this->textAsserts(),
+                    $this->usernameAsserts(),
                     [
-                        new CustomAsssert\Uniqueness([
+                        new CustomAsssert\Uniqueness(
+                            [
                             'groups' => [ 'register_default' ],
                             'repository' => isset($options['repository']) ? $options['repository'] : null,
                             'uniqueColumn' => 'username',
-                        ]),
+                            ]
+                        ),
                     ]
                 ),
             ]
         );
         $builder->add(
             'password',
-            PasswordType::class,
+            RepeatedType::class,
             [
-                'label' => 'label.password',
+                'type' => PasswordType::class,
                 'required' => true,
-                'constraints' => $this->passwordAsserts(),
-            ]
-        );
-        $builder->add(
-            'retype_password',
-            PasswordType::class,
-            [
-                'label' => 'label.retype_password',
-                'required' => true,
-                'constraints' => $this->passwordAsserts(),
+                'first_options' =>[
+                    'label' => 'label.password',
+                ],
+                'second_options' => [
+                    'label' => 'label.retype_password',
+                ]
             ]
         );
 
@@ -148,16 +149,6 @@ class RegisterType extends AbstractType
             ]
         );
 
-        $builder->addEventListener(
-            FormEvents::PRE_SUBMIT,
-            function (FormEvent $event) {
-                $form = $event->getForm();
-                $data = $event->getData();
-                if ($data['password'] !== $data['retype_password']) {
-                    $form->addError(new FormError('error.passwords_not_match'));
-                }
-            }
-        );
     }
 
     /**
@@ -172,19 +163,23 @@ class RegisterType extends AbstractType
     private function textAsserts($groups = ['register_default'])
     {
         return [
-            new Assert\NotBlank([
+            new Assert\NotBlank(
+                [
                 'groups' => $groups,
-            ]),
+                ]
+            ),
             new Assert\Regex(
                 [
                     'groups' => $groups,
                     'pattern' => "/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]*$/",
                 ]
             ),
-            new Assert\Length([
+            new Assert\Length(
+                [
                 'groups' => $groups,
                 'max' => 30,
-            ]),
+                ]
+            ),
         ];
     }
 
@@ -197,12 +192,18 @@ class RegisterType extends AbstractType
      *
      * @return array
      */
-    private function passwordAsserts($groups = ['register_default'])
+    private function usernameAsserts($groups = ['register_default'])
     {
         return [
             new Assert\NotBlank(
                 [
                     'groups' => $groups,
+                ]
+            ),
+            new Assert\Regex(
+                [
+                    'groups' => $groups,
+                    'pattern' => '/^[A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*$/'
                 ]
             ),
         ];
