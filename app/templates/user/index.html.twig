@@ -9,7 +9,7 @@
             <form action="">
             <nav class="row_menu">
                 <div class="btn btn-light">
-                    <a href="{{ url('userAdd', {'userId':userId} ) }}">{{ 'link.user_add'|trans }}</a>
+                    <a href="{{ url('userAdd', {'calendarId':calendarId} ) }}">{{ 'link.user_add'|trans }}</a>
                 </div>
             </nav>
             <section class="paginator">
@@ -27,6 +27,8 @@
                                 <div class="paginator-item email">{{ user.email }}</div>
                                 <div class="paginator-item first_name">{{ user.first_name }}</div>
                                 <div class="paginator-item last_name">{{ user.last_name }}</div>
+                                <div class="paginator-item edit"><a href="">{{ 'link.edit'|trans }}</a></div>
+                                <div class="paginator-item delete"><a href="">{{ 'link.delete'|trans }}</a></div>
                             </div>
                         {% endfor %}
                 </div>

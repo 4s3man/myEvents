@@ -24,7 +24,7 @@ class SettingsControler implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
-        $controller->get('/{userId}', [$this, 'settingsIndex'])
+        $controller->get('/{calendarId}', [$this, 'settingsIndex'])
             ->bind('settingsIndex');
 
         return $controller;
@@ -33,16 +33,16 @@ class SettingsControler implements ControllerProviderInterface
     /**
      * @param Application $app
      *
-     * @param int         $userId
+     * @param int         $calendarId
      *
      * @return mixed
      */
-    public function settingsIndex(Application $app, $userId)
+    public function settingsIndex(Application $app, $calendarId)
     {
         return $app['twig']->render(
             'settings/index.html.twig',
             [
-                'userId' => $userId,
+                'calendarId' => $calendarId,
             ]
         );
     }

@@ -26,15 +26,15 @@ class CalendarController implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
-        $controller->get('/{userId}', [$this, 'calendarAction'])
+        $controller->get('/{calendarId}', [$this, 'calendarAction'])
             ->bind('home');
-        $controller->get('/{userId}/add', [$this, 'addAction'])
+        $controller->get('/{calendarId}/addEvent', [$this, 'addAction'])
             ->bind('eventAdd');
-        $controller->get('/{userId}/showAll/page/{page}', [$this, 'indexAction'])
+        $controller->get('/{calendarId}/events/page/{page}', [$this, 'eventsIndexAction'])
             ->bind('eventsIndex');
-        $controller->get('/{userId}/event/{eventId}', [$this, 'eventPageAction'])
+        $controller->get('/{calendarId}/event/{eventId}', [$this, 'eventPageAction'])
             ->bind('eventShow');
-        $controller->get('/{userId}/event/{eventId}/edit', [$this, 'editAction'])
+        $controller->get('/{calendarId}/event/{eventId}/edit', [$this, 'editAction'])
             ->bind('eventEdit');
 
         return $controller;
@@ -46,16 +46,16 @@ class CalendarController implements ControllerProviderInterface
      *
      * @param Application $app
      *
-     * @param String      $userId
+     * @param String      $calendarId
      *
      * @return mixed
      */
-    public function calendarAction(Application $app, $userId)
+    public function calendarAction(Application $app, $calendarId)
     {
         return $app['twig']->render(
             'calendar/calendar.html.twig',
             [
-                'userId' => $userId,
+                'calendarId' => $calendarId,
             ]
         );
     }
@@ -66,16 +66,16 @@ class CalendarController implements ControllerProviderInterface
      *
      * @param Application $app
      *
-     * @param String      $userId
+     * @param String      $calendarId
      *
      * @return mixed
      */
-    public function addAction(Application $app, $userId)
+    public function addAction(Application $app, $calendarId)
     {
         return $app['twig']->render(
             'calendar/addEvent.html.twig',
             [
-                'userId' => $userId,
+                'calendarId' => $calendarId,
             ]
         );
     }
@@ -86,17 +86,17 @@ class CalendarController implements ControllerProviderInterface
      *
      * @param Application $app
      *
-     * @param int         $userId
+     * @param int         $calendarId
      * @param int         $page
      *
      * @return mixed
      */
-    public function indexAction(Application $app, $userId, $page)
+    public function eventsIndexAction(Application $app, $calendarId, $page)
     {
         return $app['twig']->render(
             'calendar/index.html.twig',
             [
-                'userId' => $userId,
+                'calendarId' => $calendarId,
             ]
         );
     }
@@ -107,17 +107,17 @@ class CalendarController implements ControllerProviderInterface
      *
      * @param Application $app
      *
-     * @param String      $userId
+     * @param String      $calendarId
      * @param String      $eventId
      *
      * @return mixed
      */
-    public function eventPageAction(Application $app, $userId, $eventId)
+    public function eventPageAction(Application $app, $calendarId, $eventId)
     {
         return $app['twig']->render(
             'calendar/singleEvent.html.twig',
             [
-                'userId' => $userId,
+                'calendarId' => $calendarId,
                 'eventId' => $eventId,
             ]
         );
@@ -129,17 +129,17 @@ class CalendarController implements ControllerProviderInterface
      *
      * @param Application $app
      *
-     * @param String      $userId
+     * @param String      $calendarId
      * @param String      $eventId
      *
      * @return mixed
      */
-    public function editEvent(Application $app, $userId, $eventId)
+    public function editEvent(Application $app, $calendarId, $eventId)
     {
         return $app['twig']->render(
             'calendar/editEvent.html.twig',
             [
-                'userId' => $userId,
+                'calendarId' => $calendarId,
                 'eventId' => $eventId,
             ]
         );

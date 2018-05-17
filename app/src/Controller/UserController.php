@@ -23,6 +23,10 @@ use Pagerfanta\View\TwitterBootstrap4View;
  */
 class UserController implements ControllerProviderInterface
 {
+    const MAIN_ADMIN = 1;
+    const CALENDAR_ADMIN = 2;
+    const CALENDAR_USER = 3;
+
     /**
      * Routing settings
      *
@@ -41,10 +45,10 @@ class UserController implements ControllerProviderInterface
         $controller->get('/register', [$this, 'registerAction'])
             ->method('POST|GET')
             ->bind('register');
-        $controller->get('{userId}/index/page/{page}', [$this, 'indexAction'])
+        $controller->get('{calendarId}/index/page/{page}', [$this, 'indexAction'])
             ->method('POST|GET')
             ->bind('userIndex');
-        $controller->get('{userId}/add', [$this, 'addAction'])
+        $controller->get('{calendarId}/add', [$this, 'addAction'])
             ->bind('userAdd');
 
         return $controller;
@@ -78,22 +82,34 @@ class UserController implements ControllerProviderInterface
     }
 
     /**
+     * Register user
+     *
      * @param Application $app
      *
      * @param Request     $request
      *
      * @return mixed
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function registerAction(Application $app, Request $request)
     {
-        $tag = [];
-        $form = $app['form.factory']->createBuilder(RegisterType::class, $tag, ['repository' => new UserRepository($app['db'])])->getForm();
+        $user = [];
+        $form = $app['form.factory']
+            ->createBuilder(RegisterType::class, $user, ['repository' => new UserRepository($app['db'])])
+            ->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $repository = new userRepository($app['db']);
-            $tag = $form->getData();
-            $repository->save($tag);
+            $user = $form->getData();
+
+            $user['password'] = $app['security.encoder.bcrypt']->encodePassword($user['password'], '');
+            $user['user_role_id'] = self::CALENDAR_ADMIN;
+            $repository->save($user);
+
             $app['session']->getFlashBag()->add(
                 'messages',
                 [
@@ -116,23 +132,23 @@ class UserController implements ControllerProviderInterface
      *
      * @param Application $app
      *
-     * @param int         $userId
+     * @param int         $calendarId
      * @param int         $page
      *
      * @return mixed
      */
-    public function indexAction(Application $app, $userId, $page = 1)
+    public function indexAction(Application $app, $calendarId, $page = 1)
     {
         $userRepository = new UserRepository($app['db']);
 
         $paginator = new MyPaginatorShort($userRepository->queryAll(), 5, $page);
         $pagerfanta = $paginator->pagerfanta;
-        $view = $this->makeView($app, $pagerfanta, $userId, $page);
+        $view = $this->makeView($app, $pagerfanta, $calendarId, $page);
 
         return $app['twig']->render(
             'user/index.html.twig',
             [
-                'userId' => $userId,
+                'calendarId' => $calendarId,
                 'paginator' => $view,
                 'users' => $pagerfanta->getCurrentPageResults(),
             ]
@@ -140,19 +156,19 @@ class UserController implements ControllerProviderInterface
     }
 
     /**
-     * Add user to this calendar associated witch userId
+     * Add user to this calendar associated witch calendarId
      *
      * @param Application $app
-     * @param int         $userId
+     * @param int         $calendarId
      *
      * @return mixed
      */
-    public function addAction(Application $app, $userId)
+    public function addAction(Application $app, $calendarId)
     {
         return $app['twig']->render(
             'user/add.html.twig',
             [
-                'userId' => $userId,
+                'calendarId' => $calendarId,
             ]
         );
     }
@@ -163,17 +179,17 @@ class UserController implements ControllerProviderInterface
      * @param Application $app
      * @param Pagerfanta  $pagerfanta
      *
-     * @param int         $userId
+     * @param int         $calendarId
      * @param int         $page
      *
      * @return String
      */
-    private function makeView(Application $app, $pagerfanta, $userId, $page)
+    private function makeView(Application $app, $pagerfanta, $calendarId, $page)
     {
         $view = new TwitterBootstrap4View();
-        $routeGenerator = function ($page) use ($app, $userId, $page) {
+        $routeGenerator = function ($page) use ($app, $calendarId, $page) {
 
-            return $app['url_generator']->generate('userIndex', ['userId' => $userId, 'page' => $page]);
+            return $app['url_generator']->generate('userIndex', ['calendarId' => $calendarId, 'page' => $page]);
         };
         $options = array(
             'prev_message' => '&larr;'.$app['translator']->trans('paginator.prev'),

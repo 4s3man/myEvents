@@ -6,11 +6,11 @@ use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\HttpFragmentServiceProvider;
 use Silex\Provider\LocaleServiceProvider;
+use Silex\Provider\SecurityServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\SessionServiceProvider;
 use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\TwigServiceProvider;
-
 use Silex\Provider\ValidatorServiceProvider;
 
 $app = new Application();
@@ -62,5 +62,15 @@ $app->register(
 $app->register(new FormServiceProvider());
 $app->register(new ValidatorServiceProvider());
 $app->register(new SessionServiceProvider());
+$app->register(
+    new SecurityServiceProvider(),
+    [
+        'security.firewalls' => [
+            'unsecured' => [
+                'anonymous' => true,
+            ],
+        ],
+    ]
+);
 
 return $app;

@@ -7,7 +7,7 @@
     <title>{% block title '' %} - My Silex Application</title>
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" type="text/css">
-        <link rel="stylesheet" href="{{ asset('css/main.css') }}" type="text/css" >
+        {#<link rel="stylesheet" href="{{ asset('css/main.css') }}" type="text/css" >#}
         <link rel="stylesheet" href="{{ asset('font-awesome-4.7.0/css/font-awesome.css') }}" type="text/css">
     {% endblock %}
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -28,10 +28,10 @@
         })();
     </script>
 </head>
-<body class="{#TODO if user is logged: class logged #}{% if userId is defined %}logged{% endif %}">
+<body class="{#TODO if user is logged: class logged #}{% if calendarId is defined %}logged{% endif %}">
 {% include 'default/_flash_messages.html.twig' %}
 {#TODO If user is logged#}
-{% if userId is defined %}
+{% if calendarId is defined %}
         {% include 'sidebar/sidebar.html.twig' %}
 {% endif %}
     <div class="content">
