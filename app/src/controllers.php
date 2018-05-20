@@ -3,6 +3,7 @@
        */
 
 use Controller\UserController;
+use Controller\UserCalendarController;
 use Controller\SettingsControler;
 use Controller\CalendarController;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,3 +42,4 @@ $app->error(
 $app->mount('/user', new UserController());
 $app->mount('/calendar', new CalendarController());
 $app->mount('/settings', new SettingsControler());
+$app->mount('userCalendar', new UserCalendarController());

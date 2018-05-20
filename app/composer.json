@@ -25,7 +25,8 @@
         "symfony/intl": "^3.4",
         "twbs/bootstrap": "^4.1",
         "sorien/silex-dbal-profiler": "~2.0",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "pagerfanta/pagerfanta": "^2.0"
     },
     "autoload": {
         "psr-0": { "": "src/" }

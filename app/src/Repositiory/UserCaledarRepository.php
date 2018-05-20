@@ -2,18 +2,14 @@
 /**
  * Created by PhpStorm.
  * User: kuba
- * Date: 16.05.18
- * Time: 00:25
+ * Date: 20.05.18
+ * Time: 18:59
  */
 
 namespace Repositiory;
 
-use Doctrine\DBAL\Connection;
 
-/**
- * Class CalendarRepository
- */
-class CalendarRepository
+class UserCaledarRepository
 {
     /**
      * @var Connection|null Database to use
@@ -30,15 +26,21 @@ class CalendarRepository
     }
 
     /**
-     * Query all from calendar
+     * Prepare first query part
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder
      */
     public function queryAll()
     {
-        $query = $this->db->createQueryBuilder();
-
-        return $query->select('c.id', 'c.token')->from('calendar', 'c');
+        return $this->db->createQueryBuilder()
+            ->select('uC.id', 'uC.user_id', 'uC.calendar_id', 'uC.user_role')
+            ->from('user', 'u');
     }
+
+    public function save($data)
+    {
+
+    }
+
 
 }

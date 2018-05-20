@@ -1,7 +1,6 @@
 {% extends 'layout.html.twig' %}
 
 {% block content %}
-    user index
         <article class="content-wrapper">
             <header class="index-title">
                 <h3>{{ 'title.user_login'|trans }}</h3>
@@ -32,9 +31,9 @@
                             </div>
                         {% endfor %}
                 </div>
-                {% if paginator is defined %}
+                {% if pagerfanta is defined %}
                     <div class="pagintor-footer">
-                        {{ paginator|raw }}
+                        {% include 'default/_paginator.html.twig' %}
                     </div>
                 {% endif %}
             {% else %}

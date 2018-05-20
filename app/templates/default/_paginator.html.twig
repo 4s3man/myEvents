@@ -1,0 +1,53 @@
+{#
+    Default view for paginator
+
+    parameters:
+        * 'pagerfanta' Pagerfanta paginator
+        * 'routeName'
+
+#}
+
+{% set currentPage = pagerfanta.getCurrentPage %}
+{% set pages = pagerfanta.getNbPages %}
+
+<ul class="pagination">
+    {% if currentPage == 1 %}
+        <li class="page-item prev disabled">
+            <span class="page-link">←Poprzednia</span>
+        </li>
+    {% else %}
+        <li class="page-item prev">
+            <a class="page-link" href="{{ url(routeName, {'page':pagerfanta.getNextPage}) }}" rel="next">
+                ←Poprzednia
+            </a>
+        </li>
+    {% endif %}
+    {% for page in 1..pages %}
+        {% if page == currentPage %}
+            {% set c = 1 %}
+        {% endif %}
+        <li class="page-item {% if page == currentPage %}active{% endif %}">
+            {% if c is defined %}
+                <span class="page-link">
+                    {{ page }}
+                    <span class="sr-only">
+                        (current)
+                    </span>
+                </span>
+            {% else %}
+                <a class="page-link" href="{{ url(routeName, {'page':page}) }}">{{ page }}</a>
+            {% endif %}
+        </li>
+    {% endfor %}
+    {% if currentPage == pages %}
+        <li class="page-item prev disabled">
+            <span class="page-link next disabled">Następna→</span>
+        </li>
+    {% else %}
+        <li class="page-item prev">
+            <a class="page-link" href="{{ url(routeName, {'page':pagerfanta.getNextPage}) }}" rel="next">
+                Następna→
+            </a>
+        </li>
+    {% endif %}
+</ul>

@@ -10,6 +10,8 @@ namespace Repositiory;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Silex\Provider\SecurityServiceProvider;
+use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 
 /**
  * Class UserRepository
@@ -48,7 +50,7 @@ class UserRepository
     public function queryAll()
     {
         return $this->db->createQueryBuilder()
-            ->select('u.username', 'u.email', 'u.password', 'u.id', 'u.first_name', 'u.last_name', 'u.user_role_id')
+            ->select('u.username', 'u.email', 'u.password', 'u.id', 'u.first_name', 'u.last_name', 'u.create_time')
             ->from('user', 'u');
     }
 
@@ -62,7 +64,8 @@ class UserRepository
      */
     public function save($user)
     {
-        //TODO stworzyć url i id kalendarza, wpisać je i user id do tabeli users has calendars
+
+        //TODO zmiennić bazę danych i przystosować do niej save, dodawać tyle ról ile użytkowników do tabeli user_role, użyć save z calendar repository
         $this->db->beginTransaction();
 
         try {
@@ -72,8 +75,6 @@ class UserRepository
 
                 $this->db->update('user', $user, ['id' => $id]);
             } else {
-                $this->db->insert('calendar', [ 'token' => uniqid() ]);
-                $user['calendar_id'] = $this->db->lastInsertId();
                 $this->db->insert('user', $user);
             }
             $this->db->commit() ;
@@ -81,16 +82,6 @@ class UserRepository
             $this->db->rollBack();
             throw $e;
         }
-    }
-
-    /**
-     * Get first free id fo user table
-     *
-     * @return int
-     */
-    public function getNextId()
-    {
-        return StaticRepositoryFunctions::getNextId($this->db, 'user');
     }
 
     /**
@@ -103,6 +94,9 @@ class UserRepository
      */
     public function findForUniqueness($value, $column)
     {
-        return StaticRepositoryFunctions::findForUniqueness($this->queryAll(), $value, $column);
+        $qb = $this->queryAll()->where($column.' = :value')
+            ->setParameter(':value', $value);
+
+        return $qb->execute()->fetchAll();
     }
 }

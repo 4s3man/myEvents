@@ -8,14 +8,17 @@
 
 namespace Controller;
 
+use Repositiory\UserRepository;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
+use Utils\MyPaginatorShort;
 
 /**
  * Class CalendarController
  */
 class CalendarController implements ControllerProviderInterface
 {
+
     /**
      * CalendarController routing
      *
@@ -36,6 +39,14 @@ class CalendarController implements ControllerProviderInterface
             ->bind('eventShow');
         $controller->get('/{calendarId}/event/{eventId}/edit', [$this, 'editAction'])
             ->bind('eventEdit');
+
+        //TODO przenieść do userCalendarController
+        $controller->get('{calendarId}/index/page/{page}', [$this, 'indexAction'])
+            ->method('POST|GET')
+            ->bind('userIndex');
+        $controller->get('{calendarId}/add', [$this, 'userAddAction'])
+            ->bind('userAdd');
+
 
         return $controller;
     }
@@ -141,6 +152,51 @@ class CalendarController implements ControllerProviderInterface
             [
                 'calendarId' => $calendarId,
                 'eventId' => $eventId,
+            ]
+        );
+    }
+
+    /**
+     * List users and available actions
+     *
+     * @param Application $app
+     *
+     * @param int $calendarId
+     * @param int $page
+     *
+     * @return mixed
+     */
+    public function indexAction(Application $app, $calendarId, $page = 1)
+    {
+        $userRepository = new UserRepository($app['db']);
+
+        $paginator = new MyPaginatorShort($userRepository->queryAll(), 5, $page);
+
+        return $app['twig']->render(
+            'user/index.html.twig',
+            [
+                'calendarId' => $calendarId,
+                'pagerfanta' => $paginator->pagerfanta,
+                'routeName' => 'userIndex',
+                'users' => $paginator->pagerfanta->getCurrentPageResults(),
+            ]
+        );
+    }
+
+    /**
+     * Add user to this calendar associated witch calendarId
+     *
+     * @param Application $app
+     * @param int $calendarId
+     *
+     * @return mixed
+     */
+    public function userAddAction(Application $app, $calendarId)
+    {
+        return $app['twig']->render(
+            'user/add.html.twig',
+            [
+                'calendarId' => $calendarId,
             ]
         );
     }

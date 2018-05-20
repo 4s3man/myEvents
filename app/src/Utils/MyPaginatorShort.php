@@ -24,8 +24,11 @@ class MyPaginatorShort
      * MyPaginatorShort constructor.
      *
      * @param QueryBuilder $queryAll
-     * @param $maxPerPage
+     *
+     * @param int          $maxPerPage
      * @param int          $page
+     *
+     * @return Pagerfanta $pagerfanta
      */
     public function __construct(QueryBuilder $queryAll, $maxPerPage, $page = 1)
     {
@@ -37,10 +40,11 @@ class MyPaginatorShort
         $adapter = new DoctrineDbalAdapter($queryAll, $modifier);
         $pagerfanta = new Pagerfanta($adapter);
         $pagerfanta->setMaxPerPage($maxPerPage);
-        if($pagerfanta->haveToPaginate()) {
+        if ($pagerfanta->haveToPaginate()) {
             $page = $this->assertCurrentPageOk($pagerfanta, $page);
             $pagerfanta->setCurrentPage($page);
         }
+
         $this->pagerfanta = $pagerfanta;
     }
 
