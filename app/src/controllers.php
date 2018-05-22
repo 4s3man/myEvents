@@ -1,6 +1,4 @@
-<?php /**
-       * @noinspection PhpInconsistentReturnPointsInspection 
-       */
+<?php
 
 use Controller\UserController;
 use Controller\UserCalendarController;
@@ -15,7 +13,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 //Request::setTrustedProxies(array('127.0.0.1'));
 
 $app->get(
-    '/', function () use ($app) {
+    '/',
+    function () use ($app) {
         return $app->redirect($app['url_generator']->generate('register'), 301);
     }
 )
@@ -41,5 +40,4 @@ $app->error(
 
 $app->mount('/user', new UserController());
 $app->mount('/calendar', new CalendarController());
-$app->mount('/settings', new SettingsControler());
-$app->mount('userCalendar', new UserCalendarController());
+$app->mount('/userCalendar', new UserCalendarController());

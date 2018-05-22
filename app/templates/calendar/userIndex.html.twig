@@ -1,0 +1,33 @@
+{% extends 'default/_baseIndex.html.twig' %}
+
+{% block content %}
+
+    {% block indexTitle %}
+        {{ 'title.calendar_users_index'|trans }}
+    {% endblock %}
+
+    {% block navigation %}
+                <div class="btn btn-light">
+                    <a href="{{ url('userAdd', {'calendarId':calendarId} ) }}">{{ 'link.user_add'|trans }}</a>
+                </div>
+    {% endblock %}
+
+    {% block paginatorData %}
+        {% for datum in pagerfanta.currentPageResults %}
+        <div class="paginator-items">
+            <div class="paginator-item number">
+                nr
+            </div>
+            <div class="paginator-item username">
+                {{ datum.username }}
+            </div>
+            <div class="paginator-item email">{{ datum.email }}</div>
+            <div class="paginator-item first_name">{{ datum.first_name }}</div>
+            <div class="paginator-item last_name">{{ datum.last_name }}</div>
+            <div class="paginator-item edit"><a href="">{{ 'link.edit'|trans }}</a></div>
+            <div class="paginator-item delete"><a href="">{{ 'link.delete'|trans }}</a></div>
+        </div>
+        {% endfor %}
+    {% endblock %}
+
+{% endblock %}

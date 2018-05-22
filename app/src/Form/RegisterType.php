@@ -9,9 +9,6 @@
 namespace Form;
 
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -129,26 +126,14 @@ class RegisterType extends AbstractType
             [
                 'type' => PasswordType::class,
                 'required' => true,
-                'first_options' =>[
+                'first_options' => [
                     'label' => 'label.password',
                 ],
                 'second_options' => [
                     'label' => 'label.retype_password',
-                ]
+                ],
             ]
         );
-
-        $builder->add(
-            'submit',
-            SubmitType::class,
-            [
-                'label' => 'label.register',
-                'attr' => [
-                    'class' => 'form_submit',
-                ]
-            ]
-        );
-
     }
 
     /**
@@ -203,7 +188,7 @@ class RegisterType extends AbstractType
             new Assert\Regex(
                 [
                     'groups' => $groups,
-                    'pattern' => '/^[A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*$/'
+                    'pattern' => '/^[A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*$/',
                 ]
             ),
         ];

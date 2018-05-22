@@ -161,8 +161,8 @@ class CalendarController implements ControllerProviderInterface
      *
      * @param Application $app
      *
-     * @param int $calendarId
-     * @param int $page
+     * @param int         $calendarId
+     * @param int         $page
      *
      * @return mixed
      */
@@ -173,12 +173,11 @@ class CalendarController implements ControllerProviderInterface
         $paginator = new MyPaginatorShort($userRepository->queryAll(), 5, $page);
 
         return $app['twig']->render(
-            'user/index.html.twig',
+            'calendar/userIndex.html.twig',
             [
                 'calendarId' => $calendarId,
                 'pagerfanta' => $paginator->pagerfanta,
                 'routeName' => 'userIndex',
-                'users' => $paginator->pagerfanta->getCurrentPageResults(),
             ]
         );
     }
@@ -187,7 +186,8 @@ class CalendarController implements ControllerProviderInterface
      * Add user to this calendar associated witch calendarId
      *
      * @param Application $app
-     * @param int $calendarId
+     *
+     * @param int         $calendarId
      *
      * @return mixed
      */

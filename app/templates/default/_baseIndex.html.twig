@@ -1,0 +1,40 @@
+{% extends 'layout.html.twig' %}
+{% block title %}
+    Your Calendars
+{% endblock %}
+
+{% block content %}
+        <article class="content-wrapper">
+            <header class="index-title">
+                <h3>
+                    {% block indexTitle %}
+                    {% endblock %}
+                </h3>
+            </header>
+
+            <nav class="row_menu">
+                {% block navigation %}
+                {% endblock%}
+            </nav>
+            {% block indexContent %}
+                <section class="paginator">
+                    {% if pagerfanta is defined and pagerfanta.currentPageResults|length %}
+                        <div class="paginator-content">
+                                    {% block paginatorData %}
+                                    {% endblock %}
+                        </div>
+                        {% if pagerfanta is defined %}
+                            <div class="pagintor-footer">
+                                {% include 'default/_paginator.html.twig' %}
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="paginator-noSites">
+                            <h2>{{ 'paginator.noSites_were_found'|trans }}</h2>
+                        </div>
+                    {% endif %}
+                </section>
+            {% endblock %}
+        </article>
+
+{% endblock %}

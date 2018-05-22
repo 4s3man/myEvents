@@ -8,15 +8,25 @@
 
 namespace DataManager;
 
-
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use Symfony\Component\Security\Http\Tests\TestFailureHandlerInterface;
 
+/**
+ * Class UserPasswordManager
+ */
 class UserPasswordManager
 {
+    /**
+     * @var array|null
+     */
     private $user = null;
 
-    public function __construct( Array $user, BCryptPasswordEncoder $encoder )
+    /**
+     * UserPasswordManager constructor.
+     * @param array                 $user
+     * @param BCryptPasswordEncoder $encoder
+     */
+    public function __construct($user, BCryptPasswordEncoder $encoder)
     {
         $user['password'] = $encoder->encodePassword($user['password'], '');
         $this->user = $user;
@@ -29,6 +39,4 @@ class UserPasswordManager
     {
         return $this->user;
     }
-
-
 }

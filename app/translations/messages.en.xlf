@@ -54,6 +54,10 @@
                     <source>message.registered_succes</source>
                     <target>Registered succesfully!</target>
                 </trans-unit>
+                <trans-unit id="label.submit">
+                    <source>label.submit</source>
+                    <target>Submit</target>
+                </trans-unit>
             <!-- REGISTER -->
 
 

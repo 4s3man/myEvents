@@ -1,6 +1,7 @@
 <?php
 
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 use Silex\Provider\AssetServiceProvider;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
@@ -19,7 +20,8 @@ $app->register(new AssetServiceProvider());
 $app->register(new TwigServiceProvider());
 $app->register(new HttpFragmentServiceProvider());
 $app['twig'] = $app->extend(
-    'twig', function ($twig, $app) {
+    'twig',
+    function ($twig, $app) {
         // add custom globals, filters, tags, ...
 
         return $twig;
@@ -34,7 +36,8 @@ $app->register(
     ]
 );
 $app->extend(
-    'translator', function ($translator, $app) {
+    'translator',
+    function ($translator, $app) {
         $translator->addResource('xliff', __DIR__.'/../translations/messages.en.xlf', 'en', 'messages');
         $translator->addResource('xliff', __DIR__.'/../translations/validators.en.xlf', 'en', 'validators');
         $translator->addResource('xliff', __DIR__.'/../translations/messages.pl.xlf', 'pl', 'messages');
@@ -72,5 +75,8 @@ $app->register(
         ],
     ]
 );
+$app->before(function (Request $request) use ($app) {
+    $app['twig']->addGlobal('current_page_name', $request->getRequestUri());
+});
 
 return $app;

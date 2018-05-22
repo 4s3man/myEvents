@@ -8,7 +8,12 @@
 
 namespace Repositiory;
 
+use DataManager\UserCalendarDataManager;
+use Doctrine\DBAL\Connection;
 
+/**
+ * Class UserCaledarRepository
+ */
 class UserCaledarRepository
 {
     /**
@@ -17,12 +22,18 @@ class UserCaledarRepository
     private $db = null;
 
     /**
+     * @var CalendarRepository|null
+     */
+    private $calendarRepository = null;
+
+    /**
      * CalendarRepository constructor.
      * @param Connection $db
      */
     public function __construct(Connection $db)
     {
         $this->db = $db;
+        $this->calendarRepository = new CalendarRepository($db);
     }
 
     /**
@@ -34,13 +45,21 @@ class UserCaledarRepository
     {
         return $this->db->createQueryBuilder()
             ->select('uC.id', 'uC.user_id', 'uC.calendar_id', 'uC.user_role')
-            ->from('user', 'u');
+            ->from('user_calendar', 'uC');
     }
 
-    public function save($data)
+    /**
+     * Saves saves to user_calendar and calendar tables
+     *
+     * @param array $calendar to be saved in calendar table
+     * @param int   $userId   to be used in
+     */
+    public function save($calendar, $userId)
     {
-
+        $this->calendarRepository->save($calendar);
+        $calendar['calendar_id'] = $this->db->lastInsertId();
+        $userCalendarManager = new UserCalendarDataManager($calendar, $userId);
+        $userCalendarManager->setAdmin();
+        $this->db->insert('user_calendar', $userCalendarManager->getUserCalendarData());
     }
-
-
 }

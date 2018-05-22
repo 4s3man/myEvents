@@ -8,11 +8,15 @@
 
 namespace Controller;
 
+use Form\CalendarType;
+use Repositiory\UserCaledarRepository;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
+use Utils\MyPaginatorShort;
 
 /**
- * Class SettingsControler
+ * Class UserCalendarController
  */
 class UserCalendarController implements ControllerProviderInterface
 {
@@ -24,25 +28,73 @@ class UserCalendarController implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
-        $controller->get('/{userId}', [$this, 'userCalendarIndex'])
-            ->bind('userCalendars');
+
+        //TODO change for get token from logged user || set in firewall
+        $controller->get('/{userId}/index/page/{page}', [$this, 'userCalendarIndexAction'])
+            ->bind('userCalendarIndex');
+        $controller->get('/{userId}/add', [$this, 'addNewCalendarAction'])
+            ->method('POST|GET')
+            ->bind('calendarAdd');
 
         return $controller;
     }
 
     /**
      * @param Application $app
-     *
-     * @param int         $calendarId
+     * @param Int         $userId
+     * @param Int         $page
      *
      * @return mixed
      */
-    public function userCalendarIndex(Application $app, $calendarId)
+    public function userCalendarIndexAction(Application $app, $userId, $page)
     {
+        $calendarRepository = new UserCaledarRepository($app['db']);
+        $paginator = new MyPaginatorShort($calendarRepository->queryAll(), 5, $page);
+
         return $app['twig']->render(
-            'settings/index.html.twig',
+            'userCalendar/index.html.twig',
             [
-                'calendarId' => $calendarId,
+                'pagerfanta' => $paginator->pagerfanta,
+                'routeName' => 'userCalendarIndex',
+                'userId' => $userId,
+            ]
+        );
+    }
+
+    /**
+     * @param Application $app
+     * @param int         $userId
+     *
+     * @param Request     $request
+     *
+     * @return mixed
+     */
+    public function addNewCalendarAction(Application $app, $userId, Request $request)
+    {
+        $userCalendarRepository = new UserCaledarRepository($app['db']);
+        $calendar = [];
+        $form = $app['form.factory']->createBuilder(CalendarType::class, $calendar)->getForm();
+
+        $form->handleRequest($request);
+
+        $calendar = $form->getData();
+
+        if ($form->isSubmitted() and $form->isValid()) {
+            $userCalendarRepository->save($calendar, $userId);
+            $app['session']->getFlashBag()->add(
+                'messages',
+                [
+                    'type' => 'success',
+                    'message' => 'message.calendar_added',
+                ]
+            );
+        }
+
+        return $app['twig']->render(
+            'userCalendar/add.html.twig',
+            [
+                'form' => $form->createView(),
+                'userId' => $userId,
             ]
         );
     }

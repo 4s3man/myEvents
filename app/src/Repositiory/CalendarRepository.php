@@ -41,4 +41,13 @@ class CalendarRepository
         return $query->select('c.id', 'c.token')->from('calendar', 'c');
     }
 
+    /**
+     * Saves data to calendar table
+     *
+     * @param Array $calendar
+     */
+    public function save($calendar)
+    {
+        $this->db->insert('calendar', $calendar);
+    }
 }

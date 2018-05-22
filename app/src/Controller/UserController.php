@@ -64,7 +64,7 @@ class UserController implements ControllerProviderInterface
      *
      * @param Application $app
      *
-     * @param Request $request
+     * @param Request     $request
      *
      * @return mixed
      *
@@ -104,5 +104,4 @@ class UserController implements ControllerProviderInterface
             ]
         );
     }
-
 }
