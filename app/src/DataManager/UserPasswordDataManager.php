@@ -14,7 +14,7 @@ use Symfony\Component\Security\Http\Tests\TestFailureHandlerInterface;
 /**
  * Class UserPasswordManager
  */
-class UserPasswordManager
+class UserPasswordDataManager
 {
     /**
      * @var array|null

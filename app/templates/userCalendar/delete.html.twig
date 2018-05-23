@@ -1,0 +1,24 @@
+{% extends 'default/_baseDelete.html.twig' %}
+{% block title %}
+    Add new calendar
+{% endblock %}
+
+{% block dataToDeleteDisplay %}
+    {% if dataToDelete is defined %}
+        <div class="paginator-items calendar">
+            <a href="{{ url('calendarShow', {'calendarId':dataToDelete.id}) }}" class="paginator-item ">
+                <div class="paginator-item">
+                    <i class="fa fa-calendar fa-3x"></i>
+                </div>
+                <div class="title-desc-wrap">
+                    <div class="paginator-item title">
+                        <h2>{{ dataToDelete.title}}</h2>
+                    </div>
+                    <div class="paginator-item email">
+                        <h6>{{ dataToDelete.description }}</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}

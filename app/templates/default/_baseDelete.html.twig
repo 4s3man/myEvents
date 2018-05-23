@@ -1,0 +1,17 @@
+{% extends 'layout.html.twig' %}
+{% form_theme form with ['bootstrap_3_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+{% block content %}
+    {% block dataToDeleteDisplay %}
+    {% endblock %}
+
+    <div class="delete-form-wrapper">
+        {{ form_start(form, { method: 'post', action: global.request.uri }) }}
+        {{ form_widget(form) }}
+        <div class="form-group">
+            <input type="submit" value="{{ 'label.delete'|trans }}">
+        </div>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}

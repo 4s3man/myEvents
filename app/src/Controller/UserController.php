@@ -8,6 +8,7 @@
 
 namespace Controller;
 
+use DataManager\SessionMessagesDataManager;
 use Form\RegisterType;
 use Pagerfanta\Pagerfanta;
 use Repositiory\UserRepository;
@@ -15,7 +16,7 @@ use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
-use DataManager\UserPasswordManager;
+use DataManager\UserPasswordDataManager;
 
 /**
  * Class UserController
@@ -34,10 +35,10 @@ class UserController implements ControllerProviderInterface
         $controller = $app['controllers_factory'];
 
         $controller->get('/', [$this, 'loggedRedirectAction']);
-        $controller->get('/login', [$this, 'loginAction'])
+        $controller->match('/login', [$this, 'loginAction'])
             ->method('POST|GET')
             ->bind('login');
-        $controller->get('/register', [$this, 'registerAction'])
+        $controller->match('/register', [$this, 'registerAction'])
             ->method('POST|GET')
             ->bind('register');
 
@@ -74,6 +75,7 @@ class UserController implements ControllerProviderInterface
      */
     public function registerAction(Application $app, Request $request)
     {
+        $sessionMessages = new SessionMessagesDataManager($app['session']);
         $user = [];
         $form = $app['form.factory']
             ->createBuilder(RegisterType::class, $user, ['repository' => new UserRepository($app['db'])])
@@ -82,18 +84,13 @@ class UserController implements ControllerProviderInterface
 
         if ($form->isSubmitted() && $form->isValid()) {
             $repository = new UserRepository($app['db']);
-            $manager = new UserPasswordManager($form->getData(), $app['security.encoder.bcrypt']);
+            $manager = new UserPasswordDataManager($form->getData(), $app['security.encoder.bcrypt']);
             $user = $manager->getUser();
 
             $repository->save($user);
+            $sessionMessages->registered();
 
-            $app['session']->getFlashBag()->add(
-                'messages',
-                [
-                    'type' => 'success',
-                    'message' => 'message.registered_succes',
-                ]
-            );
+            return $app->redirect($app['url_generator']->generate('login'), 301);
         }
 
         return $app['twig']->render(

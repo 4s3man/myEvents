@@ -1,5 +1,13 @@
+{#TODO set logged user Id#}
+{% set loggedUserId = 1 %}
+
 <div class="admin-sidebar">
     <nav class="sidebar-menu">
+        <div class="sidebar-menu-item">
+            <a href="{{ url('userCalendarIndex',{'userId':loggedUserId, 'page':1}) }}">
+                <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+            </a>
+        </div>
         <div class="sidebar-menu-item">
             {#<a href="{{ url('settingsIndex',{'calendarId':calendarId, 'page':1}) }}">#}
                 <i class="fa fa-cogs" aria-hidden="true"></i>

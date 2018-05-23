@@ -1,8 +1,15 @@
 {% extends 'layout.html.twig' %}
 {% block title %}
-    Add new calendar
+    {{ 'title.add_calendar'|trans }}
 {% endblock %}
 
 {% block content %}
+    <div class="article">
+        <div class="header">
+            <h2>
+                {{ 'header.add_calendar'|trans }}
+            </h2>
+        </div>
         {% include 'form/form.html.twig' %}
+    </div>
 {% endblock %}

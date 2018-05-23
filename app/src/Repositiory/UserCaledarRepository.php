@@ -73,6 +73,20 @@ class UserCaledarRepository
         }
     }
 
+    public function delete($calendar)
+    {
+        $this->db->beginTransaction();
+        try {
+            $this->db->delete('user_calendar', ['calendar_id' => $calendar['id']]);
+            $this->calendarRepository->deleteFoundById($calendar['id']);
+            $this->db->commit();
+        } catch (DBALException $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+
+    }
+
     /**
      * Returns query for join user_calendar and calendar data
      *

@@ -75,4 +75,9 @@ class CalendarRepository
 
         return $this->db->insert('calendar', $calendar);
     }
+
+    public function deleteFoundById($id)
+    {
+       return $this->db->delete('calendar',['id' => $id]);
+    }
 }

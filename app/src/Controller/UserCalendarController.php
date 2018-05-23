@@ -8,11 +8,14 @@
 
 namespace Controller;
 
+use DataManager\SessionMessagesDataManager;
 use Form\CalendarType;
 use Repositiory\CalendarRepository;
 use Repositiory\UserCaledarRepository;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
 use Utils\MyPaginatorShort;
 
@@ -33,10 +36,14 @@ class UserCalendarController implements ControllerProviderInterface
         //TODO change for get token from logged user || set in firewall
         $controller->get('/{userId}/index/page/{page}', [$this, 'userCalendarIndexAction'])
             ->bind('userCalendarIndex');
-        $controller->get('/{userId}/add', [$this, 'addCalendarAction'])
+        $controller->match('/{userId}/add', [$this, 'addCalendarAction'])
             ->method('POST|GET')
             ->assert('userId', '[1-9]\d*')
             ->bind('calendarAdd');
+        $controller->match('/{calendarId}/delete', [$this, 'deleteCalendarAction'])
+            ->method('POST|GET')
+            ->assert('calendarId', '[1-9]\d*')
+            ->bind('calendarDelete');
 
         return $controller;
     }
@@ -80,6 +87,7 @@ class UserCalendarController implements ControllerProviderInterface
      */
     public function addCalendarAction(Application $app, $userId, Request $request)
     {
+        $sessionMessages = new SessionMessagesDataManager($app['session']);
         $userCalendarRepository = new UserCaledarRepository($app['db']);
         $calendar = [];
         $form = $app['form.factory']->createBuilder(CalendarType::class, $calendar)->getForm();
@@ -88,15 +96,9 @@ class UserCalendarController implements ControllerProviderInterface
 
         $calendar = $form->getData();
 
-        if ($form->isSubmitted() and $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $userCalendarRepository->save($calendar, $userId);
-            $app['session']->getFlashBag()->add(
-                'messages',
-                [
-                    'type' => 'success',
-                    'message' => 'message.calendar_added',
-                ]
-            );
+            $sessionMessages->added();
 
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $userId, 'page' => 1]), 301);
         }
@@ -108,5 +110,43 @@ class UserCalendarController implements ControllerProviderInterface
                 'userId' => $userId,
             ]
         );
+    }
+
+    public function deleteCalendarAction(Application $app, $calendarId, Request $request)
+    {
+        //TODO get userId from logged user
+        $loggedUserId = 1;
+
+        $sessionMessages = new SessionMessagesDataManager($app['session']);
+        $calendarRepository = new CalendarRepository($app['db']);
+        $userCalendarRepository = new UserCaledarRepository($app['db']);
+
+        $calendar = $calendarRepository->findOneById($calendarId);
+        if (!$calendar) {
+            $sessionMessages->recordNotFound();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex' , ['userId' => $loggedUserId, 'page' => 1]), 301);
+        }
+        //TODO czy nie trzeba tutaj dodać walidacji formularza? assert w kontrolerze nie załatwia sprawy formularza !
+        $form = $app['form.factory']->createBuilder(FormType::class, $calendar)->add('id', HiddenType::class)->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid() ) {
+            $calendar  = $form->getData();
+            $userCalendarRepository->delete($calendar, $loggedUserId);
+            $sessionMessages->deleted();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex' , ['userId' => $loggedUserId, 'page' => 1]), 301);
+        }
+
+        return $app['twig']->render(
+            'userCalendar/delete.html.twig',
+            [
+                'calendarId' => $calendarId,
+                'dataToDelete' => $calendar,
+                'form' => $form->createView(),
+            ]
+        );
+
     }
 }

@@ -27,7 +27,7 @@
                     </div>
             </a>
             <div class="paginator-item edit"><a href="{{ url('calendarEdit', {'calendarId':datum.calendar_id}) }}">{{ 'link.edit'|trans }}</a></div>
-            <div class="paginator-item delete"><a href="">{{ 'link.delete'|trans }}</a></div>
+            <div class="paginator-item delete"><a href="{{ url('calendarDelete', {'calendarId':datum.calendar_id}) }}">{{ 'link.delete'|trans }}</a></div>
         </div>
         <hr>
         {% endfor %}

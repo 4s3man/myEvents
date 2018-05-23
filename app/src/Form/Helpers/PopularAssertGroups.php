@@ -6,12 +6,13 @@
  * Time: 21:21
  */
 
-namespace Form;
+namespace Form\Helpers;
+
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Validator\Constraints as Assert;
 
-abstract class AbstractAssertsLibType extends AbstractType
+class PopularAssertGroups
 {
     /**
      * Asserty spięte do jednej tablicy może potem
@@ -22,7 +23,7 @@ abstract class AbstractAssertsLibType extends AbstractType
      *
      * @return array
      */
-    protected function textAsserts($groups = ['register_default'])
+    public function textAsserts($groups = ['register_default'])
     {
         return [
             new Assert\NotBlank(
@@ -33,7 +34,7 @@ abstract class AbstractAssertsLibType extends AbstractType
             new Assert\Regex(
                 [
                     'groups' => $groups,
-                    'pattern' => "/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]*$/",
+                    'pattern' => '/^[\s\p{L}0-9]+$/u',
                 ]
             ),
             new Assert\Length(
@@ -54,7 +55,7 @@ abstract class AbstractAssertsLibType extends AbstractType
      *
      * @return array
      */
-    protected function usernameAsserts($groups = ['register_default'])
+    public function usernameAsserts($groups = ['register_default'])
     {
         return [
             new Assert\NotBlank(
@@ -65,10 +66,39 @@ abstract class AbstractAssertsLibType extends AbstractType
             new Assert\Regex(
                 [
                     'groups' => $groups,
-                    'pattern' => '/^[\s\p{L}0-9]+(?:[_-][\s\p{L}0-9]+)*$/u'
+                    'pattern' => '/^[\s\p{L}0-9]+(?:[_-][\s\p{L}0-9]+)*$/u',
+                ]
+            ),
+            new Assert\Length(
+                [
+                    'groups' => $groups,
+                    'max' => 45,
                 ]
             ),
         ];
     }
 
+    /**
+     * Checks long text input in made conditions
+     * @param array $groups
+     *
+     * @return array
+     */
+    public function longTextAsserts(array $groups)
+    {
+        return [
+            new Assert\Regex(
+                [
+                    'groups' => $groups,
+                    'pattern' => '/^[\s\p{L}0-9]+(?:[_-][\s\p{L}0-9]+)*$/u',
+                ]
+            ),
+            new Assert\Length(
+                [
+                    'groups' => $groups,
+                    'max' => 250,
+                ]
+            ),
+        ];
+    }
 }

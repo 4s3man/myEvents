@@ -8,6 +8,7 @@
 
 namespace Controller;
 
+use DataManager\SessionMessagesDataManager;
 use Form\CalendarType;
 use Repositiory\CalendarRepository;
 use Repositiory\UserRepository;
@@ -42,13 +43,13 @@ class CalendarController implements ControllerProviderInterface
             ->bind('eventShow');
         $controller->get('/{calendarId}/event/{eventId}/edit', [$this, 'editAction'])
             ->bind('eventEdit');
-        $controller->get('{calendarId}/index/page/{page}', [$this, 'indexAction'])
+        $controller->match('{calendarId}/index/page/{page}', [$this, 'indexAction'])
             ->method('POST|GET')
             ->assert('calendarId', '[1-9]\d*')
             ->bind('userIndex');
         $controller->get('{calendarId}/add', [$this, 'userAddAction'])
             ->bind('userAdd');
-        $controller->get('/{calendarId}/edit', [$this, 'editCalendarAction'])
+        $controller->match('/{calendarId}/edit', [$this, 'editCalendarAction'])
             ->method('POST|GET')
             ->assert('calendarId', '[1-9]\d*')
             ->bind('calendarEdit');
@@ -215,19 +216,17 @@ class CalendarController implements ControllerProviderInterface
      */
     public function editCalendarAction(Application $app, $calendarId, Request $request)
     {
+        //TODO get token from logged user
+        $loggedUserId = 1;
+
+        $sessionMessages = new SessionMessagesDataManager($app['session']);
         $calendarRepository = new CalendarRepository($app['db']);
         $calendar = $calendarRepository->findOneById($calendarId);
 
         if (!$calendar) {
-            $app['session']->getFlashBag()->add(
-                'message',
-                [
-                    'type' => 'errror',
-                    'message' => 'message.record_not_found',
-                ]
-            );
-            //TODO get token from logged user
-            return $app->redirect($app['url_generator']->generate('userCalendarIndex'), 301);
+            $sessionMessages->recordNotFound();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]), 301);
         }
 
         $form = $app['form.factory']->createBuilder(CalendarType::class, $calendar)->getForm();
@@ -238,20 +237,15 @@ class CalendarController implements ControllerProviderInterface
 
         if ($form->isSubmitted() and $form->isValid()) {
             $calendarRepository->save($calendar);
-            $app['session']->getFlashBag()->add(
-                'messages',
-                [
-                    'type' => 'success',
-                    'message' => 'message.calendar_added',
-                ]
-            );
-            //TODO get token from logged user
-            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => 1, 'page' => 1]), 301);
+            $sessionMessages->changed();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]), 301);
         }
 
         return $app['twig']->render(
-            'userCalendar/add.html.twig',
+            'userCalendar/edit.html.twig',
             [
+                'calendarId' => $calendarId,
                 'calendar' => $calendar,
                 'form' => $form->createView(),
             ]

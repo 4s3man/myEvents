@@ -8,6 +8,7 @@
 
 namespace Form;
 
+use Form\Helpers\PopularAssertGroups;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -25,6 +26,19 @@ use Validator\Constraints as CustomAsssert;
  */
 class RegisterType extends AbstractType
 {
+    /**
+     * Asserts helper
+     * @var PopularAssertGroups|null
+     */
+    private $popularAsserts = null;
+
+    /**
+     * RegisterType constructor.
+     */
+    public function __construct()
+    {
+        $this->popularAsserts = new PopularAssertGroups();
+    }
     /**
      * @return string
      */
@@ -64,7 +78,7 @@ class RegisterType extends AbstractType
                 'label' => 'label.first_name',
                 'required' => true,
                 'attr' => [],
-                'constraints' => $this->textAsserts(),
+                'constraints' => $this->popularAsserts->textAsserts(),
             ]
         );
         $builder->add(
@@ -74,7 +88,7 @@ class RegisterType extends AbstractType
                 'label' => 'label.last_name',
                 'required' => true,
                 'attr' => [],
-                'constraints' => $this->textAsserts(),
+                'constraints' => $this->popularAsserts->textAsserts(),
             ]
         );
         $builder->add(
@@ -96,6 +110,11 @@ class RegisterType extends AbstractType
                         'uniqueColumn' => 'email',
                         ]
                     ),
+                    new Assert\NotBlank(
+                        [
+                             'groups' => ['register_default'],
+                        ]
+                    ),
                 ],
             ]
         );
@@ -106,7 +125,7 @@ class RegisterType extends AbstractType
                 'label' => 'label.login',
                 'required' => true,
                 'constraints' => array_merge(
-                    $this->usernameAsserts(),
+                    $this->popularAsserts->usernameAsserts(),
                     [
                         new CustomAsssert\Uniqueness(
                             [
@@ -133,63 +152,5 @@ class RegisterType extends AbstractType
                 ],
             ]
         );
-    }
-
-    /**
-     * Asserty spięte do jednej tablicy może potem
-     * możnaby je wyrzucić do osobnego obiektu jakby już ich
-     * było sporo powtarzających się
-     *
-     * @param array $groups validation groups
-     *
-     * @return array
-     */
-    private function textAsserts($groups = ['register_default'])
-    {
-        return [
-            new Assert\NotBlank(
-                [
-                'groups' => $groups,
-                ]
-            ),
-            new Assert\Regex(
-                [
-                    'groups' => $groups,
-                    'pattern' => "/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]*$/",
-                ]
-            ),
-            new Assert\Length(
-                [
-                'groups' => $groups,
-                'max' => 30,
-                ]
-            ),
-        ];
-    }
-
-    /**
-     * Asserty spięte do jednej tablicy może potem
-     * możnaby je wyrzucić do osobnego obiektu jakby już ich
-     * było sporo powtarzających się
-     *
-     * @param array $groups validation_groups
-     *
-     * @return array
-     */
-    private function usernameAsserts($groups = ['register_default'])
-    {
-        return [
-            new Assert\NotBlank(
-                [
-                    'groups' => $groups,
-                ]
-            ),
-            new Assert\Regex(
-                [
-                    'groups' => $groups,
-                    'pattern' => '/^[A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*$/',
-                ]
-            ),
-        ];
     }
 }

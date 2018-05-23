@@ -10,15 +10,16 @@ namespace Form;
 
 use Form\Helpers\PopularAssertGroups;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-
+//TODO SPYTAĆ CZY POTRZEBA
 /**
  * Class CalendarType used by form builder
  */
-class CalendarType extends AbstractType
+class DeleteType extends AbstractType
 {
     /**
      * @var PopularAssertGroups|null
@@ -41,23 +42,13 @@ class CalendarType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //TODO pytanie czy klasa Repository Asserts container z tablicami jak this->username assert nie lepsz od dziedziczenia?
         $builder->add(
-            'title',
-            TextType::class,
+          'id',
+          HiddenType::class,
             [
-                'label' => 'label.calendar_title',
-                'required' => true,
-                'constraints' => $this->popularAsserts->usernameAsserts('calendar_default'),
-            ]
-        );
-        $builder->add(
-            'description',
-            TextType::class,
-            [
-                'label' => 'label.calendar_description',
-                'required' => false,
-                'constraints' => $this->popularAsserts->longTextAsserts(['calendar_default']),
+                'constraints' => [
+
+                ],
             ]
         );
     }
