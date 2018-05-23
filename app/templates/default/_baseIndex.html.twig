@@ -17,6 +17,7 @@
                 {% endblock%}
             </nav>
             {% block indexContent %}
+            {% endblock %}
                 <section class="paginator">
                     {% if pagerfanta is defined and pagerfanta.currentPageResults|length %}
                         <div class="paginator-content">
@@ -24,7 +25,7 @@
                                     {% endblock %}
                         </div>
                         {% if pagerfanta is defined %}
-                            <div class="pagintor-footer">
+                            <div class="paginator-footer">
                                 {% include 'default/_paginator.html.twig' %}
                             </div>
                         {% endif %}
@@ -34,7 +35,6 @@
                         </div>
                     {% endif %}
                 </section>
-            {% endblock %}
         </article>
 
 {% endblock %}

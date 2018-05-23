@@ -11,7 +11,6 @@ namespace Utils;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\DoctrineDbalAdapter;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Silex\Application;
 
 /**
  * Class DataPaginator
@@ -22,18 +21,15 @@ class MyPaginatorShort
 
     /**
      * MyPaginatorShort constructor.
-     *
      * @param QueryBuilder $queryAll
-     *
      * @param int          $maxPerPage
+     * @param string       $identifier
      * @param int          $page
-     *
-     * @return Pagerfanta $pagerfanta
      */
-    public function __construct(QueryBuilder $queryAll, $maxPerPage, $page = 1)
+    public function __construct(QueryBuilder $queryAll, $maxPerPage, $identifier, $page = 1)
     {
-        $modifier = function ($queryBuilder) {
-            $queryBuilder->select('COUNT(DISTINCT id) AS total_results')
+        $modifier = function ($queryBuilder) use ($identifier) {
+            $queryBuilder->select('COUNT(DISTINCT '.$identifier.') AS total_results')
                 ->setMaxResults(1);
         };
 

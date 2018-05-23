@@ -10,6 +10,8 @@ namespace Repositiory;
 
 use DataManager\UserCalendarDataManager;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
+use Utils\MyPaginatorShort;
 
 /**
  * Class UserCaledarRepository
@@ -56,10 +58,32 @@ class UserCaledarRepository
      */
     public function save($calendar, $userId)
     {
-        $this->calendarRepository->save($calendar);
-        $calendar['calendar_id'] = $this->db->lastInsertId();
-        $userCalendarManager = new UserCalendarDataManager($calendar, $userId);
-        $userCalendarManager->setAdmin();
-        $this->db->insert('user_calendar', $userCalendarManager->getUserCalendarData());
+        $this->db->beginTransaction();
+
+        try {
+            $this->calendarRepository->save($calendar);
+            $calendar['calendar_id'] = $this->db->lastInsertId();
+            $userCalendarManager = new UserCalendarDataManager($calendar, $userId);
+            $userCalendarManager->setAdmin();
+            $this->db->insert('user_calendar', $userCalendarManager->getUserCalendarData());
+            $this->db->commit();
+        } catch (DBALException $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Returns query for join user_calendar and calendar data
+     *
+     * @return \Doctrine\DBAL\Query\QueryBuilder
+     */
+    public function userCalendarJoinQuery()
+    {
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('uC.id', 'uC.user_id', 'uC.calendar_id', 'uC.user_role', 'c.title', 'c.description')
+            ->from('user_calendar', 'uC')->join('uC', 'calendar', 'c', 'uC.calendar_id = c.id');
+
+        return $qb;
     }
 }

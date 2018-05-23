@@ -9,6 +9,7 @@
 namespace Controller;
 
 use Form\CalendarType;
+use Repositiory\CalendarRepository;
 use Repositiory\UserCaledarRepository;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
@@ -32,8 +33,9 @@ class UserCalendarController implements ControllerProviderInterface
         //TODO change for get token from logged user || set in firewall
         $controller->get('/{userId}/index/page/{page}', [$this, 'userCalendarIndexAction'])
             ->bind('userCalendarIndex');
-        $controller->get('/{userId}/add', [$this, 'addNewCalendarAction'])
+        $controller->get('/{userId}/add', [$this, 'addCalendarAction'])
             ->method('POST|GET')
+            ->assert('userId', '[1-9]\d*')
             ->bind('calendarAdd');
 
         return $controller;
@@ -49,7 +51,12 @@ class UserCalendarController implements ControllerProviderInterface
     public function userCalendarIndexAction(Application $app, $userId, $page)
     {
         $calendarRepository = new UserCaledarRepository($app['db']);
-        $paginator = new MyPaginatorShort($calendarRepository->queryAll(), 5, $page);
+        $paginator = new MyPaginatorShort(
+            $calendarRepository->userCalendarJoinQuery(),
+            3,
+            'c.id',
+            $page
+        );
 
         return $app['twig']->render(
             'userCalendar/index.html.twig',
@@ -67,9 +74,11 @@ class UserCalendarController implements ControllerProviderInterface
      *
      * @param Request     $request
      *
-     * @return mixed
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function addNewCalendarAction(Application $app, $userId, Request $request)
+    public function addCalendarAction(Application $app, $userId, Request $request)
     {
         $userCalendarRepository = new UserCaledarRepository($app['db']);
         $calendar = [];
@@ -88,6 +97,8 @@ class UserCalendarController implements ControllerProviderInterface
                     'message' => 'message.calendar_added',
                 ]
             );
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $userId, 'page' => 1]), 301);
         }
 
         return $app['twig']->render(

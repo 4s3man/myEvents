@@ -64,10 +64,7 @@ class UserRepository
      */
     public function save($user)
     {
-
-        //TODO zmiennić bazę danych i przystosować do niej save, dodawać tyle ról ile użytkowników do tabeli user_role, użyć save z calendar repository
         $this->db->beginTransaction();
-
         try {
             if (isset($user['id']) && ctype_digit((string) $user['id'])) {
                 $id = $user['id'];

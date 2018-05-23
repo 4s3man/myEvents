@@ -60,6 +60,7 @@ FUN COLORS
 .paginator-items {
   display: flex;
   flex-flow: row wrap;
+  align-items: center;
 }
 
 .paginator-item {
@@ -102,4 +103,4 @@ body {
   background-color: red;
 }
 
-/*# sourceMappingURL=file:///home/kuba/PhpstormProjects/skelet/app/web/css/main.css.map */
+/*# sourceMappingURL=file:///home/kuba/PhpstormProjects/skeletCis/app/web/css/main.css.map */

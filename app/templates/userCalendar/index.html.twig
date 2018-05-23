@@ -1,7 +1,5 @@
 {% extends 'default/_baseIndex.html.twig' %}
 
-{% block content %}
-
     {% block indexTitle %}
         {{ 'title.user_calendar_index'|trans }}
     {% endblock %}
@@ -14,20 +12,23 @@
 
     {% block paginatorData %}
         {% for datum in pagerfanta.currentPageResults %}
-        {#<div class="paginator-items">#}
-            {#<div class="paginator-item number">#}
-                {#nr#}
-            {#</div>#}
-            {#<div class="paginator-item username">#}
-                {#{{ datum.title}}#}
-            {#</div>#}
-            {#<div class="paginator-item email">{{ datum.description }}</div>#}
-            {#<div class="paginator-item first_name">{{ datum.calendarId }}</div>#}
-            {#<div class="paginator-item last_name">{{ datum.last_name }}</div>#}
-            {#<div class="paginator-item edit"><a href="">{{ 'link.edit'|trans }}</a></div>#}
-            {#<div class="paginator-item delete"><a href="">{{ 'link.delete'|trans }}</a></div>#}
+        <div class="paginator-items calendar">
+            <a href="{{ url('calendarShow', {'calendarId':datum.calendar_id}) }}" class="paginator-item ">
+                <div class="paginator-item">
+                    <i class="fa fa-calendar fa-3x"></i>
+                </div>
+                    <div class="title-desc-wrap">
+                        <div class="paginator-item title">
+                            <h2>{{ datum.title}}</h2>
+                        </div>
+                        <div class="paginator-item email">
+                            <h6>{{ datum.description }}</h6>
+                        </div>
+                    </div>
+            </a>
+            <div class="paginator-item edit"><a href="{{ url('calendarEdit', {'calendarId':datum.calendar_id}) }}">{{ 'link.edit'|trans }}</a></div>
+            <div class="paginator-item delete"><a href="">{{ 'link.delete'|trans }}</a></div>
         </div>
+        <hr>
         {% endfor %}
     {% endblock %}
-
-{% endblock %}

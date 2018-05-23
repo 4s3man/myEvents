@@ -36,6 +36,8 @@ class CalendarType extends AbstractAssertsLibType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
+        $data = $options['data'];
         //TODO pytanie czy klasa Repository Asserts container z tablicami jak this->username assert nie lepsz od dziedziczenia?
         $builder->add(
             'title',

@@ -8,9 +8,12 @@
 
 namespace Controller;
 
+use Form\CalendarType;
+use Repositiory\CalendarRepository;
 use Repositiory\UserRepository;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 use Utils\MyPaginatorShort;
 
 /**
@@ -30,7 +33,7 @@ class CalendarController implements ControllerProviderInterface
     {
         $controller = $app['controllers_factory'];
         $controller->get('/{calendarId}', [$this, 'calendarAction'])
-            ->bind('home');
+            ->bind('calendarShow');
         $controller->get('/{calendarId}/addEvent', [$this, 'addAction'])
             ->bind('eventAdd');
         $controller->get('/{calendarId}/events/page/{page}', [$this, 'eventsIndexAction'])
@@ -39,14 +42,16 @@ class CalendarController implements ControllerProviderInterface
             ->bind('eventShow');
         $controller->get('/{calendarId}/event/{eventId}/edit', [$this, 'editAction'])
             ->bind('eventEdit');
-
-        //TODO przenieść do userCalendarController
         $controller->get('{calendarId}/index/page/{page}', [$this, 'indexAction'])
             ->method('POST|GET')
+            ->assert('calendarId', '[1-9]\d*')
             ->bind('userIndex');
         $controller->get('{calendarId}/add', [$this, 'userAddAction'])
             ->bind('userAdd');
-
+        $controller->get('/{calendarId}/edit', [$this, 'editCalendarAction'])
+            ->method('POST|GET')
+            ->assert('calendarId', '[1-9]\d*')
+            ->bind('calendarEdit');
 
         return $controller;
     }
@@ -170,7 +175,7 @@ class CalendarController implements ControllerProviderInterface
     {
         $userRepository = new UserRepository($app['db']);
 
-        $paginator = new MyPaginatorShort($userRepository->queryAll(), 5, $page);
+        $paginator = new MyPaginatorShort($userRepository->queryAll(), 5, 'id', $page);
 
         return $app['twig']->render(
             'calendar/userIndex.html.twig',
@@ -197,6 +202,58 @@ class CalendarController implements ControllerProviderInterface
             'user/add.html.twig',
             [
                 'calendarId' => $calendarId,
+            ]
+        );
+    }
+
+    /**
+     * @param Application $app
+     * @param int         $calendarId
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function editCalendarAction(Application $app, $calendarId, Request $request)
+    {
+        $calendarRepository = new CalendarRepository($app['db']);
+        $calendar = $calendarRepository->findOneById($calendarId);
+
+        if (!$calendar) {
+            $app['session']->getFlashBag()->add(
+                'message',
+                [
+                    'type' => 'errror',
+                    'message' => 'message.record_not_found',
+                ]
+            );
+            //TODO get token from logged user
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex'), 301);
+        }
+
+        $form = $app['form.factory']->createBuilder(CalendarType::class, $calendar)->getForm();
+
+        $form->handleRequest($request);
+
+        $calendar = $form->getData();
+
+        if ($form->isSubmitted() and $form->isValid()) {
+            $calendarRepository->save($calendar);
+            $app['session']->getFlashBag()->add(
+                'messages',
+                [
+                    'type' => 'success',
+                    'message' => 'message.calendar_added',
+                ]
+            );
+            //TODO get token from logged user
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => 1, 'page' => 1]), 301);
+        }
+
+        return $app['twig']->render(
+            'userCalendar/add.html.twig',
+            [
+                'calendar' => $calendar,
+                'form' => $form->createView(),
             ]
         );
     }

@@ -38,16 +38,41 @@ class CalendarRepository
     {
         $query = $this->db->createQueryBuilder();
 
-        return $query->select('c.id', 'c.token')->from('calendar', 'c');
+        return $query->select('c.id', 'c.title', 'c.description')->from('calendar', 'c');
     }
 
     /**
-     * Saves data to calendar table
+     * Finds one record by id from calendar table
+     * @param int $id
      *
-     * @param Array $calendar
+     * @return array|mixed
+     */
+    public function findOneById($id)
+    {
+        $result = $this->queryAll()
+            ->where('c.id = :id')
+            ->setParameter(':id', $id, \PDO::PARAM_STR)
+            ->execute()->fetchAll();
+
+        return !$result ? [] : current($result);
+    }
+
+    /**
+     * Safes data to calendar table
+     *
+     * @param array $calendar
+     *
+     * @return int
      */
     public function save($calendar)
     {
-        $this->db->insert('calendar', $calendar);
+        if (isset($calendar['id']) && ctype_digit((string) $calendar['id'])) {
+            $id = $calendar['id'];
+            unset($calendar['id']);
+
+            return $this->db->update('calendar', $calendar, ['id' => $id]);
+        }
+
+        return $this->db->insert('calendar', $calendar);
     }
 }

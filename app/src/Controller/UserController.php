@@ -85,7 +85,6 @@ class UserController implements ControllerProviderInterface
             $manager = new UserPasswordManager($form->getData(), $app['security.encoder.bcrypt']);
             $user = $manager->getUser();
 
-            //TODO wyrzucic do osobnego obiektu
             $repository->save($user);
 
             $app['session']->getFlashBag()->add(
