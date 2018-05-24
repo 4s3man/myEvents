@@ -8,18 +8,25 @@
 
 namespace DataManager;
 
+use Pagerfanta\Exception\InvalidArgumentException;
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use Symfony\Component\Security\Http\Tests\TestFailureHandlerInterface;
 
 /**
  * Class UserPasswordManager
  */
-class UserPasswordDataManager
+class UserDataManager
 {
     /**
      * @var array|null
      */
     private $user = null;
+
+    /**
+     * @var array $options
+     */
+    private $options = ['normalUser', 'superUser'];
+
 
     /**
      * UserPasswordManager constructor.
@@ -38,5 +45,22 @@ class UserPasswordDataManager
     public function getUser()
     {
         return $this->user;
+    }
+
+    public function setUser(string $user)
+    {
+        if(!in_array($user, $this->options)){
+            throw new InvalidArgumentException('Invalid option in dataManager setUser function');
+        }
+
+        switch ($user){
+            case 'normalUser':
+                $this->user['role'] = 'normalUser';
+                break;
+            case 'superUser':
+                $this->user['role'] = 'superUser';
+                break;
+        }
+
     }
 }

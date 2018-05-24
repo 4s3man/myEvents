@@ -119,7 +119,7 @@ class RegisterType extends AbstractType
             ]
         );
         $builder->add(
-            'username',
+            'login',
             TextType::class,
             [
                 'label' => 'label.login',
@@ -131,7 +131,7 @@ class RegisterType extends AbstractType
                             [
                             'groups' => [ 'register_default' ],
                             'repository' => isset($options['repository']) ? $options['repository'] : null,
-                            'uniqueColumn' => 'username',
+                            'uniqueColumn' => 'login',
                             ]
                         ),
                     ]

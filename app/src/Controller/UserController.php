@@ -16,7 +16,7 @@ use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
-use DataManager\UserPasswordDataManager;
+use DataManager\UserDataManager;
 
 /**
  * Class UserController
@@ -84,7 +84,8 @@ class UserController implements ControllerProviderInterface
 
         if ($form->isSubmitted() && $form->isValid()) {
             $repository = new UserRepository($app['db']);
-            $manager = new UserPasswordDataManager($form->getData(), $app['security.encoder.bcrypt']);
+            $manager = new UserDataManager($form->getData(), $app['security.encoder.bcrypt']);
+            $manager->setUser('normalUser');
             $user = $manager->getUser();
 
             $repository->save($user);
