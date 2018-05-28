@@ -112,6 +112,17 @@ class UserCalendarController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * Delete calendar
+     *
+     * @param Application $app
+     * @param int         $calendarId
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function deleteCalendarAction(Application $app, $calendarId, Request $request)
     {
         //TODO get userId from logged user
@@ -125,18 +136,18 @@ class UserCalendarController implements ControllerProviderInterface
         if (!$calendar) {
             $sessionMessages->recordNotFound();
 
-            return $app->redirect($app['url_generator']->generate('userCalendarIndex' , ['userId' => $loggedUserId, 'page' => 1]), 301);
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]), 301);
         }
         //TODO czy nie trzeba tutaj dodać walidacji formularza? assert w kontrolerze nie załatwia sprawy formularza !
         $form = $app['form.factory']->createBuilder(FormType::class, $calendar)->add('id', HiddenType::class)->getForm();
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() ) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $calendar  = $form->getData();
             $userCalendarRepository->delete($calendar, $loggedUserId);
             $sessionMessages->deleted();
 
-            return $app->redirect($app['url_generator']->generate('userCalendarIndex' , ['userId' => $loggedUserId, 'page' => 1]), 301);
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]), 301);
         }
 
         return $app['twig']->render(
@@ -147,6 +158,5 @@ class UserCalendarController implements ControllerProviderInterface
                 'form' => $form->createView(),
             ]
         );
-
     }
 }

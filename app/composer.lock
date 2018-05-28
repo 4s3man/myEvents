@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5fb65b79b3b8bf87839682983328aad8",
+    "content-hash": "725ed1c01de337ad13ab60bd067a095c",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -720,6 +720,56 @@
                 "dependency injection"
             ],
             "time": "2018-01-21T07:42:36+00:00"
+        },
+        {
+            "name": "plummer/calendarful",
+            "version": "v0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/benplummer/calendarful.git",
+                "reference": "a58317832b32bf321fe8d04d42ac3c4526488649"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/benplummer/calendarful/zipball/a58317832b32bf321fe8d04d42ac3c4526488649",
+                "reference": "a58317832b32bf321fe8d04d42ac3c4526488649",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "4.3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Plummer\\Calendarful\\": [
+                        "src",
+                        "tests"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Plummer",
+                    "email": "ben@benplummer.co.uk",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Calendar generator that allows for recurring events.",
+            "homepage": "http://benplummer.co.uk",
+            "keywords": [
+                "calendar",
+                "events",
+                "recurrence"
+            ],
+            "time": "2016-01-10T13:09:00+00:00"
         },
         {
             "name": "psr/container",
@@ -3568,6 +3618,63 @@
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
             "time": "2018-04-29T14:04:08+00:00"
+        },
+        {
+            "name": "yohang/calendr",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yohang/CalendR.git",
+                "reference": "1ae1da29ec9e633afb692cc763b6736c1def3f55"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yohang/CalendR/zipball/1ae1da29ec9e633afb692cc763b6736c1def3f55",
+                "reference": "1ae1da29ec9e633afb692cc763b6736c1def3f55",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.5|^7.0",
+                "symfony/options-resolver": "^2.7|^3.0|^4.0"
+            },
+            "require-dev": {
+                "doctrine/cache": "^1.5",
+                "doctrine/common": "^2.5",
+                "doctrine/orm": "^2.5",
+                "phpunit/phpunit": "^4.8.35|^5.4.0|^6.0|^7.0",
+                "silex/silex": "^1.3",
+                "twig/twig": "^1.23"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "CalendR": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Yohan GIARELLI",
+                    "email": "yohan@giarel.li",
+                    "homepage": "http://yohan.giarel.li"
+                }
+            ],
+            "description": "Object Oriented calendar management",
+            "homepage": "https://github.com/yohang/CalendR",
+            "keywords": [
+                "calendar",
+                "date",
+                "events"
+            ],
+            "time": "2018-04-04T17:39:14+00:00"
         }
     ],
     "aliases": [],

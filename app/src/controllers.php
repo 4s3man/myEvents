@@ -1,5 +1,6 @@
 <?php
 
+use Controller\AuthController;
 use Controller\UserController;
 use Controller\UserCalendarController;
 use Controller\SettingsControler;
@@ -41,3 +42,4 @@ $app->error(
 $app->mount('/user', new UserController());
 $app->mount('/calendar', new CalendarController());
 $app->mount('/userCalendar', new UserCalendarController());
+$app->mount('/auth', new AuthController());

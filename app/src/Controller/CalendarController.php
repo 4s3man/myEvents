@@ -8,9 +8,13 @@
 
 namespace Controller;
 
+use DataManager\CalendarDataManager;
+use DataManager\EventDataManager;
 use DataManager\SessionMessagesDataManager;
 use Form\CalendarType;
+use Form\EventType;
 use Repositiory\CalendarRepository;
+use Repositiory\EventRepository;
 use Repositiory\UserRepository;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
@@ -33,17 +37,21 @@ class CalendarController implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
-        $controller->get('/{calendarId}', [$this, 'calendarAction'])
+        $controller->get('/{calendarId}/{date}', [$this, 'calendarShowAction'])
+            ->assert('date', '[1-3]{1}[0-9]{3}-(0[1-9]|1[0-2])')
             ->bind('calendarShow');
-        $controller->get('/{calendarId}/addEvent', [$this, 'addAction'])
+        $controller->match('/{calendarId}/addEvent', [$this, 'eventAddAction'])
+            ->method('POST|GET')
             ->bind('eventAdd');
-        $controller->get('/{calendarId}/events/page/{page}', [$this, 'eventsIndexAction'])
-            ->bind('eventsIndex');
+        $controller->get('/{calendarId}/events/page/{page}', [$this, 'eventIndexAction'])
+            ->bind('eventIndex');
         $controller->get('/{calendarId}/event/{eventId}', [$this, 'eventPageAction'])
             ->bind('eventShow');
-        $controller->get('/{calendarId}/event/{eventId}/edit', [$this, 'editAction'])
+        $controller->get('/{calendarId}/event/{eventId}/edit', [$this, 'eventEditAction'])
             ->bind('eventEdit');
-        $controller->match('{calendarId}/index/page/{page}', [$this, 'indexAction'])
+        $controller->get('/{calendarId}/event/{eventId}/edit', [$this, 'eventDeleteAction'])
+            ->bind('eventDelete');
+        $controller->match('{calendarId}/index/page/{page}', [$this, 'calendarIndexAction'])
             ->method('POST|GET')
             ->assert('calendarId', '[1-9]\d*')
             ->bind('userIndex');
@@ -67,8 +75,12 @@ class CalendarController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function calendarAction(Application $app, $calendarId)
+    public function calendarShowAction(Application $app, $calendarId, $date)
     {
+        $eventRepository = new EventRepository($app['db']);
+        $thisMonthEvents = $eventRepository->getEventsInMonth((string) $date);
+        $calendarDataManager = new CalendarDataManager($thisMonthEvents, $date);
+
         return $app['twig']->render(
             'calendar/calendar.html.twig',
             [
@@ -85,13 +97,34 @@ class CalendarController implements ControllerProviderInterface
      *
      * @param String      $calendarId
      *
+     * @param Request     $request
+     *
      * @return mixed
      */
-    public function addAction(Application $app, $calendarId)
+    public function eventAddAction(Application $app, $calendarId, Request $request)
     {
+        $eventRepository = new EventRepository($app['db']);
+        $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+
+        $event = [];
+        $form = $app['form.factory']->CreateBuilder(EventType::class, $event)->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $eventDataManager = new EventDataManager($form->getData(), $calendarId);
+            $eventRepository->save($eventDataManager->getEvent());
+            $sessionMessagesManager->added();
+
+            return $app
+                ->redirect($app['url_generator']
+                    ->generate('eventIndex', ['calendarId' => $calendarId, 'page' => 1]), 301);
+        }
+
         return $app['twig']->render(
             'calendar/addEvent.html.twig',
             [
+                'form' => $form->createView(),
                 'calendarId' => $calendarId,
             ]
         );
@@ -108,11 +141,21 @@ class CalendarController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function eventsIndexAction(Application $app, $calendarId, $page)
+    public function eventIndexAction(Application $app, $calendarId, $page)
     {
+        $eventRepository = new EventRepository($app['db']);
+        $paginator = new MyPaginatorShort(
+            $eventRepository->queryAll(),
+            '3',
+            'e.id',
+            $page
+        );
+
         return $app['twig']->render(
-            'calendar/index.html.twig',
+            'calendar/eventIndex.html.twig',
             [
+                'pagerfanta' => $paginator->pagerfanta,
+                'routeName' => 'eventIndex',
                 'calendarId' => $calendarId,
             ]
         );
@@ -151,7 +194,7 @@ class CalendarController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function editEvent(Application $app, $calendarId, $eventId)
+    public function eventEditAction(Application $app, $calendarId, $eventId)
     {
         return $app['twig']->render(
             'calendar/editEvent.html.twig',
@@ -172,10 +215,9 @@ class CalendarController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function indexAction(Application $app, $calendarId, $page = 1)
+    public function calendarIndexAction(Application $app, $calendarId, $page = 1)
     {
         $userRepository = new UserRepository($app['db']);
-
         $paginator = new MyPaginatorShort($userRepository->queryAll(), 5, 'id', $page);
 
         return $app['twig']->render(
@@ -199,6 +241,8 @@ class CalendarController implements ControllerProviderInterface
      */
     public function userAddAction(Application $app, $calendarId)
     {
+
+
         return $app['twig']->render(
             'user/add.html.twig',
             [

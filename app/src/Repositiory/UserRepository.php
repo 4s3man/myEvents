@@ -88,9 +88,16 @@ class UserRepository
         }
     }
 
+    /**
+     * Return user and his roles
+     *
+     * @param string $login
+     *
+     * @return array
+     */
     public function loadUserByLogin(string $login)
     {
-        try{
+        try {
             $user = $this->getUserByLogin($login);
             if (!$user || !count($user)) {
                 throw new UsernameNotFoundException(
@@ -109,7 +116,6 @@ class UserRepository
                 'password' => $user['password'],
                 'roles' => $roles,
             ];
-
         } catch (DBALException $exception) {
             throw new UsernameNotFoundException(
                 sprintf('Username %s does not exist.', $login)
@@ -117,8 +123,15 @@ class UserRepository
         } catch (UsernameNotFoundException $exception) {
             throw $exception;
         }
-
     }
+
+    /**
+     * Get user by login
+     *
+     * @param string $login
+     *
+     * @return array|mixed
+     */
     public function getUserByLogin($login)
     {
         try {
@@ -126,15 +139,21 @@ class UserRepository
                 ->setParameter(':login', $login, \PDO::PARAM_STR);
 
             return $qb->execute()->fetch();
-
         } catch (DBALException $exception) {
             return [];
         }
     }
 
+    /**
+     * Get role by Id
+     *
+     * @param int $userId
+     *
+     * @return array
+     */
     public function getRoleById($userId)
     {
-        $roles =[];
+        $roles = [];
         try {
             $qb = $this->db->createQueryBuilder();
             $qb->select('r.role')
@@ -146,11 +165,11 @@ class UserRepository
             if ($result) {
                 $roles = array_column($result, 'role');
             }
+
             return $roles;
         } catch (DBALException $exception) {
             return $roles;
         }
-
     }
 
     /**

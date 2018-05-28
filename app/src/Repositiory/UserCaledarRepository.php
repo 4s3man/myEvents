@@ -53,8 +53,11 @@ class UserCaledarRepository
     /**
      * Saves saves to user_calendar and calendar tables
      *
-     * @param array $calendar to be saved in calendar table
-     * @param int   $userId   to be used in
+     * @param array $calendar
+     * @param int   $userId
+     *
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function save($calendar, $userId)
     {
@@ -73,6 +76,14 @@ class UserCaledarRepository
         }
     }
 
+    /**
+     * Delete calendar and all users
+     *
+     * @param array $calendar
+     *
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
     public function delete($calendar)
     {
         $this->db->beginTransaction();
@@ -84,7 +95,6 @@ class UserCaledarRepository
             $this->db->rollBack();
             throw $e;
         }
-
     }
 
     /**

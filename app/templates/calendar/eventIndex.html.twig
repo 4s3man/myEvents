@@ -1,0 +1,34 @@
+{% extends 'default/_baseIndex.html.twig' %}
+
+    {% block indexTitle %}
+        {{ 'title.user_calendar_index'|trans }}
+    {% endblock %}
+
+    {% block navigation %}
+        <div class="btn btn-light">
+            <a href="{{ url('eventAdd', {'calendarId':calendarId} ) }}">{{ 'link.event_add'|trans }}</a>
+        </div>
+    {% endblock %}
+
+    {% block paginatorData %}
+        {% for datum in pagerfanta.currentPageResults %}
+            <div class="paginator-items calendar">
+                <a href="{{ url('eventShow', {'calendarId':datum.calendar_id, 'eventId':datum.id}) }}" class="paginator-item ">
+                    <div class="paginator-item">
+                        <i class="fa fa-flag fa-3x"></i>
+                    </div>
+                    <div class="title-desc-wrap">
+                        <div class="paginator-item title">
+                            <h2>{{ datum.title}}</h2>
+                        </div>
+                        <div class="paginator-item email">
+                            <h6>{{ datum.content }}</h6>
+                        </div>
+                    </div>
+                </a>
+                <div class="paginator-item edit"><a href="{{ url('eventEdit', {'calendarId':datum.calendar_id, 'eventId':datum.id}) }}">{{ 'link.edit'|trans }}</a></div>
+                <div class="paginator-item delete"><a href="{{ url('eventDelete', {'calendarId':datum.calendar_id, 'eventId':datum.id}) }}">{{ 'link.delete'|trans }}</a></div>
+            </div>
+            <hr>
+        {% endfor %}
+    {% endblock %}

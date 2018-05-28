@@ -25,7 +25,7 @@ class UserDataManager
     /**
      * @var array $options
      */
-    private $options = ['normalUser', 'superUser'];
+    private $options = ['NORMAL_USER', 'SUPER_USER'];
 
 
     /**
@@ -47,20 +47,24 @@ class UserDataManager
         return $this->user;
     }
 
+    /**
+     * Sets user role
+     *
+     * @param string $user
+     */
     public function setUser(string $user)
     {
-        if(!in_array($user, $this->options)){
+        if (!in_array($user, $this->options)) {
             throw new InvalidArgumentException('Invalid option in dataManager setUser function');
         }
 
-        switch ($user){
-            case 'normalUser':
-                $this->user['role'] = 'normalUser';
+        switch ($user) {
+            case 'NORMAL_USER':
+                $this->user['role'] = 'NORMAL_USER';
                 break;
-            case 'superUser':
-                $this->user['role'] = 'superUser';
+            case 'SUPER_USER':
+                $this->user['role'] = 'SUPER_USER';
                 break;
         }
-
     }
 }

@@ -13,7 +13,7 @@
     {% block paginatorData %}
         {% for datum in pagerfanta.currentPageResults %}
         <div class="paginator-items calendar">
-            <a href="{{ url('calendarShow', {'calendarId':datum.calendar_id}) }}" class="paginator-item ">
+            <a href="{{ url('calendarShow', {'calendarId':datum.calendar_id, 'date':"now"|date("Y-m")}) }}" class="paginator-item ">
                 <div class="paginator-item">
                     <i class="fa fa-calendar fa-3x"></i>
                 </div>

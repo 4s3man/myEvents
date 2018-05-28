@@ -2,6 +2,5 @@
 {% block title %}
 {% endblock %}
 {% block content %}
-    {{ calendarId }}
-    {{ eventId|default('no event') }}
+    {% include 'form/form.html.twig' %}
 {% endblock %}

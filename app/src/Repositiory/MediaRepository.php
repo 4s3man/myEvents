@@ -40,16 +40,4 @@ class MediaRepository
 
         return $query->select('m.id', 'm.title', 'm.img', 'm.width', 'm.height')->from('media', 'm');
     }
-
-    /**
-     * Get first free id of table
-     *
-     * @return int id
-     */
-    public function getNextId()
-    {
-        $id = (int) StaticRepositoryFunctions::getNextId($this->db, 'media');
-
-        return $id;
-    }
 }

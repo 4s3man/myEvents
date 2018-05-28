@@ -76,8 +76,15 @@ class CalendarRepository
         return $this->db->insert('calendar', $calendar);
     }
 
+    /**
+     * @param int $id of clendar to be deleted
+     *
+     * @return int
+     *
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     */
     public function deleteFoundById($id)
     {
-       return $this->db->delete('calendar',['id' => $id]);
+        return $this->db->delete('calendar', ['id' => $id]);
     }
 }

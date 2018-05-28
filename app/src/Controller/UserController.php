@@ -34,10 +34,6 @@ class UserController implements ControllerProviderInterface
     {
         $controller = $app['controllers_factory'];
 
-        $controller->get('/', [$this, 'loggedRedirectAction']);
-        $controller->match('/login', [$this, 'loginAction'])
-            ->method('POST|GET')
-            ->bind('login');
         $controller->match('/register', [$this, 'registerAction'])
             ->method('POST|GET')
             ->bind('register');
@@ -85,14 +81,15 @@ class UserController implements ControllerProviderInterface
         if ($form->isSubmitted() && $form->isValid()) {
             $repository = new UserRepository($app['db']);
             $manager = new UserDataManager($form->getData(), $app['security.encoder.bcrypt']);
-            $manager->setUser('normalUser');
+            $manager->setUser('NORMAL_USER');
             $user = $manager->getUser();
 
             $repository->save($user);
             $sessionMessages->registered();
 
-            return $app->redirect($app['url_generator']->generate('login'), 301);
+            return $app->redirect($app['url_generator']->generate('auth_login'), 301);
         }
+
 
         return $app['twig']->render(
             'user/register.html.twig',

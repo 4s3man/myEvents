@@ -9,7 +9,7 @@
 
 {% set currentPage = pagerfanta.getCurrentPage %}
 {% set pages = pagerfanta.getNbPages %}
-{% set routeVariables = {'userId':userId|default(1), 'calendarId':calendarId|default(1)} %}
+{% set routeVariables = {'userId':userId|default(null), 'calendarId':calendarId|default(null)} %}
 <ul class="pagination">
     {% if currentPage == 1 %}
         <li class="page-item prev disabled">
@@ -23,11 +23,8 @@
         </li>
     {% endif %}
     {% for page in 1..pages %}
-        {% if page == currentPage %}
-            {% set c = 1 %}
-        {% endif %}
         <li class="page-item {% if page == currentPage %}active{% endif %}">
-            {% if c is defined %}
+            {% if page == currentPage %}
                 <span class="page-link">
                     {{ page }}
                     <span class="sr-only">
