@@ -30,6 +30,7 @@ class UserCalendarDataManager
 
     /**
      * UserCalendarDataManager constructor.
+     *
      * @param array $calendar
      * @param array $userId
      */

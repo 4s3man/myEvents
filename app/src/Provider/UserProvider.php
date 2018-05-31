@@ -27,6 +27,7 @@ class UserProvider implements UserProviderInterface
 
     /**
      * UserProvider constructor.
+     *
      * @param Connection $db
      */
     public function __construct(Connection $db)
@@ -58,7 +59,7 @@ class UserProvider implements UserProviderInterface
     }
 
     /**
-     *Refresh user
+     * Refresh user
      *
      * @param UserInterface $user
      *

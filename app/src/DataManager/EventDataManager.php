@@ -20,6 +20,7 @@ class EventDataManager
 
     /**
      * EventDataManager constructor.
+     *
      * @param int $event
      * @param int $calendarId
      */

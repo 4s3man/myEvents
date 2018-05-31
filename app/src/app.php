@@ -100,8 +100,10 @@ $app->register(
         ],
     ]
 );
-$app->before(function (Request $request) use ($app) {
-    $app['twig']->addGlobal('current_page_name', $request->getRequestUri());
-});
+$app->before(
+    function (Request $request) use ($app) {
+        $app['twig']->addGlobal('current_page_name', $request->getRequestUri());
+    }
+);
 
 return $app;

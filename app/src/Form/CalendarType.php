@@ -42,6 +42,8 @@ class CalendarType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         //TODO pytanie czy klasa Repository Asserts container z tablicami jak this->username assert nie lepsz od dziedziczenia?
+        //TODO dodać ograniczenia co miesięczny event nie może trwać więcej niż miesiąc
+        //TODO codzienny więcej niż dzień, coroczny więcej niż rok
         $builder->add(
             'title',
             TextType::class,

@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpParamsInspection */
+<?php /**
+       * @noinspection PhpParamsInspection 
+       */
 
 /**
  * Created by PhpStorm.
@@ -23,6 +25,7 @@ class SessionMessagesDataManager
 
     /**
      * SessionMessagesDataManager constructor.
+     *
      * @param Session $session
      */
     public function __construct(Session $session)

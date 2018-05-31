@@ -15,7 +15,7 @@ use Plummer\Calendarful\Event\EventRegistryInterface;
 /**
  * Class CalendarRepository
  */
-class EventRepository
+class EventRepository implements  EventRegistryInterface
 {
     /**
      * @var Connection|null Database to use
@@ -24,6 +24,7 @@ class EventRepository
 
     /**
      * CalendarRepository constructor.
+     *
      * @param Connection $db
      */
     public function __construct(Connection $db)
@@ -40,8 +41,18 @@ class EventRepository
     {
         $query = $this->db->createQueryBuilder();
 
-        return $query->select('e.id', 'e.title', 'e.content', 'e.start_date', 'e.start_time', 'e.end_date', 'e.end_time', 'e.seats', 'e.cost', 'e.calendar_id')
-            ->from('event', 'e');
+        return $query->select(
+            'e.id',
+            'e.title',
+            'e.content',
+            'e.start',
+            'e.end',
+            'e.seats',
+            'e.cost',
+            'e.calendar_id',
+            'e.until',
+            'e.type'
+        )->from('event', 'e');
     }
 
     /**
@@ -60,11 +71,28 @@ class EventRepository
         return $this->db->insert('event', $event);
     }
 
-    public function getEventsInMonth($date)
+    public function getEvents(array $filters = array())
     {
+        $innerQb = $this->db->createQueryBuilder();
         $qb = $this->queryAll()
-        ->where('e.start_date REGEXP :date')
-        ->setParameter(':date', $date.'.*', \PDO::PARAM_STR);
+            ->where($innerQb->expr()->isNull('type'))
+            ->andwhere('DATEDIFF(start, :toDate) <=0')
+            ->andWhere('DATEDIFF(end, :fromDate) >=0')
+            ->setParameter(':toDate', $filters['toDate'], \PDO::PARAM_STR)
+            ->setParameter(':fromDate', $filters['fromDate'], \PDO::PARAM_STR);
+        $result = $qb->execute()->fetchAll();
+
+        return $result;
+    }
+
+    public function getRecurrentEvents(array $filters = array())
+    {
+        $innerQb = $this->db->createQueryBuilder();
+        $qb = $this->queryAll()
+            ->where($innerQb->expr()->isNotNull('type'))
+            ->andwhere('DATEDIFF(until, :fromDate) >=0 OR until IS NULL')
+            ->setParameter(':fromDate', $filters['fromDate'], \PDO::PARAM_STR);
+
         $result = $qb->execute()->fetchAll();
 
         return $result;

@@ -68,18 +68,25 @@ class CalendarController implements ControllerProviderInterface
     /**
      * Action run by controller
      * Showing calendar
-     *
      * @param Application $app
      *
      * @param String      $calendarId
+     * @param String      $date
      *
      * @return mixed
      */
     public function calendarShowAction(Application $app, $calendarId, $date)
     {
         $eventRepository = new EventRepository($app['db']);
-        $thisMonthEvents = $eventRepository->getEventsInMonth((string) $date);
-        $calendarDataManager = new CalendarDataManager($thisMonthEvents, $date);
+        $calendarDataManager = new CalendarDataManager($eventRepository, $date);
+
+        //        $eventRepository->getEvents(
+        //            [
+        //                'fromDate' => '2016-02-12',
+        //                'toDate' => '2019-02-12',
+        //            ]
+        //        );
+
 
         return $app['twig']->render(
             'calendar/calendar.html.twig',
@@ -117,8 +124,14 @@ class CalendarController implements ControllerProviderInterface
             $sessionMessagesManager->added();
 
             return $app
-                ->redirect($app['url_generator']
-                    ->generate('eventIndex', ['calendarId' => $calendarId, 'page' => 1]), 301);
+                ->redirect(
+                    $app['url_generator']
+                    ->generate(
+                        'eventIndex',
+                        ['calendarId' => $calendarId, 'page' => 1]
+                    ),
+                    301
+                );
         }
 
         return $app['twig']->render(

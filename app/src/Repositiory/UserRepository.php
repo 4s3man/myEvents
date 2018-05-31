@@ -58,7 +58,7 @@ class UserRepository
     /**
      * Saves or updates values into DB
      *
-     * @param  array $user
+     * @param array $user
      *
      * @throws DBALException
      * @throws \Doctrine\DBAL\ConnectionException
@@ -67,21 +67,21 @@ class UserRepository
     {
         $this->db->beginTransaction();
         try {
-//            if (isset($user['id']) && ctype_digit((string) $user['id'])) {
-//                $id = $user['id'];
-//                unset($user['id']);
-//
-//                //TODO superUser
-//                $this->db->update('role', $user['role'], ['id' => $user['role_id']]);
-//                $this->db->update('user', $user, ['id' => $id]);
-//            } else {
-//
-//            }
+            //            if (isset($user['id']) && ctype_digit((string) $user['id'])) {
+            //                $id = $user['id'];
+            //                unset($user['id']);
+            //
+            //                //TODO superUser
+            //                $this->db->update('role', $user['role'], ['id' => $user['role_id']]);
+            //                $this->db->update('user', $user, ['id' => $id]);
+            //            } else {
+            //
+            //            }
                 $this->db->insert('role', ['role' => $user['role']]);
                 unset($user['role']);
                 $user['role_id'] = $this->db->lastInsertId();
                 $this->db->insert('user', $user);
-            $this->db->commit() ;
+            $this->db->commit();
         } catch (DBALException $e) {
             $this->db->rollBack();
             throw $e;

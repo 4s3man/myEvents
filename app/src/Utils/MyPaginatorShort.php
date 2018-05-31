@@ -21,6 +21,7 @@ class MyPaginatorShort
 
     /**
      * MyPaginatorShort constructor.
+     *
      * @param QueryBuilder $queryAll
      * @param int          $maxPerPage
      * @param string       $identifier

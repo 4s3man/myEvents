@@ -30,6 +30,7 @@ class UserDataManager
 
     /**
      * UserPasswordManager constructor.
+     *
      * @param array                 $user
      * @param BCryptPasswordEncoder $encoder
      */
@@ -59,12 +60,12 @@ class UserDataManager
         }
 
         switch ($user) {
-            case 'NORMAL_USER':
-                $this->user['role'] = 'NORMAL_USER';
-                break;
-            case 'SUPER_USER':
-                $this->user['role'] = 'SUPER_USER';
-                break;
+        case 'NORMAL_USER':
+            $this->user['role'] = 'NORMAL_USER';
+            break;
+        case 'SUPER_USER':
+            $this->user['role'] = 'SUPER_USER';
+            break;
         }
     }
 }

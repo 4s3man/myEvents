@@ -30,6 +30,7 @@ class UserCaledarRepository
 
     /**
      * CalendarRepository constructor.
+     *
      * @param Connection $db
      */
     public function __construct(Connection $db)

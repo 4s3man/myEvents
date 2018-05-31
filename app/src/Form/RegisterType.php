@@ -28,6 +28,7 @@ class RegisterType extends AbstractType
 {
     /**
      * Asserts helper
+     *
      * @var PopularAssertGroups|null
      */
     private $popularAsserts = null;

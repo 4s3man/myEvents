@@ -22,6 +22,7 @@ class CalendarRepository
 
     /**
      * CalendarRepository constructor.
+     *
      * @param Connection $db
      */
     public function __construct(Connection $db)
@@ -43,6 +44,7 @@ class CalendarRepository
 
     /**
      * Finds one record by id from calendar table
+     *
      * @param int $id
      *
      * @return array|mixed

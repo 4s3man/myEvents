@@ -82,6 +82,7 @@ class PopularAssertGroups
 
     /**
      * Checks long text input in made conditions
+     *
      * @param array $groups
      *
      * @return array
