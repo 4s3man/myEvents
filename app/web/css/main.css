@@ -75,6 +75,267 @@ FUN COLORS
   min-width: 80px;
 }
 
+.content-img-left img, .content-img-left > img, .content-img-left > * > img {
+  float: left;
+  padding-right: 10px;
+  padding-bottom: 5px;
+}
+
+.content h2 a {
+  line-height: 1.1em;
+}
+
+.real-content a {
+  color: #96588a;
+}
+.real-content a:visited {
+  color: #96588a;
+}
+
+.page-header h1 * {
+  color: #1d757f;
+}
+
+.pb-form {
+  padding: 0px 0px 80px 0px;
+}
+
+.pt-80 {
+  padding-top: 80px !important;
+}
+
+.whole-div-link {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.changeColor {
+  color: red !important;
+  transform: scale(1.1);
+}
+
+li[class^=d_], .basic-calendar span {
+  transition: 0.3s linear;
+}
+
+section .szkolenia-container h2 {
+  margin: 10px 0px;
+}
+
+.wydarzenia-container {
+  padding: 10px 0 50px 0px;
+}
+
+.tribe-events-sub-nav a {
+  color: black;
+}
+.tribe-events-sub-nav a:hover {
+  color: #1d757f;
+}
+
+.img-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rok a {
+  cursor: pointer;
+}
+
+#popup {
+  position: absolute;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 3px solid #1A727C;
+  border-radius: 70px;
+  padding: 8px;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  display: none;
+  transition: 0.3s linear;
+  white-space: pre-wrap;
+  width: 300px;
+}
+
+.basic-calendar a {
+  color: black;
+}
+
+.basic-calendar, .tygodnie {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+
+.basic-calendar {
+  grid-template-rows: repeat(6, 1fr);
+  min-height: 120px;
+}
+
+.tygodnie {
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 20px;
+}
+
+.basic-calendar div, .res, .acc {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.basic-calendar div {
+  padding: 5px 0px;
+}
+
+.loading-spinner {
+  animation: rotateLoader 4s infinite;
+  animation-timing-function: ease-in-out;
+  display: block;
+  height: 30px;
+  left: 50%;
+  margin-left: -15px;
+  margin-top: -15px;
+  position: absolute;
+  top: 50%;
+  width: 30px;
+  z-index: 1000;
+}
+.loading-spinner span {
+  animation-timing-function: ease-in-out;
+  background-color: #1a727c;
+  border-radius: 100%;
+  display: block;
+  height: 9px;
+  position: absolute;
+  width: 9px;
+}
+.loading-spinner span:nth-child(1) {
+  animation: translateBall1 1s infinite;
+  left: 0;
+  top: 0;
+  transform: translate3d(5px, 5px, 0);
+}
+.loading-spinner span:nth-child(2) {
+  animation: translateBall2 1s infinite;
+  right: 0;
+  top: 0;
+}
+.loading-spinner span:nth-child(3) {
+  animation: translateBall3 1s infinite;
+  bottom: 0;
+  right: 0;
+}
+.loading-spinner span:nth-child(4) {
+  animation: translateBall4 1s infinite;
+  bottom: 0;
+  left: 0;
+}
+.loading-spinner.is-relative {
+  display: inline-block;
+  left: auto;
+  margin: 0;
+  position: relative;
+  top: auto;
+  z-index: 1;
+}
+
+@keyframes rotateLoader {
+  0% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes translateBall1 {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(4px, 4px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes translateBall2 {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-4px, 4px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes translateBall3 {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-4px, -4px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes translateBall4 {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(4px, -4px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+@media screen and (max-width: 500px) {
+  .rok {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  #popup {
+    display: none !important;
+  }
+
+  .basic-calendar, .tygodnie {
+    font-size: 1em;
+  }
+
+  .basic-calendar div, .tygodnie div {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .res, .acc {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .kalendarz .calendar {
+    padding: 60px 40px;
+  }
+}
 html {
   min-height: 100%;
   position: relative;

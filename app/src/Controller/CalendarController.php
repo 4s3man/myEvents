@@ -68,6 +68,7 @@ class CalendarController implements ControllerProviderInterface
     /**
      * Action run by controller
      * Showing calendar
+     *
      * @param Application $app
      *
      * @param String      $calendarId
@@ -80,18 +81,11 @@ class CalendarController implements ControllerProviderInterface
         $eventRepository = new EventRepository($app['db']);
         $calendarDataManager = new CalendarDataManager($eventRepository, $date);
 
-        //        $eventRepository->getEvents(
-        //            [
-        //                'fromDate' => '2016-02-12',
-        //                'toDate' => '2019-02-12',
-        //            ]
-        //        );
-
-
         return $app['twig']->render(
             'calendar/calendar.html.twig',
             [
                 'calendarId' => $calendarId,
+                'calendar' => $calendarDataManager->makeCalendarMonthPage(),
             ]
         );
     }

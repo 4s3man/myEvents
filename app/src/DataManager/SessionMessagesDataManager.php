@@ -1,7 +1,4 @@
-<?php /**
-       * @noinspection PhpParamsInspection 
-       */
-
+<?php
 /**
  * Created by PhpStorm.
  * User: kuba

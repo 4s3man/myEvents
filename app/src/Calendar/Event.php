@@ -50,19 +50,19 @@ class Event implements EventInterface
      *
      * @param array $rawEvent
      *
-     * @param null  $parentId
-     * @param null  $occurrenceDate
      */
-    public function __construct(array $rawEvent, $parentId = null, $occurrenceDate = null)
+    public function __construct(array $rawEvent)
     {
-        $this->id = $rawEvent['id'];
+        $this->id = isset($rawEvent['id']) ? $rawEvent['id'] : null;
         unset($rawEvent['id']);
-        $this->startDate = new \DateTime($rawEvent['start']);
+        $this->startDate = isset($rawEvent['start']) ? new \DateTime($rawEvent['start']) : null;
         unset($rawEvent['start']);
-        $this->endDate = new \DateTime($rawEvent['end']);
+        $this->endDate = isset($rawEvent['end']) ? new \DateTime($rawEvent['end']) : null;
         unset($rawEvent['end']);
-        $this->parentId = $parentId;
-        $this->occurrenceDate = $occurrenceDate ? new \DateTime($occurrenceDate) : null;
+        $this->parentId = isset($rawEvent['parentId']) ? $rawEvent['parentId'] : null;
+        unset($rawEvent['parentId']);
+        $this->occurrenceDate = isset($rawEvent['occurrenceDate']) ? new \DateTime($rawEvent['occurrenceDate']) : null;
+        unset($rawEvent['occurrenceDate']);
         $this->data = $rawEvent;
     }
 

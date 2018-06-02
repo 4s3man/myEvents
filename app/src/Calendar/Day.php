@@ -24,17 +24,24 @@ class Day
     protected $events = null;
 
     /**
+     * @var array|null
+     */
+    protected $holiday = null;
+
+    /**
      * Day constructor.
      *
      * @param \DateTime $date
      * @param array     $events
+     * @param array     $holiday
      */
-    public function __construct(\DateTime $date, $events)
+    public function __construct(\DateTime $date, array $events, array $holiday)
     {
-        if (count($events) && (!($events[0] instanceof Event) || !($events[0] instanceof RecurrentEvent))) {
+        if (count($events) && !(($events[0] instanceof Event) || ($events[0] instanceof RecurrentEvent))) {
             throw new \InvalidArgumentException('Array of events needs to be Calendar\Event Type');
         }
         $this->date = $date;
         $this->events = $events;
+        $this->holiday = $holiday;
     }
 }

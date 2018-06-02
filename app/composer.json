@@ -27,7 +27,8 @@
         "sorien/silex-dbal-profiler": "~2.0",
         "doctrine/dbal": "^2.5",
         "pagerfanta/pagerfanta": "^2.0",
-        "plummer/calendarful": "^0.2.1"
+        "plummer/calendarful": "^0.2.1",
+        "azuyalabs/yasumi": "^1.8"
     },
     "autoload": {
         "psr-0": { "": "src/" }

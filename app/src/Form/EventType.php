@@ -12,10 +12,8 @@ use Form\Helpers\PopularAssertGroups;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -68,7 +66,7 @@ class EventType extends AbstractType
                     new Assert\Regex(
                         [
                           'groups' => 'event_default',
-                          'pattern' => '/^([\s\n\p{L}0-9]+[,\s\n!?\)\(\.:-]+[\s\n\s\p{L}!?0-9])*$/u',
+                          'pattern' => '/^([\s\n\p{L}0-9]+[,\s\n!?\)\(\.:-]*[\s\n\s\p{L}!?0-9]*)*$/u',
                             ]
                     ),
                     new Assert\Length(

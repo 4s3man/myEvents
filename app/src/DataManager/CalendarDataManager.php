@@ -16,6 +16,7 @@ use Plummer\Calendarful\Calendar\Calendar;
 use Plummer\Calendarful\Recurrence\RecurrenceFactory;
 use Repositiory\EventRepository;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
+use Yasumi\Yasumi;
 
 /**
  * Class CalendarDataManager
@@ -52,6 +53,9 @@ class CalendarDataManager
      */
     protected $eventsList = null;
 
+
+    protected $holidays = null;
+
     /**
      * CalendarDataManager constructor.
      *
@@ -60,40 +64,46 @@ class CalendarDataManager
      */
     public function __construct(EventRepository $eventRepository, $date)
     {
-        $this->date = $date;
-        $this->range = $this->setRange();
+        $this->date = new \DateTime($date);
 
-        $eventsRaw = $eventRepository->getEvents($this->range);
-        $this->events = $this->makeEvents($eventsRaw);
-
-        $recurrentEventsRaw = $eventRepository->getRecurrentEvents($this->range);
-        $this->recurrentEvents = $this->makeRecurrentEvents($recurrentEventsRaw);
-
-        $this->eventsList = $this->makeEventsList(
-            new \DateTime($this->range['fromDate']),
-            new \DateTime($this->range['toDate'])
+        $this->daysInMonth = cal_days_in_month(
+            CAL_GREGORIAN,
+            $this->date->format('m'),
+            $this->date->format('Y')
         );
 
-//        dump($this->eventsList);
+        $this->range = $this->setRange();
 
-        $calendarPage = $this->makeCalendarMonthPage();
-        //TODO potestować czy wszystkie rekurencyjne dodają się dobrze
-        dump($calendarPage);
+        //TODO jak translacja na polski
+        $this->holidays = Yasumi::create('Poland', $this->date->format('Y'));
+
+        $eventsRaw = $eventRepository
+            ->getEvents($this->formatDateArray($this->range, 'Y-m-d'));
+        $this->events = $this->makeEventsFromRawData($eventsRaw, Event::class);
+
+        $recurrentEventsRaw = $eventRepository
+            ->getRecurrentEvents($this->formatDateArray($this->range, 'Y-m-d'));
+        $this->recurrentEvents = $this->makeEventsFromRawData($recurrentEventsRaw, RecurrentEvent::class);
+
+        $this->eventsList = $this->makeEventsList(
+            $this->range['fromDate'],
+            $this->range['toDate']
+        );
     }
 
     /**
      * Makes eventList, instance of Plummer\Calendarful\Calendar\Calendar;
      *
      * @param \DateTime $fromDate
-     * @param \DateTime $endDate
+     * @param \DateTime $toDate
      *
      * @return Calendar
      */
-    public function makeEventsList(\DateTime $fromDate, \DateTime$endDate)
+    public function makeEventsList(\DateTime $fromDate, \DateTime $toDate)
     {
         $adapter = new AdapterCalendarDataManagerCalendarfulCalendar($this->events, $this->recurrentEvents);
         $calendar = new Calendar($this->makeRecurrenceFactory());
-        $calendar->populate($adapter, new \DateTime($this->range['fromDate']), new \DateTime($this->range['toDate']));
+        $calendar->populate($adapter, $fromDate, $toDate);
 
         return $calendar;
     }
@@ -114,77 +124,148 @@ class CalendarDataManager
         }
 
         $calendar = [];
+        $date = clone $this->range['fromDate'];
         for ($i = 1; $i < $this->daysInMonth; $i++) {
-            $date = new \DateTime($this->date.'-'.(string) $i);
-            $events = [];
-            foreach ($this->eventsList->getIterator() as $event) {
-                if ($this->dateInEventRange($event, $date)) {
-                    $events[] = $event;
-                }
-            }
-            $day = new Day($date, $events);
+            $date = new \DateTime($date->format('Y-m-').(string) $i);
+            $events = $this->getEventsForDate($date);
+            $holidays = $this->getHolidaysForDate($date);
+            $day = new Day($date, $events, $holidays);
             $calendar[] = $day;
         }
 
         return $calendar;
-        //TODO rozdzielić eventy do dni, pseudokod
-        //dla liczb od 1 do $this->>daysInMonth
-        //zrób new \DateTime dla $this->>date . liczba z powyżej
-        //dla wszystkich eventów w liście sprawdź czy data dnia pomiędzy startDate i endDate
-        //jeśli tak to dodaj te eventy do tablicy eventów dnia, dzień jako osobny obiekt posiadający
-        //liste eventów, klasę do obiektu html, swoją datę
-        //kalendarz jako lista dni
     }
 
-    private function dateInEventRange($event, \DateTime $date)
+    /**
+     * Gets all events for specific date
+     *
+     * @param \DateTime $date
+     *
+     * @return array
+     */
+    private function getEventsForDate(\DateTime $date)
+    {
+        $events = [];
+        foreach ($this->eventsList as $event) {
+            if ($this->dateInEventRange($event, $date)) {
+                $events[] = $event;
+            }
+        }
+
+        return $events;
+    }
+
+
+    /**
+     * Gets holidays provided by Yasumi for specyfic days
+     *
+     * @param \DateTime $date
+     *
+     * @return array eventName => \DateTime date
+     */
+    private function getHolidaysForDate(\DateTime $date)
+    {
+        $holidays = [];
+        foreach ($this->holidays as $name => $holidayDate) {
+            if ('0' === $this->dateDifference($holidayDate, $date, '%a')) {
+                $holidays[$name] = $holidayDate;
+            }
+        }
+
+        return $holidays;
+    }
+
+    /**
+     * @param Event     $event
+     * @param \DateTime $date
+     *
+     * @return bool
+     */
+    private function dateInEventRange(Event $event, \DateTime $date)
     {
         return '' === $this->dateDifference($event->getStartDate(), $date)
             && '-' === $this->dateDifference($event->getEndDate(), $date);
     }
 
-    private function dateDifference($date_1 , $date_2 , $differenceFormat = '%r' )
+    /**
+     * @param \DateTime $date1
+     * @param \DateTime $date2
+     *
+     * @param string    $differenceFormat
+     *
+     * @return string
+     */
+    private function dateDifference(\DateTime $date1, \DateTime $date2, $differenceFormat = '%r')
     {
-        $interval = date_diff($date_1, $date_2);
+        $interval = date_diff($date1, $date2);
 
         return $interval->format($differenceFormat);
     }
 
+    /**
+     * Makes Range specified by date passed in construct
+     *
+     * @return array
+     */
     private function setRange()
     {
-        $yearMonth = explode('-', $this->date);
-        $this->daysInMonth = cal_days_in_month(CAL_GREGORIAN, $yearMonth[1], $yearMonth[0]);
+        $cloned4start = clone $this->date;
+        $cloned4end = clone $this->date;
         $range = [
-            'fromDate' => $this->date.'-01',
-            'toDate' => $this->date.'-'.$this->daysInMonth,
+            'fromDate' => $cloned4start->modify('first day of this month'),
+            'toDate' => $cloned4end->modify('last day of this month'),
         ];
 
         return $range;
     }
 
-    private function makeEvents($rawEvents)
+    /**
+     * Converts array of \DateTime objects to array of stringified in specific
+     * format date
+     *
+     * @param array  $filters
+     * @param string $format
+     *
+     * @return array
+     */
+    private function formatDateArray(array $filters, string $format)
+    {
+        if (!(current($filters) instanceof \DateTime)) {
+            throw new \InvalidArgumentException('All filters values must have instance of \DateTime.');
+        }
+
+        $formatted = [];
+        foreach ($filters as $key => $filter) {
+            $formatted[$key] = $filter->format($format);
+        }
+
+        return $formatted;
+    }
+
+    /**
+     * Converts array of strings to array of Events
+     * for calendarful package
+     *
+     * @param array  $rawEvents
+     *
+     * @param string $class
+     *
+     * @return array
+     */
+    private function makeEventsFromRawData(array $rawEvents, string $class)
     {
         $events = [];
-        foreach ($rawEvents as $rawEevent)
-        {
-            $event = new Event($rawEevent);
+        foreach ($rawEvents as $rawEevent) {
+            $event = new $class($rawEevent);
             $events[$rawEevent['id']] = $event;
         }
 
         return $events;
     }
 
-    private function makeRecurrentEvents($rawEvents)
-    {
-        $events = [];
-        foreach ($rawEvents as $rawEevent)
-        {
-            $event = new RecurrentEvent($rawEevent);
-            $events[$rawEevent['id']] = $event;
-        }
-
-        return $events;
-    }
-
+    /**
+     * @return RecurrenceFactory
+     */
     private function makeRecurrenceFactory()
     {
         $recurrenceFactory = new RecurrenceFactory();

@@ -15,7 +15,7 @@ use Plummer\Calendarful\Event\EventRegistryInterface;
 /**
  * Class CalendarRepository
  */
-class EventRepository implements  EventRegistryInterface
+class EventRepository implements EventRegistryInterface
 {
     /**
      * @var Connection|null Database to use
@@ -71,6 +71,14 @@ class EventRepository implements  EventRegistryInterface
         return $this->db->insert('event', $event);
     }
 
+    /**
+     * Gets data used to create Calendar\Events objects
+     * in specific time range passend in $filters array
+     *
+     * @param array $filters
+     *
+     * @return array|EventInterface[]
+     */
     public function getEvents(array $filters = array())
     {
         $innerQb = $this->db->createQueryBuilder();
@@ -85,6 +93,14 @@ class EventRepository implements  EventRegistryInterface
         return $result;
     }
 
+    /**
+     * Gets data used to create Calendar\Events objects
+     * in specific time range passend in $filters array
+     *
+     * @param array $filters
+     *
+     * @return array|EventInterface[]
+     */
     public function getRecurrentEvents(array $filters = array())
     {
         $innerQb = $this->db->createQueryBuilder();
