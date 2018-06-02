@@ -80,12 +80,13 @@ class CalendarController implements ControllerProviderInterface
     {
         $eventRepository = new EventRepository($app['db']);
         $calendarDataManager = new CalendarDataManager($eventRepository, $date);
+        $calendar = $calendarDataManager->makeCalendarMonthPage();
 
         return $app['twig']->render(
             'calendar/calendar.html.twig',
             [
                 'calendarId' => $calendarId,
-                'calendar' => $calendarDataManager->makeCalendarMonthPage(),
+                'calendar' => $calendar,
             ]
         );
     }

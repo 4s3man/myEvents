@@ -75,113 +75,62 @@ FUN COLORS
   min-width: 80px;
 }
 
-.content-img-left img, .content-img-left > img, .content-img-left > * > img {
-  float: left;
-  padding-right: 10px;
-  padding-bottom: 5px;
+.event_marker {
+  position: relative;
 }
 
-.content h2 a {
-  line-height: 1.1em;
-}
-
-.real-content a {
-  color: #96588a;
-}
-.real-content a:visited {
-  color: #96588a;
-}
-
-.page-header h1 * {
-  color: #1d757f;
-}
-
-.pb-form {
-  padding: 0px 0px 80px 0px;
-}
-
-.pt-80 {
-  padding-top: 80px !important;
-}
-
-.whole-div-link {
+.event_marker:hover .event_title {
+  display: block;
   position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
 }
 
-.changeColor {
-  color: red !important;
-  transform: scale(1.1);
-}
-
-li[class^=d_], .basic-calendar span {
-  transition: 0.3s linear;
-}
-
-section .szkolenia-container h2 {
-  margin: 10px 0px;
-}
-
-.wydarzenia-container {
-  padding: 10px 0 50px 0px;
-}
-
-.tribe-events-sub-nav a {
-  color: black;
-}
-.tribe-events-sub-nav a:hover {
-  color: #1d757f;
-}
-
-.img-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.rok a {
-  cursor: pointer;
-}
-
-#popup {
+.event_title:hover .event_details {
+  display: block;
   position: absolute;
-  text-align: center;
-  background-color: rgba(255, 255, 255, 0.8);
-  border: 3px solid #1A727C;
-  border-radius: 70px;
-  padding: 8px;
-  top: 50%;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
+}
+
+.event_details, .event_title {
   display: none;
-  transition: 0.3s linear;
-  white-space: pre-wrap;
-  width: 300px;
-}
-
-.basic-calendar a {
-  color: black;
-}
-
-.basic-calendar, .tygodnie {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  text-align: center;
 }
 
 .basic-calendar {
   grid-template-rows: repeat(6, 1fr);
   min-height: 120px;
 }
+.basic-calendar a {
+  color: black;
+}
 
-.tygodnie {
+.basic-calendar, .weeks, .months {
+  width: 100%;
+}
+
+.basic-calendar, .weeks {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+
+.weeks {
   font-weight: 800;
   text-transform: uppercase;
   font-size: 20px;
+}
+
+.year-wrap, .months {
+  display: flex;
+}
+
+.year-wrap {
+  justify-content: center;
+}
+
+.rok a {
+  cursor: pointer;
+}
+
+.months {
+  justify-content: space-around;
 }
 
 .basic-calendar div, .res, .acc {
@@ -314,15 +263,11 @@ section .szkolenia-container h2 {
     align-items: center !important;
   }
 
-  #popup {
-    display: none !important;
-  }
-
-  .basic-calendar, .tygodnie {
+  .basic-calendar, .weeks {
     font-size: 1em;
   }
 
-  .basic-calendar div, .tygodnie div {
+  .basic-calendar div, .weeks div {
     width: 32px !important;
     height: 32px !important;
   }
@@ -352,7 +297,7 @@ body {
 
 .logged {
   display: grid;
-  grid-template-columns: 1fr 12fr;
+  grid-template-columns: 100px auto;
   grid-template-areas: "sidebar content";
   grid-auto-rows: auto;
 }

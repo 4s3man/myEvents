@@ -137,4 +137,12 @@ class Event implements EventInterface
     {
         return $this->occurrenceDate;
     }
+
+    /**
+     * @return array|null
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
 }

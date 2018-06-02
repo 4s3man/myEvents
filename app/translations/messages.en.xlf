@@ -20,8 +20,7 @@
                 <source>title.bookmarks_list</source>
                 <target>Bookmarks List</target>
             </trans-unit>
-<!-- POWAZNIE -->
-            <!-- REGISTER -->
+<!-- REGISTER -->
                 <trans-unit id="label.first_name">
                     <source>label.first_name</source>
                     <target>first name</target>
@@ -58,7 +57,85 @@
                     <source>label.submit</source>
                     <target>Submit</target>
                 </trans-unit>
-            <!-- REGISTER -->
+<!-- REGISTER_END -->
+<!-- CALENDAR -->
+            <trans-unit id="month_name.jan">
+                <source>month_name.jan</source>
+                <target>jan</target>
+            </trans-unit>
+            <trans-unit id="month_name.fab">
+                <source>month_name.fab</source>
+                <target>feb</target>
+            </trans-unit>
+            <trans-unit id="month_name.mar">
+                <source>month_name.mar</source>
+                <target>mar</target>
+            </trans-unit>
+            <trans-unit id="month_name.apr">
+                <source>month_name.apr</source>
+                <target>apr</target>
+            </trans-unit>
+            <trans-unit id="month_name.may">
+                <source>month_name.may</source>
+                <target>may</target>
+            </trans-unit>
+            <trans-unit id="month_name.jun">
+                <source>month_name.jun</source>
+                <target>jun</target>
+            </trans-unit>
+            <trans-unit id="month_name.jul">
+                <source>month_name.jul</source>
+                <target>jul</target>
+            </trans-unit>
+            <trans-unit id="month_name.aug">
+                <source>month_name.aug</source>
+                <target>aug</target>
+            </trans-unit>
+            <trans-unit id="month_name.sep">
+                <source>month_name.sep</source>
+                <target>sep</target>
+            </trans-unit>
+            <trans-unit id="month_name.oct">
+                <source>month_name.oct</source>
+                <target>oct</target>
+            </trans-unit>
+            <trans-unit id="month_name.nov">
+                <source>month_name.nov</source>
+                <target>nov</target>
+            </trans-unit>
+            <trans-unit id="month_name.dec">
+                <source>month_name.dec</source>
+                <target>dec</target>
+            </trans-unit>
+            <trans-unit id="week_name.mon">
+                <source>week_name.mon</source>
+                <target>mon</target>
+            </trans-unit>
+            <trans-unit id="week_name.tus">
+                <source>week_name.tus</source>
+                <target>tus</target>
+            </trans-unit>
+            <trans-unit id="week_name.wed">
+                <source>week_name.wed</source>
+                <target>wed</target>
+            </trans-unit>
+            <trans-unit id="week_name.thu">
+                <source>week_name.thu</source>
+                <target>thu</target>
+            </trans-unit>
+            <trans-unit id="week_name.fri">
+                <source>week_name.fri</source>
+                <target>fri</target>
+            </trans-unit>
+            <trans-unit id="week_name.sat">
+                <source>week_name.sat</source>
+                <target>sat</target>
+            </trans-unit>
+            <trans-unit id="week_name.sun">
+                <source>week_name.sun</source>
+                <target>sun</target>
+            </trans-unit>
+<!-- CALENDAR_END -->
 
 
         </body>

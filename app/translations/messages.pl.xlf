@@ -66,7 +66,85 @@
                     <source>label.submit</source>
                     <target>Zapisz</target>
                 </trans-unit>
-        <!-- REGISTER END -->
+<!-- REGISTER END -->
+<!-- CALENDAR -->
+            <trans-unit id="month_name.jan">
+                <source>month_name.jan</source>
+                <target>sty</target>
+            </trans-unit>
+            <trans-unit id="month_name.fab">
+                <source>month_name.fab</source>
+                <target>lut</target>
+            </trans-unit>
+            <trans-unit id="month_name.mar">
+                <source>month_name.mar</source>
+                <target>mar</target>
+            </trans-unit>
+            <trans-unit id="month_name.apr">
+                <source>month_name.apr</source>
+                <target>kwi</target>
+            </trans-unit>
+            <trans-unit id="month_name.may">
+                <source>month_name.may</source>
+                <target>maj</target>
+            </trans-unit>
+            <trans-unit id="month_name.jun">
+                <source>month_name.jun</source>
+                <target>cze</target>
+            </trans-unit>
+            <trans-unit id="month_name.jul">
+                <source>month_name.jul</source>
+                <target>lip</target>
+            </trans-unit>
+            <trans-unit id="month_name.aug">
+                <source>month_name.aug</source>
+                <target>sie</target>
+            </trans-unit>
+            <trans-unit id="month_name.sep">
+                <source>month_name.sep</source>
+                <target>wrz</target>
+            </trans-unit>
+            <trans-unit id="month_name.oct">
+                <source>month_name.oct</source>
+                <target>paź</target>
+            </trans-unit>
+            <trans-unit id="month_name.nov">
+                <source>month_name.nov</source>
+                <target>lis</target>
+            </trans-unit>
+            <trans-unit id="month_name.dec">
+                <source>month_name.dec</source>
+                <target>gru</target>
+            </trans-unit>
+            <trans-unit id="week_name.mon">
+                <source>week_name.mon</source>
+                <target>pon</target>
+            </trans-unit>
+            <trans-unit id="week_name.tus">
+                <source>week_name.tus</source>
+                <target>wt</target>
+            </trans-unit>
+            <trans-unit id="week_name.wed">
+                <source>week_name.wed</source>
+                <target>śr</target>
+            </trans-unit>
+            <trans-unit id="week_name.thu">
+                <source>week_name.thu</source>
+                <target>czw</target>
+            </trans-unit>
+            <trans-unit id="week_name.fri">
+                <source>week_name.fri</source>
+                <target>pt</target>
+            </trans-unit>
+            <trans-unit id="week_name.sat">
+                <source>week_name.sat</source>
+                <target>sob</target>
+            </trans-unit>
+            <trans-unit id="week_name.sun">
+                <source>week_name.sun</source>
+                <target>nie</target>
+            </trans-unit>
+<!-- CALENDAR_END -->
 
 
         </body>

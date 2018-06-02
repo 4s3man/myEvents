@@ -23,7 +23,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class EventType extends AbstractType
 {
-    protected $year = null;
 
     /**
      * @var PopularAssertGroups|null
@@ -35,7 +34,6 @@ class EventType extends AbstractType
     public function __construct()
     {
         $this->popularAsserts = new PopularAssertGroups();
-        $this->year = date('y');
     }
 
     /**
@@ -66,7 +64,7 @@ class EventType extends AbstractType
                     new Assert\Regex(
                         [
                           'groups' => 'event_default',
-                          'pattern' => '/^([\s\n\p{L}0-9]+[,\s\n!?\)\(\.:-]*[\s\n\s\p{L}!?0-9]*)*$/u',
+                          'pattern' => '/^[^\-\"\'].*[^-\"\']$/',
                             ]
                     ),
                     new Assert\Length(
@@ -77,7 +75,8 @@ class EventType extends AbstractType
                 ],
             ]
         );
-        //TODO jak zmienić domyślną wartość na obecny czas
+        //TODO pytanie jak zmienić domyślną wartość na obecny czas
+
         $builder->add(
             'start',
             DateTimeType::class,

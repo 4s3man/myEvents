@@ -3,23 +3,6 @@
 {% endblock %}
 {% block content %}
     <div id="calendar" class="calendar">
-        <div class="row">
-            <div class="col-md-4 col-xs-12">
-                <div class="data text-center">
-                    <h2>25</h2>
-                    <h4 class="text-center">Piątek</h4>
-                </div>
-                <div class="szczegoly">
-                    <p>
-                        <strong>Wydarzenia tego dnia:</strong>
-                    </p>
-                    <ul id="JStodayList"></ul>
-                    <p>
-                        <strong>Wydarzenia tego miesiąca:</strong>
-                    </p>
-                    <ul id="JSmonthList"><li class="d_12"><a href="http://leance.org/wydarzenie/jesli-chcesz-sluchac-naprawde/">Jeśli chcesz słuchać naprawdę</a></li><li class="d_18"><a href="http://leance.org/wydarzenie/o-neurobiologii-i-empatii/">O neurobiologii i empatii</a></li></ul>
-                </div>
-            </div>
             <div class="col-md-8 col-xs-12">
                 <div class="kalendarz-builder">
                     <div id="JSloading" class="loading-spinner" style="display: none;">
@@ -28,92 +11,61 @@
                         <span></span>
                         <span></span>
                     </div>
-                    <div class="row">
-                        <div class="rok">
+                    <div class="row year-wrap">
+                        <div class="rok year_nav">
                             <a id="JScaldendarPrev">
-                                <img src="http://leance.org/wp-content/themes/storefront-child/images/c-arrow-left.png" alt="">
+                                ◄
                             </a>
-                            <span id="JSyear">2018</span>
+                            <span id="JSyear">{{ calendar.year }}</span>
                             <a id="JScaldendarNext">
-                                <img src="http://leance.org/wp-content/themes/storefront-child/images/c-arrow-right.png" alt="">
+                                ►
                             </a>
-                        </div>
-                    </div>
-                    <div class="czas row">
-                        <table id="JSmonths" class="miesiace">
-                            <tbody><tr>
-                                <td>Sty</td>
-                                <td>Lu</td>
-                                <td>Mar</td>
-                                <td>Kwie</td>
-                                <td class="font-weight-bold JScurrMonth">Maj</td>
-                                <td>Cze</td>
-                                <td>Lip</td>
-                                <td>Sier</td>
-                                <td>Wrz</td>
-                                <td>Paź</td>
-                                <td class="">Lis</td>
-                                <td>Gru</td><td>
-                                </td></tr>
-                            </tbody></table>
-                        <div class="tygodnie">
-                            <div>pn</div>
-                            <div>Wt</div>
-                            <div>Śr</div>
-                            <div>Cz</div>
-                            <div>Pt</div>
-                            <div>Sb</div>
-                            <div>Nd</div>
                         </div>
                     </div>
                     <div class="row">
-                        <div id="popup">
-
-                        </div>
-                        <div id="JScalendar" class="basic-calendar">
-                            <div></div>
-                            <div>1</div>
-                            <div>2</div>
-                            <div>3</div>
-                            <div>4</div>
-                            <div>5</div>
-                            <div>6</div>
-                            <div>7</div>
-                            <div>8</div>
-                            <div>9</div>
-                            <div>10</div>
-                            <div>11</div>
-                            <div><a href="http://leance.org/wydarzenie/jesli-chcesz-sluchac-naprawde/"><span class="res d_12">12</span></a></div>
-                            <div><a href="http://leance.org/wydarzenie/jesli-chcesz-sluchac-naprawde/"><span class="res d_12">13</span></a></div>
-                            <div>14</div>
-                            <div>15</div>
-                            <div>16</div>
-                            <div>17</div>
-                            <div><a href="http://leance.org/wydarzenie/o-neurobiologii-i-empatii/"><span class="res d_18">18</span></a></div>
-                            <div><a href="http://leance.org/wydarzenie/o-neurobiologii-i-empatii/"><span class="res d_18">19</span></a></div>
-                            <div><a href="http://leance.org/wydarzenie/o-neurobiologii-i-empatii/"><span class="res d_18">20</span></a></div>
-                            <div>21</div>
-                            <div>22</div>
-                            <div>23</div>
-                            <div>24</div>
-                            <div><a><span class="acc">25</span></a></div>
-                            <div>26</div>
-                            <div>27</div>
-                            <div>28</div>
-                            <div>29</div>
-                            <div>30</div>
-                            <div>31</div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
+                        <div class="months">
+                            {% for monthName in calendar.monthNames %}
+                                {% if calendar.monthName == monthName %}
+                                    <div class="font-weight-bold">{{ monthName|trans }}</div>
+                                {% else %}
+                                    <div>{{ monthName|trans }}</div>
+                                {% endif %}
+                            {% endfor %}
                     </div>
+                        <div class="weeks">
+                            {% for weekName in calendar.weekNames %}
+                                    <div>{{ weekName|trans }}</div>
+                            {% endfor %}                        </div>
+                        <div id="JScalendar" class="basic-calendar">
+                            {% for dayNum in 1..calendar.daysWeekNum-1 %}
+                                <div class="day_empty"></div>
+                            {% endfor %}
+                            {% for day in calendar.days %}
+                                <div class="day_full" >
+                                    {{ loop.index }}
+                                    {% if day.events|length %}
+                                        <ul class="event_marker">
+                                                <li>
+                                                    <ul class="event_title">
+                                                        {% for event in day.events %}
+                                                                <li>{{ event.data.title }}</li>
+                                                                <ul class="event_details">
+                                                                    <li>{{ 'calendar.event_start_time'|trans}} {{ event.startDate.format('G:i') }}</li>
+                                                                    <li>{{ 'calendar.event_end_time'|trans}} {{ event.endDate.format('G:i') }}</li>
+                                                                    <li>{{ 'calendar.event_cost'|trans}} {{ event.data.cost }}</li>
+                                                                    <li>{{ 'calendar.seats_left'|trans}} {{ event.data.seats }}</li>
+                                                                </ul>
+                                                            {% if not loop.last %}
+                                                                <hr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </ul>
+                                                </li>
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
                 </div>
             </div>
         </div>

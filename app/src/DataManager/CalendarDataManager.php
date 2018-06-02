@@ -9,6 +9,7 @@
 namespace DataManager;
 
 use Calendar\AdapterCalendarDataManagerCalendarfulCalendar;
+use Calendar\CalendarPage;
 use Calendar\Day;
 use Calendar\Event;
 use Calendar\RecurrentEvent;
@@ -122,18 +123,30 @@ class CalendarDataManager
                 'makeCalendarMonthPage() needs eventsList specified, first call makeEventsList'
             );
         }
+        $days = $this->makeDays();
+        $calendarPage = new CalendarPage($days, $this->range['fromDate']);
 
-        $calendar = [];
+        return $calendarPage;
+    }
+
+    /**
+     * Make Calendar\Days including holidays, events, and dayDate
+     *
+     * @return array
+     */
+    private function makeDays()
+    {
+        $days = [];
         $date = clone $this->range['fromDate'];
-        for ($i = 1; $i < $this->daysInMonth; $i++) {
+        for ($i = 1; $i <= $this->daysInMonth; $i++) {
             $date = new \DateTime($date->format('Y-m-').(string) $i);
             $events = $this->getEventsForDate($date);
             $holidays = $this->getHolidaysForDate($date);
             $day = new Day($date, $events, $holidays);
-            $calendar[] = $day;
+            $days[] = $day;
         }
 
-        return $calendar;
+        return $days;
     }
 
     /**
@@ -167,7 +180,7 @@ class CalendarDataManager
     {
         $holidays = [];
         foreach ($this->holidays as $name => $holidayDate) {
-            if ('0' === $this->dateDifference($holidayDate, $date, '%a')) {
+            if ($holidayDate == $date) {
                 $holidays[$name] = $holidayDate;
             }
         }
@@ -183,23 +196,7 @@ class CalendarDataManager
      */
     private function dateInEventRange(Event $event, \DateTime $date)
     {
-        return '' === $this->dateDifference($event->getStartDate(), $date)
-            && '-' === $this->dateDifference($event->getEndDate(), $date);
-    }
-
-    /**
-     * @param \DateTime $date1
-     * @param \DateTime $date2
-     *
-     * @param string    $differenceFormat
-     *
-     * @return string
-     */
-    private function dateDifference(\DateTime $date1, \DateTime $date2, $differenceFormat = '%r')
-    {
-        $interval = date_diff($date1, $date2);
-
-        return $interval->format($differenceFormat);
+        return $event->getStartDate() > $date && $event->getEndDate() > $date;
     }
 
     /**

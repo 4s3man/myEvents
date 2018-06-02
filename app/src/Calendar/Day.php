@@ -44,4 +44,20 @@ class Day
         $this->events = $events;
         $this->holiday = $holiday;
     }
+
+    /**
+     * @return null
+     */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getHoliday()
+    {
+        return $this->holiday;
+    }
 }

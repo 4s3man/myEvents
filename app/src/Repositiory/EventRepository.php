@@ -51,7 +51,9 @@ class EventRepository implements EventRegistryInterface
             'e.cost',
             'e.calendar_id',
             'e.until',
-            'e.type'
+            'e.type',
+            'e.parent_id',
+            'e.occurence'
         )->from('event', 'e');
     }
 

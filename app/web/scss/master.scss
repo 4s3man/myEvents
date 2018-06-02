@@ -31,7 +31,7 @@ body{
 }
 .logged{
   display: grid;
-  grid-template-columns: 1fr 12fr;
+  grid-template-columns: 100px auto;
   grid-template-areas: "sidebar content";
   grid-auto-rows: auto;
 }
