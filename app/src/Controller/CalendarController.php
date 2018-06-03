@@ -43,7 +43,7 @@ class CalendarController implements ControllerProviderInterface
         $controller->match('/{calendarId}/addEvent', [$this, 'eventAddAction'])
             ->method('POST|GET')
             ->bind('eventAdd');
-        $controller->get('/{calendarId}/events/page/{page}', [$this, 'eventIndexAction'])
+        $controller->get('/{calendarId}/event/page/{page}', [$this, 'eventIndexAction'])
             ->bind('eventIndex');
         $controller->get('/{calendarId}/event/{eventId}', [$this, 'eventPageAction'])
             ->bind('eventShow');

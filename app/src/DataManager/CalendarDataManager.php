@@ -123,6 +123,7 @@ class CalendarDataManager
                 'makeCalendarMonthPage() needs eventsList specified, first call makeEventsList'
             );
         }
+
         $days = $this->makeDays();
         $calendarPage = new CalendarPage($days, $this->range['fromDate']);
 
@@ -196,7 +197,7 @@ class CalendarDataManager
      */
     private function dateInEventRange(Event $event, \DateTime $date)
     {
-        return $event->getStartDate() > $date && $event->getEndDate() > $date;
+        return $date >= $event->getStartDate() && $date <= $event->getEndDate();
     }
 
     /**

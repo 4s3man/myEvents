@@ -38,29 +38,30 @@
                             {% endfor %}                        </div>
                         <div id="JScalendar" class="basic-calendar">
                             {% for dayNum in 1..calendar.daysWeekNum-1 %}
-                                <div class="day_empty"></div>
+                                <div class="day-empty"></div>
                             {% endfor %}
                             {% for day in calendar.days %}
-                                <div class="day_full" >
+                                <div class="day-not_empty {% if day.holiday|length %}holiday {% elseif day.events|length %} event{% endif %}" >
                                     {{ loop.index }}
+                                        <div class="day-holiday"></div>
                                     {% if day.events|length %}
-                                        <ul class="event_marker">
-                                                <li>
-                                                    <ul class="event_title">
-                                                        {% for event in day.events %}
-                                                                <li>{{ event.data.title }}</li>
-                                                                <ul class="event_details">
-                                                                    <li>{{ 'calendar.event_start_time'|trans}} {{ event.startDate.format('G:i') }}</li>
-                                                                    <li>{{ 'calendar.event_end_time'|trans}} {{ event.endDate.format('G:i') }}</li>
-                                                                    <li>{{ 'calendar.event_cost'|trans}} {{ event.data.cost }}</li>
-                                                                    <li>{{ 'calendar.seats_left'|trans}} {{ event.data.seats }}</li>
-                                                                </ul>
-                                                            {% if not loop.last %}
-                                                                <hr>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </ul>
-                                                </li>
+                                        <ul class="day-events">
+                                            {% for event in day.events %}
+                                                    <li>
+                                                        <a href="{{ url('eventShow', {calendarId:calendarId, eventId:event.id }) }}">
+                                                            {{ event.data.title }}
+                                                        </a>
+                                                        <ul class="day-events_details">
+                                                            <li>{{ 'calendar.event_start_time'|trans}} {{ event.startDate.format('G:i') }}</li>
+                                                            <li>{{ 'calendar.event_end_time'|trans}} {{ event.endDate.format('G:i') }}</li>
+                                                            <li>{{ 'calendar.event_cost'|trans}} {{ event.data.cost }}</li>
+                                                            <li>{{ 'calendar.seats_left'|trans}} {{ event.data.seats }}</li>
+                                                        </ul>
+                                                    </li>
+                                                {% if not loop.last %}
+                                                    {#<hr>#}
+                                                {% endif %}
+                                            {% endfor %}
                                         </ul>
                                     {% endif %}
                                 </div>

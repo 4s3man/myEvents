@@ -1,19 +1,39 @@
-.event_marker{
+.day-not_empty{
   position: relative;
- }
-.event_marker:hover {
-  .event_title {
-    display: block;
-    position: absolute;
+  ul, li{
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
   }
 }
-.event_title:hover {
-  .event_details{
-    display: block;
-    position: absolute;
+.day-not_empty{
+
+}
+.day-events{
+  background-color: #00aa88;
+  border: $textColor 1px solid;
+  position: absolute;
+  z-index: 20;
+  bottom:5px;
+  right: -10px;
+}
+.day-events_details{
+  background-color: #0b2e13;
+  border: 1px solid $textColor;
+  z-index: 21;
+}
+
+.day-not_empty:hover {
+  .day-events {
+    display: inline-block;
   }
 }
-.event_details, .event_title{
+.day-events li:hover{
+  .day-events_details{
+    display: inline-block;
+  }
+}
+.day-events_details, .day-events{
   display: none;
 }
 .basic-calendar{

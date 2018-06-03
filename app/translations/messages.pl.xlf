@@ -144,9 +144,25 @@
                 <source>week_name.sun</source>
                 <target>nie</target>
             </trans-unit>
+    <!-- EVENTS-->
+                <trans-unit id="calendar.event_start_time">
+                    <source>calendar.event_start_time</source>
+                    <target>start time</target>
+                </trans-unit>
+                <trans-unit id="calendar.event_end_time">
+                    <source>calendar.event_end_time</source>
+                    <target>end time</target>
+                </trans-unit>
+                <trans-unit id="calendar.event_cost">
+                    <source>calendar.event_cost</source>
+                    <target>cost</target>
+                </trans-unit>
+                <trans-unit id="calendar.seats_left">
+                    <source>calendar.seats_left</source>
+                    <target>tickets left</target>
+                </trans-unit>
+    <!-- EVENTS-->
 <!-- CALENDAR_END -->
-
-
         </body>
     </file>
 </xliff>
