@@ -28,7 +28,8 @@
         "doctrine/dbal": "^2.5",
         "pagerfanta/pagerfanta": "^2.0",
         "plummer/calendarful": "^0.2.1",
-        "azuyalabs/yasumi": "^1.8"
+        "azuyalabs/yasumi": "^1.8",
+        "krzysztof-gzocha/searcher": "~4.0"
     },
     "autoload": {
         "psr-0": { "": "src/" }

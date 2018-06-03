@@ -13,9 +13,21 @@ use DataManager\EventDataManager;
 use DataManager\SessionMessagesDataManager;
 use Form\CalendarType;
 use Form\EventType;
+use KGzocha\Searcher\Context\Doctrine\QueryBuilderSearchingContext;
+use KGzocha\Searcher\Criteria\Collection\CriteriaCollection;
+use KGzocha\Searcher\CriteriaBuilder\Collection\CriteriaBuilderCollection;
+use KGzocha\Searcher\Searcher;
+use KGzocha\Searcher\WrappedResultsSearcher;
 use Repositiory\CalendarRepository;
 use Repositiory\EventRepository;
 use Repositiory\UserRepository;
+use Search\Adapter\SearchingContextDoctrineDBALAdapter;
+use Search\Criteria\TitleCriteria;
+use Search\Criteria\TypeCriteria;
+use Search\CriteriaBuilder\TitleCriteriaBuilder;
+use Search\CriteriaBuilder\TypeCriteriaBuilder;
+use Search\DataManager\EventSearchDataManager;
+use Search\SearcherForPagerfanta;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -152,12 +164,19 @@ class CalendarController implements ControllerProviderInterface
     public function eventIndexAction(Application $app, $calendarId, $page)
     {
         $eventRepository = new EventRepository($app['db']);
+        $eventSearchDataManager = new EventSearchDataManager($eventRepository);
+        //TODO posprzątać i zrobić formularz, pospinać formularz z data manager
+        //porobić tak żeby criteria były spoko
+
+        $query = $eventSearchDataManager->search();
+
         $paginator = new MyPaginatorShort(
-            $eventRepository->queryAll(),
+            $query,
             '3',
             'e.id',
             $page
         );
+
 
         return $app['twig']->render(
             'calendar/eventIndex.html.twig',

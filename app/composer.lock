@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2cde22812c1454bcbd158e69a941ea88",
+    "content-hash": "f3ad3c26afb69257a026a0a2309d803d",
     "packages": [
         {
             "name": "azuyalabs/yasumi",
@@ -528,6 +528,68 @@
                 "parser"
             ],
             "time": "2014-09-09T13:34:57+00:00"
+        },
+        {
+            "name": "krzysztof-gzocha/searcher",
+            "version": "4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/krzysztof-gzocha/searcher.git",
+                "reference": "0e0537e58dbec0d8738b346f219c508401b84eea"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/krzysztof-gzocha/searcher/zipball/0e0537e58dbec0d8738b346f219c508401b84eea",
+                "reference": "0e0537e58dbec0d8738b346f219c508401b84eea",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "doctrine/mongodb-odm": "^1.0.0",
+                "doctrine/orm": "^2.5.0",
+                "phpdocumentor/reflection-docblock": "2.0.4",
+                "phpmd/phpmd": "^2.4.3",
+                "phpunit/phpunit": "^4.8",
+                "ruflin/elastica": ">=2.1.0",
+                "symfony/finder": "^2.0.5"
+            },
+            "suggest": {
+                "doctrine/mongodb-odm": "to use with Doctrine's ODM",
+                "doctrine/orm": "to use with Doctrine's ORM",
+                "ruflin/elastica": "to use with ruflin/elastica",
+                "symfony/finder": "to use with Symfony Finder component"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "KGzocha\\Searcher\\": "src/KGzocha/Searcher"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Krzysztof Gzocha"
+                }
+            ],
+            "description": "Searcher is a framework-agnostic search query builder. Search queries are written using Criterias and can be run against MySQL, MongoDB, ElasticSearch or even files.",
+            "homepage": "http://searcher.rtfd.io",
+            "keywords": [
+                "Searcher",
+                "agnostic",
+                "builder",
+                "criteria",
+                "doctrine",
+                "elastic",
+                "mongo",
+                "query",
+                "search"
+            ],
+            "time": "2016-09-23T07:34:02+00:00"
         },
         {
             "name": "monolog/monolog",

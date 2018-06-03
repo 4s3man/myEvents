@@ -9,6 +9,7 @@
 namespace Repositiory;
 
 use Doctrine\DBAL\Connection;
+use KGzocha\Searcher\Context\SearchingContextInterface;
 use Plummer\Calendarful\Event\EventInterface;
 use Plummer\Calendarful\Event\EventRegistryInterface;
 
@@ -22,6 +23,8 @@ class EventRepository implements EventRegistryInterface
      */
     private $db = null;
 
+    private $searchingQb = null;
+
     /**
      * CalendarRepository constructor.
      *
@@ -30,6 +33,7 @@ class EventRepository implements EventRegistryInterface
     public function __construct(Connection $db)
     {
         $this->db = $db;
+        $this->searchingQb = $db->createQueryBuilder();
     }
 
     /**
@@ -85,7 +89,7 @@ class EventRepository implements EventRegistryInterface
     {
         $innerQb = $this->db->createQueryBuilder();
         $qb = $this->queryAll()
-            ->where($innerQb->expr()->isNull('type'))
+            ->where('type != non_recurrent')
             ->andwhere('DATEDIFF(start, :toDate) <=0')
             ->andWhere('DATEDIFF(end, :fromDate) >=0')
             ->setParameter(':toDate', $filters['toDate'], \PDO::PARAM_STR)

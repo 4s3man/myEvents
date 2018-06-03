@@ -127,7 +127,7 @@ class EventType extends AbstractType
             [
                 'label' => 'lebel.event_type',
                 'choices' => [
-                    'label.recurrent_null' => null,
+                    'label.recurrent_null' => 'non_recurrent',
                     'label.recurrent_daily' => 'daily',
                     'label.recurrent_weekly' => 'weekly',
                     'label.recurrent_monthly' => 'monthly',
