@@ -8,52 +8,123 @@
 namespace Search\DataManager;
 
 use KGzocha\Searcher\Criteria\Collection\CriteriaCollection;
+use KGzocha\Searcher\Criteria\CriteriaInterface;
 use KGzocha\Searcher\CriteriaBuilder\Collection\CriteriaBuilderCollection;
+use KGzocha\Searcher\CriteriaBuilder\CriteriaBuilderInterface;
+use KGzocha\Searcher\Searcher;
 use Repositiory\EventRepository;
 use Search\Adapter\SearchingContextDoctrineDBALAdapter;
-use Search\Criteria\TitleCriteria;
-use Search\Criteria\TypeCriteria;
-use Search\CriteriaBuilder\TitleCriteriaBuilder;
-use Search\CriteriaBuilder\TypeCriteriaBuilder;
-use Search\SearcherForPagerfanta;
 
+/**
+ * Class EventSearchDataManager
+ */
 class EventSearchDataManager
 {
+    /**
+     * @var Searcher|null
+     */
     protected $searcher = null;
 
+    /**
+     * @var CriteriaCollection|null
+     */
     protected $criteriaCollection = null;
 
     /**
-     * EventSearchDataManager constructor.
+     * @var CriteriaBuilderCollection|null
      */
-    public function __construct(EventRepository $eventRepository)
+    protected $builderCollection = null;
+
+    /**
+     * @var null|SearchingContextDoctrineDBALAdapter
+     */
+    protected $context = null;
+
+    /**
+     * EventSearchDataManager constructor.
+     * @param array           $builders
+     * @param array           $criterias
+     * @param EventRepository $eventRepository
+     */
+    public function __construct(array $builders, array $criterias, EventRepository $eventRepository)
     {
+        $this->criteriaCollection = new CriteriaCollection();
+        $this->builderCollection = new CriteriaBuilderCollection();
+        $this->context = new SearchingContextDoctrineDBALAdapter($eventRepository->queryAll());
 
-        $searchBuilder = new CriteriaBuilderCollection();
-        $searchBuilder->addCriteriaBuilder(new TitleCriteriaBuilder());
-        $searchBuilder->addCriteriaBuilder(new TypeCriteriaBuilder());
+        $this->addCriteriaBuilders($builders);
 
-        $criteria = new CriteriaCollection();
+        $this->addCriterias($criterias);
 
-        $eventTypeCriteria = new TypeCriteria();
-        $eventTypeCriteria->setType('weekly');
+        $searcher = new Searcher($this->builderCollection, $this->context);
 
-        $titleCriteria = new TitleCriteria();
-        $titleCriteria->setTitle('m');
-
-        $criteria->addCriteria($eventTypeCriteria);
-        $criteria->addCriteria($titleCriteria);
-
-        $context = new SearchingContextDoctrineDBALAdapter($eventRepository->queryAll());
-        $searcher = new SearcherForPagerfanta($searchBuilder, $context);
-
-        $this->criteriaCollection = $criteria;
         $this->searcher = $searcher;
     }
 
+    /**
+     * Search in given context
+     *
+     * @return mixed
+     */
     public function search()
     {
         return $this->searcher->search($this->criteriaCollection);
     }
 
+    /**
+     * @param array $builderCollection
+     */
+    protected function addCriteriaBuilders(array $builderCollection)
+    {
+        if (!$this->elementsHaveInstance($builderCollection, CriteriaBuilderInterface::class)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Every array element of 1st argument of class %s construct should implements %s',
+                    __CLASS__,
+                    CriteriaBuilderInterface::class
+                )
+            );
+        }
+
+        foreach ($builderCollection as $builder) {
+            $this->builderCollection->addCriteriaBuilder($builder);
+        }
+    }
+
+    /**
+     * @param array $criterias
+     */
+    protected function addCriterias(array $criterias)
+    {
+        if (!$this->elementsHaveInstance($criterias, CriteriaInterface::class)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Every array element of 1st argument of class %s construct should implements %s',
+                    __CLASS__,
+                    CriteriaInterface::class
+                )
+            );
+        }
+
+        foreach ($criterias as $criteria) {
+            $this->criteriaCollection->addCriteria($criteria);
+        }
+    }
+
+    /**
+     * @param array  $array    to search in
+     * @param string $instance to check
+     *
+     * @return bool
+     */
+    protected function elementsHaveInstance(array $array, string $instance)
+    {
+        foreach ($array as $element) {
+            if (!$element instanceof $instance) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

@@ -13,21 +13,15 @@ use DataManager\EventDataManager;
 use DataManager\SessionMessagesDataManager;
 use Form\CalendarType;
 use Form\EventType;
-use KGzocha\Searcher\Context\Doctrine\QueryBuilderSearchingContext;
-use KGzocha\Searcher\Criteria\Collection\CriteriaCollection;
-use KGzocha\Searcher\CriteriaBuilder\Collection\CriteriaBuilderCollection;
-use KGzocha\Searcher\Searcher;
-use KGzocha\Searcher\WrappedResultsSearcher;
+use Form\Search\SearchType;
 use Repositiory\CalendarRepository;
 use Repositiory\EventRepository;
 use Repositiory\UserRepository;
-use Search\Adapter\SearchingContextDoctrineDBALAdapter;
 use Search\Criteria\TitleCriteria;
 use Search\Criteria\TypeCriteria;
 use Search\CriteriaBuilder\TitleCriteriaBuilder;
 use Search\CriteriaBuilder\TypeCriteriaBuilder;
 use Search\DataManager\EventSearchDataManager;
-use Search\SearcherForPagerfanta;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,24 +44,37 @@ class CalendarController implements ControllerProviderInterface
     {
         $controller = $app['controllers_factory'];
         $controller->get('/{calendarId}/{date}', [$this, 'calendarShowAction'])
+            ->assert('calendarId', '[1-9]\d*')
             ->assert('date', '[1-3]{1}[0-9]{3}-(0[1-9]|1[0-2])')
             ->bind('calendarShow');
         $controller->match('/{calendarId}/addEvent', [$this, 'eventAddAction'])
             ->method('POST|GET')
+            ->assert('calendarId', '[1-9]\d*')
             ->bind('eventAdd');
-        $controller->get('/{calendarId}/event/page/{page}', [$this, 'eventIndexAction'])
+        $controller->match('/{calendarId}/event/index/page/{page}', [$this, 'eventIndexAction'])
+            ->method('POST|GET')
+            ->assert('page', '[1-9]\d*')
+            ->assert('calendarId', '[1-9]\d*')
             ->bind('eventIndex');
         $controller->get('/{calendarId}/event/{eventId}', [$this, 'eventPageAction'])
+            ->assert('calendarId', '[1-9]\d*')
+            ->assert('eventId', '[1-9]\d*')
             ->bind('eventShow');
         $controller->get('/{calendarId}/event/{eventId}/edit', [$this, 'eventEditAction'])
+            ->assert('calendarId', '[1-9]\d*')
+            ->assert('eventId', '[1-9]\d*')
             ->bind('eventEdit');
         $controller->get('/{calendarId}/event/{eventId}/edit', [$this, 'eventDeleteAction'])
+            ->assert('calendarId', '[1-9]\d*')
+            ->assert('eventId', '[1-9]\d*')
             ->bind('eventDelete');
         $controller->match('{calendarId}/index/page/{page}', [$this, 'calendarIndexAction'])
             ->method('POST|GET')
             ->assert('calendarId', '[1-9]\d*')
+            ->assert('page', '[1-9]\d*')
             ->bind('userIndex');
         $controller->get('{calendarId}/add', [$this, 'userAddAction'])
+            ->assert('calendarId', '[1-9]\d*')
             ->bind('userAdd');
         $controller->match('/{calendarId}/edit', [$this, 'editCalendarAction'])
             ->method('POST|GET')
@@ -93,6 +100,8 @@ class CalendarController implements ControllerProviderInterface
         $eventRepository = new EventRepository($app['db']);
         $calendarDataManager = new CalendarDataManager($eventRepository, $date);
         $calendar = $calendarDataManager->makeCalendarMonthPage();
+
+        dump($calendar);
 
         return $app['twig']->render(
             'calendar/calendar.html.twig',
@@ -159,16 +168,38 @@ class CalendarController implements ControllerProviderInterface
      * @param int         $calendarId
      * @param int         $page
      *
+     * @param Request     $request
+     *
      * @return mixed
      */
-    public function eventIndexAction(Application $app, $calendarId, $page)
+    public function eventIndexAction(Application $app, $calendarId, $page, Request $request)
     {
         $eventRepository = new EventRepository($app['db']);
-        $eventSearchDataManager = new EventSearchDataManager($eventRepository);
-        //TODO posprzątać i zrobić formularz, pospinać formularz z data manager
-        //porobić tak żeby criteria były spoko
+        //TODO zrobić tak samo wyszukiwanie dla kalaendarzy
+        $query = $eventRepository->queryAll();
 
-        $query = $eventSearchDataManager->search();
+        $search = [];
+        $form = $app['form.factory']
+            ->createBuilder(SearchType::class, $search)
+            ->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $eventSearchDataManager = new EventSearchDataManager(
+                [
+                   new TitleCriteriaBuilder(),
+                   new TypeCriteriaBuilder(),
+                ],
+                [
+                    new TitleCriteria($data['title']),
+                    new TypeCriteria($data['type']),
+                ],
+                $eventRepository
+            );
+
+            $query = $eventSearchDataManager->search();
+        }
 
         $paginator = new MyPaginatorShort(
             $query,
@@ -177,13 +208,13 @@ class CalendarController implements ControllerProviderInterface
             $page
         );
 
-
         return $app['twig']->render(
             'calendar/eventIndex.html.twig',
             [
                 'pagerfanta' => $paginator->pagerfanta,
                 'routeName' => 'eventIndex',
                 'calendarId' => $calendarId,
+                'form' => $form->createView(),
             ]
         );
     }
@@ -304,9 +335,8 @@ class CalendarController implements ControllerProviderInterface
 
         $form->handleRequest($request);
 
-        $calendar = $form->getData();
-
         if ($form->isSubmitted() and $form->isValid()) {
+            $calendar = $form->getData();
             $calendarRepository->save($calendar);
             $sessionMessages->changed();
 

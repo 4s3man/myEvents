@@ -25,7 +25,7 @@ class PopularAssertGroups
      *
      * @return array
      */
-    public function textAsserts($groups = ['register_default'])
+    public function textAsserts(array $groups = [])
     {
         return [
             new Assert\NotBlank(
@@ -38,7 +38,7 @@ class PopularAssertGroups
                     'groups' => $groups,
                     'pattern' => '/^[\s\p{L}0-9]+$/u',
                 ]
-            ),
+            ),-
             new Assert\Length(
                 [
                     'groups' => $groups,
@@ -57,7 +57,7 @@ class PopularAssertGroups
      *
      * @return array
      */
-    public function usernameAsserts($groups = ['register_default'])
+    public function usernameAsserts(array $groups = [])
     {
         return [
             new Assert\NotBlank(
@@ -65,6 +65,24 @@ class PopularAssertGroups
                     'groups' => $groups,
                 ]
             ),
+            new Assert\Regex(
+                [
+                    'groups' => $groups,
+                    'pattern' => '/^[\s\p{L}0-9]+(?:[_-][\s\p{L}0-9]+)*$/u',
+                ]
+            ),
+            new Assert\Length(
+                [
+                    'groups' => $groups,
+                    'max' => 45,
+                ]
+            ),
+        ];
+    }
+
+    public function notObligatoryUsernameAsserts(array $groups = [])
+    {
+        return [
             new Assert\Regex(
                 [
                     'groups' => $groups,

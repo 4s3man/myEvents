@@ -9,27 +9,41 @@ namespace Search\Criteria;
 
 use KGzocha\Searcher\Criteria\CriteriaInterface;
 
+/**
+ * Class TypeCriteria
+ */
 class TypeCriteria implements CriteriaInterface
 {
+    /**
+     * @var string
+     */
     private $type;
 
-    private $allowedTypes = ['daily', 'weekly', 'monthly', 'non_recurrent'];
-
-    public function shouldBeApplied()
-    {
-        return true;
-    }
+    /**
+     * @var array
+     */
+    private $allowedTypes = ['all', 'daily', 'weekly', 'monthly', 'non_recurrent', 'recurrent'];
 
     /**
-     * @param mixed $type
+     * TypeCriteria constructor.
+     *
+     * @param string $type
      */
-    public function setType($type)
+    public function __construct(string $type)
     {
         if (!in_array($type, $this->allowedTypes)) {
-            throw new \InvalidArgumentException(sprintf('Type needs to be one of "%s"', implode('","',$this->allowedTypes)));
+            throw new \InvalidArgumentException(sprintf('Type needs to be one of "%s"', implode('","', $this->allowedTypes)));
         }
 
         $this->type = $type;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldBeApplied()
+    {
+        return 'all' !== $this->type;
     }
 
     /**

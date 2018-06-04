@@ -26,6 +26,7 @@ class RecurrentEvent extends Event implements RecurrentEventInterface
 
     /**
      * RecurrentEvent constructor.
+     *
      * @param array $rawEvent
      */
     public function __construct(array $rawEvent)

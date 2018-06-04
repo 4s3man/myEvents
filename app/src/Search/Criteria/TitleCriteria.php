@@ -9,21 +9,32 @@ namespace Search\Criteria;
 
 use KGzocha\Searcher\Criteria\CriteriaInterface;
 
+/**
+ * Class TitleCriteria
+ */
 class TitleCriteria implements CriteriaInterface
 {
-    private $title;
+    /**
+     * @var null
+     */
+    private $title = null;
 
-    public function shouldBeApplied()
+    /**
+     * TitleCriteria constructor.
+     *
+     * @param null $title
+     */
+    public function __construct($title)
     {
-        return null !== $this->title;
+        $this->title = $title;
     }
 
     /**
-     * @param mixed $type
+     * @return bool
      */
-    public function setTitle($title)
+    public function shouldBeApplied()
     {
-        $this->title = $title;
+        return null !== $this->title;
     }
 
     /**

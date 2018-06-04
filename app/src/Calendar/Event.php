@@ -49,7 +49,6 @@ class Event implements EventInterface
      * Event constructor.
      *
      * @param array $rawEvent
-     *
      */
     public function __construct(array $rawEvent)
     {

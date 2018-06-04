@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpCSValidationInspection */
+
 /**
  * Created by PhpStorm.
  * User: kuba

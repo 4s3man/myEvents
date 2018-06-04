@@ -8,32 +8,49 @@
 
 namespace Search\Adapter;
 
-
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use KGzocha\Searcher\Context\AbstractSearchingContext;
 use KGzocha\Searcher\Context\SearchingContextInterface;
 
+/**
+ * Class SearchingContextDoctrineDBALAdapter
+ *
+ * Adapts DoctrineDbal witch SearchingContextInterface
+ * and since getResults returns queryBuilder with pagerfanta
+ *
+ */
 class SearchingContextDoctrineDBALAdapter implements SearchingContextInterface
 {
+    /**
+     * @var QueryBuilder
+     */
     private $qb;
 
     /**
      * SearchingContextDoctrineDBALAdapter constructor.
-     * @param $db
+     * @param QueryBuilder $qb
      */
     public function __construct(QueryBuilder $qb)
     {
         $this->qb = $qb;
     }
 
+    /**
+     * Used in CriteriaBuilder
+     *
+     * @return QueryBuilder|mixed
+     */
     public function getQueryBuilder()
     {
         return $this->qb;
     }
 
+    /**
+     * Returning queryBuilder becouse Pagerfanta Paginator needs it
+     *
+     * @return QueryBuilder|mixed
+     */
     public function getResults()
     {
-        return $this->getQueryBuilder()->execute()->fetchAll();
+        return $this->getQueryBuilder();
     }
 }

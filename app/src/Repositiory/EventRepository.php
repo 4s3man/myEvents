@@ -23,8 +23,6 @@ class EventRepository implements EventRegistryInterface
      */
     private $db = null;
 
-    private $searchingQb = null;
-
     /**
      * CalendarRepository constructor.
      *
@@ -89,7 +87,7 @@ class EventRepository implements EventRegistryInterface
     {
         $innerQb = $this->db->createQueryBuilder();
         $qb = $this->queryAll()
-            ->where('type != non_recurrent')
+            ->where('type = "non_recurrent"')
             ->andwhere('DATEDIFF(start, :toDate) <=0')
             ->andWhere('DATEDIFF(end, :fromDate) >=0')
             ->setParameter(':toDate', $filters['toDate'], \PDO::PARAM_STR)
@@ -111,7 +109,7 @@ class EventRepository implements EventRegistryInterface
     {
         $innerQb = $this->db->createQueryBuilder();
         $qb = $this->queryAll()
-            ->where($innerQb->expr()->isNotNull('type'))
+            ->where('type != "non_recurrent"')
             ->andwhere('DATEDIFF(until, :fromDate) >=0 OR until IS NULL')
             ->setParameter(':fromDate', $filters['fromDate'], \PDO::PARAM_STR);
 

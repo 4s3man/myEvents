@@ -8,16 +8,34 @@
 
 namespace Calendar;
 
+/**
+ * Class CalendarPage
+ */
 class CalendarPage
 {
+    /**
+     * @var array
+     */
     protected $days = [];
 
+    /**
+     * @var null|string
+     */
     protected $year = null;
 
+    /**
+     * @var mixed|null
+     */
     protected $monthName = null;
 
+    /**
+     * @var null|string
+     */
     protected $daysWeekNum = null;
 
+    /**
+     * @var array
+     */
     protected $monthNames = [
         'month_name.jan',
         'month_name.fab',
@@ -33,6 +51,9 @@ class CalendarPage
         'month_name.dec',
         ];
 
+    /**
+     * @var array
+     */
     protected $weekNames = [
         'week_name.mon',
         'week_name.tus',
@@ -40,9 +61,14 @@ class CalendarPage
         'week_name.thu',
         'week_name.fri',
         'week_name.sat',
-        'week_name.sun'
+        'week_name.sun',
     ];
 
+    /**
+     * CalendarPage constructor.
+     * @param array     $days
+     * @param \DateTime $firstDayOfMonth
+     */
     public function __construct(array $days, \DateTime $firstDayOfMonth)
     {
         $this->days = $days;

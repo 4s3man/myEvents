@@ -13,22 +13,37 @@ use KGzocha\Searcher\CriteriaBuilder\CriteriaBuilderInterface;
 use Search\Adapter\SearchingContextDoctrineDBALAdapter;
 use Search\Criteria\TitleCriteria;
 
+/**
+ * Class TitleCriteriaBuilder
+ */
 class TitleCriteriaBuilder implements CriteriaBuilderInterface
 {
-    public function buildCriteria(
-        CriteriaInterface $criteria,
-        SearchingContextInterface $searchingContext)
+    /**
+     * @param CriteriaInterface         $criteria
+     * @param SearchingContextInterface $searchingContext
+     */
+    public function buildCriteria(CriteriaInterface $criteria, SearchingContextInterface $searchingContext)
     {
             $searchingContext->getQueryBuilder()
                 ->andWhere($searchingContext->getQueryBuilder()->expr()->like('e.title', ':title'))
                 ->setParameter(':title', $criteria->getTitle().'%');
     }
 
+    /**
+     * @param CriteriaInterface $criteria
+     *
+     * @return bool
+     */
     public function allowsCriteria(CriteriaInterface $criteria)
     {
         return $criteria instanceof TitleCriteria;
     }
 
+    /**
+     * @param SearchingContextInterface $searchingContext
+     *
+     * @return bool
+     */
     public function supportsSearchingContext(SearchingContextInterface $searchingContext)
     {
         return $searchingContext instanceof SearchingContextDoctrineDBALAdapter;

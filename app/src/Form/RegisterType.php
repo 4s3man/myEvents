@@ -26,6 +26,7 @@ use Validator\Constraints as CustomAsssert;
  */
 class RegisterType extends AbstractType
 {
+    //TODO przetestować asserty
     /**
      * Asserts helper
      *
@@ -79,7 +80,7 @@ class RegisterType extends AbstractType
                 'label' => 'label.first_name',
                 'required' => true,
                 'attr' => [],
-                'constraints' => $this->popularAsserts->textAsserts(),
+                'constraints' => $this->popularAsserts->textAsserts([ 'register_default' ]),
             ]
         );
         $builder->add(
@@ -89,7 +90,7 @@ class RegisterType extends AbstractType
                 'label' => 'label.last_name',
                 'required' => true,
                 'attr' => [],
-                'constraints' => $this->popularAsserts->textAsserts(),
+                'constraints' => $this->popularAsserts->textAsserts([ 'register_default' ]),
             ]
         );
         $builder->add(
@@ -126,7 +127,7 @@ class RegisterType extends AbstractType
                 'label' => 'label.login',
                 'required' => true,
                 'constraints' => array_merge(
-                    $this->popularAsserts->usernameAsserts(),
+                    $this->popularAsserts->usernameAsserts(['register_default']),
                     [
                         new CustomAsssert\Uniqueness(
                             [

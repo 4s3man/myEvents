@@ -45,6 +45,8 @@ class EventType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        //TODO dodać ograniczenia co miesięczny event nie może trwać więcej niż miesiąc
+        //codzienny więcej niż dzień, coroczny więcej niż rok
         $builder->add(
             'title',
             TextType::class,

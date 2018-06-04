@@ -8,6 +8,7 @@
         <div class="btn btn-light">
             <a href="{{ url('eventAdd', {'calendarId':calendarId} ) }}">{{ 'link.event_add'|trans }}</a>
         </div>
+        {% include 'form/searchForm.html.twig' %}
     {% endblock %}
 
     {% block paginatorData %}
