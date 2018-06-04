@@ -13,7 +13,7 @@ use Doctrine\DBAL\Connection;
 /**
  * Class CalendarRepository
  */
-class MediaRepository
+class MediaRepository extends AbstractRepository
 {
     /**
      * @var Connection|null Database to use

@@ -16,7 +16,7 @@ use Plummer\Calendarful\Event\EventRegistryInterface;
 /**
  * Class CalendarRepository
  */
-class EventRepository implements EventRegistryInterface
+class EventRepository extends AbstractRepository implements EventRegistryInterface
 {
     /**
      * @var Connection|null Database to use

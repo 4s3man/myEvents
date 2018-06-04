@@ -19,13 +19,27 @@ use Search\Criteria\TitleCriteria;
 class TitleCriteriaBuilder implements CriteriaBuilderInterface
 {
     /**
+     * @var null
+     */
+    protected $alias = null;
+
+    /**
+     * TitleCriteriaBuilder constructor.
+     * @param null $alias
+     */
+    public function __construct($alias)
+    {
+        $this->alias = $alias;
+    }
+
+    /**
      * @param CriteriaInterface         $criteria
      * @param SearchingContextInterface $searchingContext
      */
     public function buildCriteria(CriteriaInterface $criteria, SearchingContextInterface $searchingContext)
     {
             $searchingContext->getQueryBuilder()
-                ->andWhere($searchingContext->getQueryBuilder()->expr()->like('e.title', ':title'))
+                ->andWhere($searchingContext->getQueryBuilder()->expr()->like('c.title', ':title'))
                 ->setParameter(':title', $criteria->getTitle().'%');
     }
 

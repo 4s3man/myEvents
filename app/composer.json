@@ -29,7 +29,7 @@
         "pagerfanta/pagerfanta": "^2.0",
         "plummer/calendarful": "^0.2.1",
         "azuyalabs/yasumi": "^1.8",
-        "krzysztof-gzocha/searcher": "~4.0"
+        "krzysztof-gzocha/searcher": "~3.4.1"
     },
     "autoload": {
         "psr-0": { "": "src/" }

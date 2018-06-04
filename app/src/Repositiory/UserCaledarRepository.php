@@ -16,7 +16,7 @@ use Utils\MyPaginatorShort;
 /**
  * Class UserCaledarRepository
  */
-class UserCaledarRepository
+class UserCaledarRepository extends AbstractRepository
 {
     /**
      * @var Connection|null Database to use
@@ -105,9 +105,14 @@ class UserCaledarRepository
      */
     public function userCalendarJoinQuery()
     {
+        //TODO jak to rozwiązać?
+        //Searcher don't work witch leftJoin :(
+        // na razie wrócić do poprzedniego
+        //może do kalendarza nie będzie potrzebne
         $qb = $this->db->createQueryBuilder();
-        $qb->select('uC.id', 'uC.user_id', 'uC.calendar_id', 'uC.user_role', 'c.title', 'c.description')
-            ->from('user_calendar', 'uC')->join('uC', 'calendar', 'c', 'uC.calendar_id = c.id');
+        $qb = $qb->select('uC.calendar_id', 'c.title', 'c.description')
+        ->from('user_calendar', 'uC')
+        ->innerJoin('uC', 'calendar', 'c', 'uC.calendar_id = c.id');
 
         return $qb;
     }

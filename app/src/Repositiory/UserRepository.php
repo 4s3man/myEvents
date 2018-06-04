@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 /**
  * Class UserRepository
  */
-class UserRepository
+class UserRepository extends AbstractRepository
 {
     /**
      * @var \Doctrine\DBAL\Connection $db

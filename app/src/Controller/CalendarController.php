@@ -13,6 +13,7 @@ use DataManager\EventDataManager;
 use DataManager\SessionMessagesDataManager;
 use Form\CalendarType;
 use Form\EventType;
+use Form\Search\EventSearchType;
 use Form\Search\SearchType;
 use Repositiory\CalendarRepository;
 use Repositiory\EventRepository;
@@ -175,12 +176,13 @@ class CalendarController implements ControllerProviderInterface
     public function eventIndexAction(Application $app, $calendarId, $page, Request $request)
     {
         $eventRepository = new EventRepository($app['db']);
-        //TODO zrobić tak samo wyszukiwanie dla kalaendarzy
+        //TODO OSTATNIE zrobić tak samo wyszukiwanie dla kalaendarzy
+        //ostlować search form
+        //robić w końcu wgląd tych eventów czy edit i delete eventów najpierw?
         $query = $eventRepository->queryAll();
 
-        $search = [];
         $form = $app['form.factory']
-            ->createBuilder(SearchType::class, $search)
+            ->createBuilder(EventSearchType::class)
             ->getForm();
         $form->handleRequest($request);
 
@@ -188,14 +190,14 @@ class CalendarController implements ControllerProviderInterface
             $data = $form->getData();
             $eventSearchDataManager = new EventSearchDataManager(
                 [
-                   new TitleCriteriaBuilder(),
-                   new TypeCriteriaBuilder(),
+                   new TitleCriteriaBuilder('e'),
+                   new TypeCriteriaBuilder('e'),
                 ],
                 [
                     new TitleCriteria($data['title']),
                     new TypeCriteria($data['type']),
                 ],
-                $eventRepository
+                $eventRepository->queryAll()
             );
 
             $query = $eventSearchDataManager->search();

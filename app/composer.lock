@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3ad3c26afb69257a026a0a2309d803d",
+    "content-hash": "c50a713589c2b329a80934c75456e399",
     "packages": [
         {
             "name": "azuyalabs/yasumi",
@@ -531,16 +531,16 @@
         },
         {
             "name": "krzysztof-gzocha/searcher",
-            "version": "4.0.0",
+            "version": "3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krzysztof-gzocha/searcher.git",
-                "reference": "0e0537e58dbec0d8738b346f219c508401b84eea"
+                "reference": "e0a0a2b0cd702af387f0a81c61289def5447644c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krzysztof-gzocha/searcher/zipball/0e0537e58dbec0d8738b346f219c508401b84eea",
-                "reference": "0e0537e58dbec0d8738b346f219c508401b84eea",
+                "url": "https://api.github.com/repos/krzysztof-gzocha/searcher/zipball/e0a0a2b0cd702af387f0a81c61289def5447644c",
+                "reference": "e0a0a2b0cd702af387f0a81c61289def5447644c",
                 "shasum": ""
             },
             "require": {
@@ -552,7 +552,7 @@
                 "phpdocumentor/reflection-docblock": "2.0.4",
                 "phpmd/phpmd": "^2.4.3",
                 "phpunit/phpunit": "^4.8",
-                "ruflin/elastica": ">=2.1.0",
+                "ruflin/elastica": ">=2.0.0",
                 "symfony/finder": "^2.0.5"
             },
             "suggest": {
@@ -576,20 +576,9 @@
                     "name": "Krzysztof Gzocha"
                 }
             ],
-            "description": "Searcher is a framework-agnostic search query builder. Search queries are written using Criterias and can be run against MySQL, MongoDB, ElasticSearch or even files.",
+            "description": "Searcher is a framework-agnostic search query builder. Search queries are written using Criterias and can be run against MySQL, MongoDB or even files.",
             "homepage": "http://searcher.rtfd.io",
-            "keywords": [
-                "Searcher",
-                "agnostic",
-                "builder",
-                "criteria",
-                "doctrine",
-                "elastic",
-                "mongo",
-                "query",
-                "search"
-            ],
-            "time": "2016-09-23T07:34:02+00:00"
+            "time": "2017-04-10T09:33:18+00:00"
         },
         {
             "name": "monolog/monolog",

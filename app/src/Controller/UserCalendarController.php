@@ -8,10 +8,15 @@
 
 namespace Controller;
 
+use DataManager\EventDataManager;
 use DataManager\SessionMessagesDataManager;
 use Form\CalendarType;
+use Form\Search\SearchType;
 use Repositiory\CalendarRepository;
 use Repositiory\UserCaledarRepository;
+use Search\Criteria\TitleCriteria;
+use Search\CriteriaBuilder\TitleCriteriaBuilder;
+use Search\DataManager\EventSearchDataManager;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -34,7 +39,10 @@ class UserCalendarController implements ControllerProviderInterface
         $controller = $app['controllers_factory'];
 
         //TODO change for get token from logged user || set in firewall
-        $controller->get('/{userId}/index/page/{page}', [$this, 'userCalendarIndexAction'])
+        $controller->match('/{userId}/index/page/{page}', [$this, 'userCalendarIndexAction'])
+            ->method('POST|GET')
+            ->assert('userId', '[1-9]\d*')
+            ->assert('page', '[1-9]\d*')
             ->bind('userCalendarIndex');
         $controller->match('/{userId}/add', [$this, 'addCalendarAction'])
             ->method('POST|GET')
@@ -55,11 +63,35 @@ class UserCalendarController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function userCalendarIndexAction(Application $app, $userId, $page)
+    public function userCalendarIndexAction(Application $app, $userId, $page, Request $request)
     {
-        $calendarRepository = new UserCaledarRepository($app['db']);
+        $userCalendarRepository = new UserCaledarRepository($app['db']);
+        $query = $userCalendarRepository->userCalendarJoinQuery();
+
+        $form = $app['form.factory']
+            ->createBuilder(SearchType::class)
+            ->getForm();
+        $form->handleRequest($request);
+
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $data = $form->getData();
+//            $eventSearchDataManager = new EventSearchDataManager(
+//                [
+//                    new TitleCriteriaBuilder('c'),
+//                ],
+//                [
+//                    new TitleCriteria($data['title']),
+//                ],
+//                $userCalendarRepository->queryAll()
+//            );
+//
+//        dump($query);
+        //TODO left join nie działa D:
+//        $query = $eventSearchDataManager->search();
+//        }
+
         $paginator = new MyPaginatorShort(
-            $calendarRepository->userCalendarJoinQuery(),
+            $query,
             3,
             'c.id',
             $page
@@ -68,6 +100,7 @@ class UserCalendarController implements ControllerProviderInterface
         return $app['twig']->render(
             'userCalendar/index.html.twig',
             [
+                'form' => $form->createView(),
                 'pagerfanta' => $paginator->pagerfanta,
                 'routeName' => 'userCalendarIndex',
                 'userId' => $userId,

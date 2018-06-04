@@ -7,11 +7,13 @@
  */
 namespace Search\DataManager;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use KGzocha\Searcher\Criteria\Collection\CriteriaCollection;
 use KGzocha\Searcher\Criteria\CriteriaInterface;
 use KGzocha\Searcher\CriteriaBuilder\Collection\CriteriaBuilderCollection;
 use KGzocha\Searcher\CriteriaBuilder\CriteriaBuilderInterface;
 use KGzocha\Searcher\Searcher;
+use Repositiory\AbstractRepository;
 use Repositiory\EventRepository;
 use Search\Adapter\SearchingContextDoctrineDBALAdapter;
 
@@ -46,11 +48,11 @@ class EventSearchDataManager
      * @param array           $criterias
      * @param EventRepository $eventRepository
      */
-    public function __construct(array $builders, array $criterias, EventRepository $eventRepository)
+    public function __construct(array $builders, array $criterias, QueryBuilder $qb)
     {
         $this->criteriaCollection = new CriteriaCollection();
         $this->builderCollection = new CriteriaBuilderCollection();
-        $this->context = new SearchingContextDoctrineDBALAdapter($eventRepository->queryAll());
+        $this->context = new SearchingContextDoctrineDBALAdapter($qb);
 
         $this->addCriteriaBuilders($builders);
 

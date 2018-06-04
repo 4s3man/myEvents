@@ -18,6 +18,17 @@ use Search\Criteria\TypeCriteria;
  */
 class TypeCriteriaBuilder implements CriteriaBuilderInterface
 {
+    protected $alias = null;
+
+    /**
+     * TypeCriteriaBuilder constructor.
+     * @param string $alias
+     */
+    public function __construct(string $alias)
+    {
+        $this->alias = $alias;
+    }
+
     /**
      * @param CriteriaInterface         $criteria
      *

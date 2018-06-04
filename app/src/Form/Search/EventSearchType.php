@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class SearchType
  */
-class SearchType extends AbstractType
+class EventSearchType extends SearchType
 {
     /**
      * @var PopularAssertGroups|null
@@ -41,13 +41,33 @@ class SearchType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         //TODO wywalić error kiedy wartość jest pusta
+        parent::buildForm($builder, $options);
+
         $builder->add(
-            'title',
-            TextType::class,
+            'type',
+            ChoiceType::class,
             [
-                'label' => 'search',
-                'required' => false,
-                'constraints' => $this->popularAsserts->notObligatoryUsernameAsserts(['search_default']),
+                'choices' => [
+                  'all' => 'all',
+                  'normal' => 'non_recurrent',
+                  'recurrent' => 'recurrent',
+                  'daily recurrent' => 'daily',
+                   'weekly recurrent' => 'weekly',
+                   'monthly recurrent' => 'monthly',
+                ],
+                'constraints' => [
+                    new Assert\Choice(
+                        [
+                            'choices' => [
+                                'non_recurrent',
+                                'recurrent',
+                                'daily',
+                                'weekly',
+                                'monthly',
+                            ],
+                        ]
+                    ),
+                ],
             ]
         );
     }
