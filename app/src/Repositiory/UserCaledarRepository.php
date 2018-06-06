@@ -11,18 +11,12 @@ namespace Repositiory;
 use DataManager\UserCalendarDataManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
-use Utils\MyPaginatorShort;
 
 /**
  * Class UserCaledarRepository
  */
 class UserCaledarRepository extends AbstractRepository
 {
-    /**
-     * @var Connection|null Database to use
-     */
-    protected $db = null;
-
     /**
      * @var CalendarRepository|null
      */
@@ -35,7 +29,7 @@ class UserCaledarRepository extends AbstractRepository
      */
     public function __construct(Connection $db)
     {
-        $this->db = $db;
+        parent::__construct($db);
         $this->calendarRepository = new CalendarRepository($db);
     }
 
@@ -60,7 +54,7 @@ class UserCaledarRepository extends AbstractRepository
      * @throws DBALException
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function save(array $calendar,int $userId)
+    public function save(array $calendar, int $userId)
     {
         $this->db->beginTransaction();
 
@@ -101,14 +95,14 @@ class UserCaledarRepository extends AbstractRepository
     /**
      * Returns query for join user_calendar and calendar data
      *
+     * @param int $userId
+     *
      * @return \Doctrine\DBAL\Query\QueryBuilder
      */
     public function userCalendarJoinQuery(int $userId)
     {
         //TODO jak to rozwiązać?
         //Searcher don't work witch leftJoin :(
-        // na razie wrócić do poprzedniego
-        //może do kalendarza nie będzie potrzebne
         $qb = $this->db->createQueryBuilder();
         $qb = $qb->select('uC.calendar_id', 'c.title', 'c.description')
             ->from('user_calendars', 'uC')

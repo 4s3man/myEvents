@@ -126,12 +126,11 @@ class CalendarController implements ControllerProviderInterface
      */
     public function eventAddAction(Application $app, $calendarId, Request $request)
     {
-        //TODO tu robię
         $eventRepository = new EventRepository($app['db']);
         $tagRepository = new TagRepository($app['db']);
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
 
-        $event = ['title' => 'dwa', 'start' => '2018-01-01 00:00:00'];
+        $event = [];
         $form = $app['form.factory']->CreateBuilder(
             EventType::class,
             $event,
@@ -244,7 +243,7 @@ class CalendarController implements ControllerProviderInterface
      */
     public function eventShowAction(Application $app, $calendarId, $eventId)
     {
-        //TODO wygląd eventu, checkbox zapisów, zapisy
+        //TODO wygląd eventu, zapisy
         $eventRepository = new EventRepository($app['db']);
         $eventDataManager = new EventDataManager(
             $eventRepository->getEventById($eventId)

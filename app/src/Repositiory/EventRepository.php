@@ -32,7 +32,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      */
     public function __construct(Connection $db)
     {
-        $this->db = $db;
+        parent::__construct($db);
         $this->tagRepository = new TagRepository($db);
     }
 
@@ -42,7 +42,8 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      * @return \Doctrine\DBAL\Query\QueryBuilder
      */
     public function queryAll()
-    { //TODO zrobić żeby query zaciągał eventy tylko z tego kalendarza!!
+    {
+        //TODO zrobić żeby query zaciągał eventy tylko z tego kalendarza!!
         $query = $this->db->createQueryBuilder();
 
         return $query->select(
@@ -123,7 +124,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
             ->setParameter(':fromDate', $filters['fromDate'], \PDO::PARAM_STR);
         $result = $qb->execute()->fetchAll();
 
-        return $result;
+        return isset($result) ? $result : [];
     }
 
     /**

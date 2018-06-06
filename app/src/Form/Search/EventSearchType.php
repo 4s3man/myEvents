@@ -18,16 +18,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class EventSearchType extends SearchType
 {
     /**
-     * @var PopularAssertGroups|null
-     */
-    protected $popularAsserts = null;
-
-    /**
      * SearchType constructor.
      */
     public function __construct()
     {
-        $this->popularAsserts = new PopularAssertGroups();
+        parent::__construct();
     }
 
     /**

@@ -175,7 +175,7 @@ class UserCalendarController implements ControllerProviderInterface
 
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]), 301);
         }
-        //TODO czy nie trzeba tutaj dodać walidacji formularza? assert w kontrolerze nie załatwia sprawy formularza !
+        //TODO czy nie trzeba tutaj dodać walidacji formularza?
         $form = $app['form.factory']->createBuilder(FormType::class, $calendar)->add('id', HiddenType::class)->getForm();
         $form->handleRequest($request);
 

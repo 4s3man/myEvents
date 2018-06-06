@@ -26,7 +26,6 @@ use Validator\Constraints as CustomAsssert;
  */
 class RegisterType extends AbstractType
 {
-    //TODO przetestować asserty
     /**
      * Asserts helper
      *
