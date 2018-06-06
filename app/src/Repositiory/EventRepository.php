@@ -42,7 +42,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      * @return \Doctrine\DBAL\Query\QueryBuilder
      */
     public function queryAll()
-    {
+    { //TODO zrobić żeby query zaciągał eventy tylko z tego kalendarza!!
         $query = $this->db->createQueryBuilder();
 
         return $query->select(
