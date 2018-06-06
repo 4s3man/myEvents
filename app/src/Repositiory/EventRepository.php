@@ -9,7 +9,7 @@
 namespace Repositiory;
 
 use Doctrine\DBAL\Connection;
-use KGzocha\Searcher\Context\SearchingContextInterface;
+use Doctrine\DBAL\DBALException;
 use Plummer\Calendarful\Event\EventInterface;
 use Plummer\Calendarful\Event\EventRegistryInterface;
 
@@ -21,7 +21,9 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     /**
      * @var Connection|null Database to use
      */
-    private $db = null;
+    protected $db = null;
+
+    protected $tagRepository = null;
 
     /**
      * CalendarRepository constructor.
@@ -31,7 +33,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     public function __construct(Connection $db)
     {
         $this->db = $db;
-        $this->searchingQb = $db->createQueryBuilder();
+        $this->tagRepository = new TagRepository($db);
     }
 
     /**
@@ -51,12 +53,23 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
             'e.end',
             'e.seats',
             'e.cost',
-            'e.calendar_id',
-            'e.until',
-            'e.type',
-            'e.parent_id',
-            'e.occurence'
+            'e.calendar_id'
         )->from('event', 'e');
+    }
+
+    /**
+     * Get record by Id
+     *
+     * @param int $eventId
+     *
+     * @return mixed
+     */
+    public function getEventById(int $eventId)
+    {
+        $qb = $this->queryAll()->where('e.id = :eventId')
+            ->setParameter(':eventId', $eventId, \PDO::PARAM_INT);
+
+        return $qb->execute()->fetch();
     }
 
     /**
@@ -68,11 +81,28 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      */
     public function save($event)
     {
-        if (isset($event['id']) && ctype_digit((string) $event['id'])) {
-            //TODO event update
-        }
+        $this->db->beginTransaction();
 
-        return $this->db->insert('event', $event);
+        try {
+            $tagsIds = isset($event['tags']) ? array_column($event['tags'], 'id') : [];
+            unset($event['tags']);
+
+            if (isset($event['id']) && ctype_digit((string) $event['id'])) {
+                $id = $event['id'];
+                unset($event['id']);
+                $this->removeLinkedTags($id);
+                $this->addLinkedTags($id, $tagsIds);
+                $this->db->update('event', $event, ['id' => $id]);
+            } else {
+                $this->db->insert('event', $event);
+                $lastEventId = $this->db->lastInsertId();
+                $this->addLinkedTags($lastEventId, $tagsIds);
+            }
+            $this->db->commit();
+        } catch (DBALException $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -87,14 +117,36 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     {
         $innerQb = $this->db->createQueryBuilder();
         $qb = $this->queryAll()
-            ->where('type = "non_recurrent"')
-            ->andwhere('DATEDIFF(start, :toDate) <=0')
+            ->where('DATEDIFF(start, :toDate) <=0')
             ->andWhere('DATEDIFF(end, :fromDate) >=0')
             ->setParameter(':toDate', $filters['toDate'], \PDO::PARAM_STR)
             ->setParameter(':fromDate', $filters['fromDate'], \PDO::PARAM_STR);
         $result = $qb->execute()->fetchAll();
 
         return $result;
+    }
+
+    /**
+     * Add event tags to event_tags table
+     *
+     * @param int   $eventId
+     * @param mixed $tagIds
+     */
+    public function addLinkedTags(int $eventId, $tagIds)
+    {
+        if (!is_array($tagIds)) {
+            $tagIds = [$tagIds];
+        }
+
+        foreach ($tagIds as $tagId) {
+            $this->db->insert(
+                'event_tags',
+                [
+                    'event_id' => $eventId,
+                    'tags_id' => $tagId,
+                ]
+            );
+        }
     }
 
     /**
@@ -107,14 +159,26 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      */
     public function getRecurrentEvents(array $filters = array())
     {
-        $innerQb = $this->db->createQueryBuilder();
-        $qb = $this->queryAll()
-            ->where('type != "non_recurrent"')
-            ->andwhere('DATEDIFF(until, :fromDate) >=0 OR until IS NULL')
-            ->setParameter(':fromDate', $filters['fromDate'], \PDO::PARAM_STR);
+        //        $innerQb = $this->db->createQueryBuilder();
+        //        $qb = $this->queryAll()
+        //            ->where('type != "non_recurrent"')
+        //            ->andwhere('DATEDIFF(until, :fromDate) >=0 OR until IS NULL')
+        //            ->setParameter(':fromDate', $filters['fromDate'], \PDO::PARAM_STR);
+        //
+        //        $result = $qb->execute()->fetchAll();
+        //
+        //        return $result;
+    }
 
-        $result = $qb->execute()->fetchAll();
-
-        return $result;
+    /**
+     * @param int $eventId
+     *
+     * @return int result
+     *
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     */
+    protected function removeLinkedTags(int $eventId)
+    {
+        return $this->db->delete('event_tags', ['event_id' => $eventId]);
     }
 }

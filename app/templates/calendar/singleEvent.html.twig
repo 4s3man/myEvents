@@ -1,6 +1,39 @@
 {% extends 'layout.html.twig' %}
+{% set event = eventDataManager.getEvent() %}
+{% set signUp = eventDataManager.getSignUp() %}
 {% block title %}
+    {{ event.title }}
 {% endblock %}
 {% block content %}
-    pojedyńczy event
+    <article class="container event-container">
+        <h2 class="text-center">{{ event.title }}</h2>
+        <section class="event-details">
+            {% if event.start is defined %}
+                <span>
+                    {{ 'calendar.event_start_time'|trans }}{{ event.start }}
+                </span>
+            {% endif %}
+            {% if event.end is not null%}
+                <span>
+                        {{ 'calendar.event_end_time'|trans }}{{ event.end }}
+                </span>
+            {% endif %}
+            {% if event.cost is not null %}
+                <span>
+                    {{ 'calendar.event_cost'|trans }}:{{ event.cost }}
+                </span>
+            {% endif %}
+            {% if event.seats is not null %}
+                <span>
+                    {{ 'calendar.seats_left'|trans }}:{{ event.seats }}
+                </span>
+            {% endif %}
+        </section>
+        <section class="event-content">
+            {{ event.content }}
+        </section>
+        <section class="event-singUp">
+
+        </section>
+    </article>
 {% endblock %}

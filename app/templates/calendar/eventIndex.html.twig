@@ -1,5 +1,9 @@
 {% extends 'default/_baseIndex.html.twig' %}
-
+{#TODO dodać default dotego co jest start end i type,
+  TODO jeśli event ma parentId to niech parentId wyświetla się w linku zamiast id eventu z dzieckiem
+  jeśli w jakimś dniu jest event z parentId usuń event z tym parentId jako id
+  i zostaw sam event z parentId
+#}
     {% block indexTitle %}
         {{ 'title.user_calendar_index'|trans }}
     {% endblock %}

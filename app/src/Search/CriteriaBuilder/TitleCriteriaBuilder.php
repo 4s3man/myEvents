@@ -21,10 +21,11 @@ class TitleCriteriaBuilder implements CriteriaBuilderInterface
     /**
      * @var null
      */
-    protected $alias = null;
+    public $alias = null;
 
     /**
      * TitleCriteriaBuilder constructor.
+     *
      * @param null $alias
      */
     public function __construct($alias)
@@ -39,7 +40,7 @@ class TitleCriteriaBuilder implements CriteriaBuilderInterface
     public function buildCriteria(CriteriaInterface $criteria, SearchingContextInterface $searchingContext)
     {
             $searchingContext->getQueryBuilder()
-                ->andWhere($searchingContext->getQueryBuilder()->expr()->like('c.title', ':title'))
+                ->andWhere($searchingContext->getQueryBuilder()->expr()->like($this->alias.'.title', ':title'))
                 ->setParameter(':title', $criteria->getTitle().'%');
     }
 

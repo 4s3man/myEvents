@@ -16,7 +16,6 @@ use KGzocha\Searcher\Context\SearchingContextInterface;
  *
  * Adapts DoctrineDbal witch SearchingContextInterface
  * and since getResults returns queryBuilder with pagerfanta
- *
  */
 class SearchingContextDoctrineDBALAdapter implements SearchingContextInterface
 {
@@ -27,6 +26,7 @@ class SearchingContextDoctrineDBALAdapter implements SearchingContextInterface
 
     /**
      * SearchingContextDoctrineDBALAdapter constructor.
+     *
      * @param QueryBuilder $qb
      */
     public function __construct(QueryBuilder $qb)

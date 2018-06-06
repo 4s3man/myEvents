@@ -10,6 +10,7 @@ namespace Form;
 
 use Form\Helpers\PopularAssertGroups;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -45,15 +46,16 @@ class EventType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //TODO dodać ograniczenia co miesięczny event nie może trwać więcej niż miesiąc
-        //codzienny więcej niż dzień, coroczny więcej niż rok
+        //TODO dodać ograniczenia event ma się kończyć po tym jak się rozpocznie
+        //dodać media
+        //dodać tagi
         $builder->add(
             'title',
             TextType::class,
             [
                 'label' => 'label.event_title',
                 'required' => true,
-                'constraints' => $this->popularAsserts->usernameAsserts(['event_default']),
+                'constraints' => $this->popularAsserts->title(['event_default']),
             ]
         );
 
@@ -66,7 +68,7 @@ class EventType extends AbstractType
                     new Assert\Regex(
                         [
                           'groups' => 'event_default',
-                          'pattern' => '/^[^\-\"\'].*[^-\"\']$/',
+                          'pattern' => $this->popularAsserts->getContentRegexp(),
                             ]
                     ),
                     new Assert\Length(
@@ -111,51 +113,12 @@ class EventType extends AbstractType
                 'constraints' => [
                     new Assert\DateTime(
                         [
-                            'groups' => 'event_default',
+                            'groups' => ['event_default'],
                         ]
                     ),
                     new Assert\NotBlank(
                         [
-                            'groups' => 'event_default',
-                        ]
-                    ),
-                ],
-            ]
-        );
-
-        $builder->add(
-            'type',
-            ChoiceType::class,
-            [
-                'label' => 'lebel.event_type',
-                'choices' => [
-                    'label.recurrent_null' => 'non_recurrent',
-                    'label.recurrent_daily' => 'daily',
-                    'label.recurrent_weekly' => 'weekly',
-                    'label.recurrent_monthly' => 'monthly',
-                ],
-                'constraints' => [
-                    new Assert\Choice(
-                        [
-                          'daily',
-                          'weekly',
-                          'monthly',
-                        ]
-                    ),
-                ],
-            ]
-        );
-
-        $builder->add(
-            'until',
-            DateTimeType::class,
-            [
-                'label' => 'label.event_until',
-                'input' => 'string',
-                'constraints' => [
-                    new Assert\DateTime(
-                        [
-                            'groups' => 'event_default',
+                            'groups' => ['event_default'],
                         ]
                     ),
                 ],
@@ -169,10 +132,10 @@ class EventType extends AbstractType
                 'label' => 'label.events_cost',
                 'required' => false,
                 'constraints' => [
-                    new Assert\Regex(
+                    new Assert\Type(
                         [
-                            'groups' => 'event_default',
-                            'pattern' => '/[1-9]{1}[0-9]*/',
+                            'groups' => ['event_default'],
+                            'type' => 'integer',
                         ]
                     ),
                 ],
@@ -186,17 +149,40 @@ class EventType extends AbstractType
                 'label' => 'label.events_seats',
                 'required' => false,
                 'constraints' => [
-                    new Assert\Regex(
+                    new Assert\Type(
                         [
-                            'groups' => 'event_default',
-                            'pattern' => '/[1-9]{1}[0-9]*/',
+                            'groups' => ['event_default'],
+                            'type' => 'integer',
                         ]
                     ),
                 ],
             ]
         );
 
-        //TODO PYTANIE jak najlepiej zrobić żeby end date nie mógł być ustawiony przed start_date
+        $builder->add(
+            'signUp',
+            CheckboxType::class,
+            [
+              'label' => 'label.sign_up',
+              'required' => false,
+            ]
+        );
+
+        $builder->add(
+            'tags',
+            TextType::class,
+            [
+              'label' => 'label.tags',
+              'required' => false,
+              'attr' => [
+                  'length' => 128,
+              ],
+            ]
+        );
+
+        $builder->get('tags')->addModelTransformer(
+            new TagDataTransformer($options['tag_repository'])
+        );
     }
 
     /**
@@ -209,6 +195,8 @@ class EventType extends AbstractType
         $resolver->setDefaults(
             [
                 'validation_groups' => 'event_default',
+                'event_repository' => null,
+                'tag_repository' => null,
             ]
         );
     }

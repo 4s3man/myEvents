@@ -20,30 +20,6 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 class UserRepository extends AbstractRepository
 {
     /**
-     * @var \Doctrine\DBAL\Connection $db
-     */
-    protected $db;
-
-    /**
-     * @var null|\Repositiory\CalendarRepository
-     */
-    protected $calendarRepository = null;
-
-    protected $mediaRepository = null;
-
-    /**
-     * userRepository constructor.
-     *
-     * @param \Doctrine\DBAL\Connection $db
-     */
-    public function __construct(Connection $db)
-    {
-        $this->db = $db;
-        $this->calendarRepository = new CalendarRepository($db);
-        $this->mediaRepository = new MediaRepository($db);
-    }
-
-    /**
      * Prepare first query part
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder

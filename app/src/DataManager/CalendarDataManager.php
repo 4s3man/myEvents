@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpCSValidationInspection */
+<?php /**
+       * @noinspection PhpCSValidationInspection 
+       */
 
 /**
  * Created by PhpStorm.
@@ -13,7 +15,6 @@ use Calendar\AdapterCalendarDataManagerCalendarfulCalendar;
 use Calendar\CalendarPage;
 use Calendar\Day;
 use Calendar\Event;
-use Calendar\RecurrentEvent;
 use Plummer\Calendarful\Calendar\Calendar;
 use Plummer\Calendarful\Recurrence\RecurrenceFactory;
 use Repositiory\EventRepository;
@@ -58,39 +59,37 @@ class CalendarDataManager
 
     protected $holidays = null;
 
+    protected $eventRepository = null;
+
     /**
      * CalendarDataManager constructor.
      *
      * @param EventRepository $eventRepository
      * @param string          $date
      */
-    public function __construct(EventRepository $eventRepository, $date)
+    public function __construct(EventRepository $eventRepository, $date = null)
     {
-        $this->date = new \DateTime($date);
+            $this->date = new \DateTime($date);
 
-        $this->daysInMonth = cal_days_in_month(
-            CAL_GREGORIAN,
-            $this->date->format('m'),
-            $this->date->format('Y')
-        );
+            $this->daysInMonth = cal_days_in_month(
+                CAL_GREGORIAN,
+                $this->date->format('m'),
+                $this->date->format('Y')
+            );
 
-        $this->range = $this->setRange();
+            $this->range = $this->setRange();
 
-        //TODO jak translacja na polski
-        $this->holidays = Yasumi::create('Poland', $this->date->format('Y'));
+            //TODO jak translacja na polski
+            $this->holidays = Yasumi::create('Poland', $this->date->format('Y'));
 
-        $eventsRaw = $eventRepository
-            ->getEvents($this->formatDateArray($this->range, 'Y-m-d'));
-        $this->events = $this->makeEventsFromRawData($eventsRaw, Event::class);
+            $eventsRaw = $eventRepository
+                ->getEvents($this->formatDateArray($this->range, 'Y-m-d'));
+            $this->events = $this->makeEventsFromRawData($eventsRaw, Event::class);
 
-        $recurrentEventsRaw = $eventRepository
-            ->getRecurrentEvents($this->formatDateArray($this->range, 'Y-m-d'));
-        $this->recurrentEvents = $this->makeEventsFromRawData($recurrentEventsRaw, RecurrentEvent::class);
-
-        $this->eventsList = $this->makeEventsList(
-            $this->range['fromDate'],
-            $this->range['toDate']
-        );
+            $this->eventsList = $this->makeEventsList(
+                $this->range['fromDate'],
+                $this->range['toDate']
+            );
     }
 
     /**
@@ -103,7 +102,7 @@ class CalendarDataManager
      */
     public function makeEventsList(\DateTime $fromDate, \DateTime $toDate)
     {
-        $adapter = new AdapterCalendarDataManagerCalendarfulCalendar($this->events, $this->recurrentEvents);
+        $adapter = new AdapterCalendarDataManagerCalendarfulCalendar($this->events);
         $calendar = new Calendar($this->makeRecurrenceFactory());
         $calendar->populate($adapter, $fromDate, $toDate);
 
@@ -141,7 +140,7 @@ class CalendarDataManager
         $days = [];
         $date = clone $this->range['fromDate'];
         for ($i = 1; $i <= $this->daysInMonth; $i++) {
-            $date = new \DateTime($date->format('Y-m-').(string) $i);
+            $date = new \DateTime($date->format('Y-m-').(string) $i.' 23:59:59');
             $events = $this->getEventsForDate($date);
             $holidays = $this->getHolidaysForDate($date);
             $day = new Day($date, $events, $holidays);

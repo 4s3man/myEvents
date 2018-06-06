@@ -80,7 +80,7 @@ class RegisterType extends AbstractType
                 'label' => 'label.first_name',
                 'required' => true,
                 'attr' => [],
-                'constraints' => $this->popularAsserts->textAsserts([ 'register_default' ]),
+                'constraints' => $this->popularAsserts->name([ 'register_default' ]),
             ]
         );
         $builder->add(
@@ -90,7 +90,7 @@ class RegisterType extends AbstractType
                 'label' => 'label.last_name',
                 'required' => true,
                 'attr' => [],
-                'constraints' => $this->popularAsserts->textAsserts([ 'register_default' ]),
+                'constraints' => $this->popularAsserts->name([ 'register_default' ]),
             ]
         );
         $builder->add(
@@ -127,7 +127,7 @@ class RegisterType extends AbstractType
                 'label' => 'label.login',
                 'required' => true,
                 'constraints' => array_merge(
-                    $this->popularAsserts->usernameAsserts(['register_default']),
+                    $this->popularAsserts->slug(['register_default']),
                     [
                         new CustomAsssert\Uniqueness(
                             [

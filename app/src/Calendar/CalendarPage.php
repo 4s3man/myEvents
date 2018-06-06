@@ -66,6 +66,7 @@ class CalendarPage
 
     /**
      * CalendarPage constructor.
+     *
      * @param array     $days
      * @param \DateTime $firstDayOfMonth
      */

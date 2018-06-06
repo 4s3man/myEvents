@@ -10,6 +10,7 @@ namespace Controller;
 
 use DataManager\EventDataManager;
 use DataManager\SessionMessagesDataManager;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Form\CalendarType;
 use Form\Search\SearchType;
 use Repositiory\CalendarRepository;
@@ -60,35 +61,38 @@ class UserCalendarController implements ControllerProviderInterface
      * @param Application $app
      * @param Int         $userId
      * @param Int         $page
+     * @param Request     $request
      *
      * @return mixed
      */
     public function userCalendarIndexAction(Application $app, $userId, $page, Request $request)
     {
         $userCalendarRepository = new UserCaledarRepository($app['db']);
-        $query = $userCalendarRepository->userCalendarJoinQuery();
+        $query = $userCalendarRepository->userCalendarJoinQuery($userId);
+        //        $res = $query->where($query->expr()->isNotNull('typ'))
+
 
         $form = $app['form.factory']
             ->createBuilder(SearchType::class)
             ->getForm();
         $form->handleRequest($request);
 
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $data = $form->getData();
-//            $eventSearchDataManager = new EventSearchDataManager(
-//                [
-//                    new TitleCriteriaBuilder('c'),
-//                ],
-//                [
-//                    new TitleCriteria($data['title']),
-//                ],
-//                $userCalendarRepository->queryAll()
-//            );
-//
-//        dump($query);
+        //        if ($form->isSubmitted() && $form->isValid()) {
+        //            $data = $form->getData();
+        //            $eventSearchDataManager = new EventSearchDataManager(
+        //                [
+        //                    new TitleCriteriaBuilder('c'),
+        //                ],
+        //                [
+        //                    new TitleCriteria($data['title']),
+        //                ],
+        //                $userCalendarRepository->queryAll()
+        //            );
+        //
+        //        dump($query);
         //TODO left join nie działa D:
-//        $query = $eventSearchDataManager->search();
-//        }
+        //        $query = $eventSearchDataManager->search();
+        //        }
 
         $paginator = new MyPaginatorShort(
             $query,

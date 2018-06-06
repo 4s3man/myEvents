@@ -16,21 +16,6 @@ use Doctrine\DBAL\Connection;
 class MediaRepository extends AbstractRepository
 {
     /**
-     * @var Connection|null Database to use
-     */
-    private $db = null;
-
-    /**
-     * CalendarRepository constructor.
-     *
-     * @param Connection $db
-     */
-    public function __construct(Connection $db)
-    {
-        $this->db = $db;
-    }
-
-    /**
      * Query all from calendar
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder

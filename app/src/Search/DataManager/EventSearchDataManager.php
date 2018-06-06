@@ -13,8 +13,6 @@ use KGzocha\Searcher\Criteria\CriteriaInterface;
 use KGzocha\Searcher\CriteriaBuilder\Collection\CriteriaBuilderCollection;
 use KGzocha\Searcher\CriteriaBuilder\CriteriaBuilderInterface;
 use KGzocha\Searcher\Searcher;
-use Repositiory\AbstractRepository;
-use Repositiory\EventRepository;
 use Search\Adapter\SearchingContextDoctrineDBALAdapter;
 
 /**
@@ -44,9 +42,10 @@ class EventSearchDataManager
 
     /**
      * EventSearchDataManager constructor.
-     * @param array           $builders
-     * @param array           $criterias
-     * @param EventRepository $eventRepository
+     *
+     * @param array        $builders
+     * @param array        $criterias
+     * @param QueryBuilder $qb
      */
     public function __construct(array $builders, array $criterias, QueryBuilder $qb)
     {

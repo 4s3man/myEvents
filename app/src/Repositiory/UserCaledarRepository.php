@@ -21,7 +21,7 @@ class UserCaledarRepository extends AbstractRepository
     /**
      * @var Connection|null Database to use
      */
-    private $db = null;
+    protected $db = null;
 
     /**
      * @var CalendarRepository|null
@@ -48,7 +48,7 @@ class UserCaledarRepository extends AbstractRepository
     {
         return $this->db->createQueryBuilder()
             ->select('uC.id', 'uC.user_id', 'uC.calendar_id', 'uC.user_role')
-            ->from('user_calendar', 'uC');
+            ->from('user_calendars', 'uC');
     }
 
     /**
@@ -60,7 +60,7 @@ class UserCaledarRepository extends AbstractRepository
      * @throws DBALException
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function save($calendar, $userId)
+    public function save(array $calendar,int $userId)
     {
         $this->db->beginTransaction();
 
@@ -69,7 +69,7 @@ class UserCaledarRepository extends AbstractRepository
             $calendar['calendar_id'] = $this->db->lastInsertId();
             $userCalendarManager = new UserCalendarDataManager($calendar, $userId);
             $userCalendarManager->setAdmin();
-            $this->db->insert('user_calendar', $userCalendarManager->getUserCalendarData());
+            $this->db->insert('user_calendars', $userCalendarManager->getUserCalendarData());
             $this->db->commit();
         } catch (DBALException $e) {
             $this->db->rollBack();
@@ -89,7 +89,7 @@ class UserCaledarRepository extends AbstractRepository
     {
         $this->db->beginTransaction();
         try {
-            $this->db->delete('user_calendar', ['calendar_id' => $calendar['id']]);
+            $this->db->delete('user_calendars', ['calendar_id' => $calendar['id']]);
             $this->calendarRepository->deleteFoundById($calendar['id']);
             $this->db->commit();
         } catch (DBALException $e) {
@@ -103,7 +103,7 @@ class UserCaledarRepository extends AbstractRepository
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder
      */
-    public function userCalendarJoinQuery()
+    public function userCalendarJoinQuery(int $userId)
     {
         //TODO jak to rozwiązać?
         //Searcher don't work witch leftJoin :(
@@ -111,8 +111,10 @@ class UserCaledarRepository extends AbstractRepository
         //może do kalendarza nie będzie potrzebne
         $qb = $this->db->createQueryBuilder();
         $qb = $qb->select('uC.calendar_id', 'c.title', 'c.description')
-        ->from('user_calendar', 'uC')
-        ->innerJoin('uC', 'calendar', 'c', 'uC.calendar_id = c.id');
+            ->from('user_calendars', 'uC')
+            ->innerJoin('uC', 'calendar', 'c', 'uC.calendar_id = c.id')
+            ->where('uC.user_id = :userId')
+            ->setParameter(':userId', $userId, \PDO::PARAM_STR);
 
         return $qb;
     }

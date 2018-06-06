@@ -40,14 +40,13 @@ class SearchType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //TODO wywalić error kiedy wartość jest pusta
         $builder->add(
             'title',
             TextType::class,
             [
                 'label' => 'search',
                 'required' => false,
-                'constraints' => $this->popularAsserts->notObligatoryUsernameAsserts(['search_default']),
+                'constraints' => $this->popularAsserts->slugOptional(['search_default']),
             ]
         );
     }

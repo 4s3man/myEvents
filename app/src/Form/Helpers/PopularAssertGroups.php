@@ -17,109 +17,112 @@ use Symfony\Component\Validator\Constraints as Assert;
 class PopularAssertGroups
 {
     /**
-     * Asserty spięte do jednej tablicy może potem
-     * możnaby je wyrzucić do osobnego obiektu jakby już ich
-     * było sporo powtarzających się
-     *
-     * @param array $groups validation groups
-     *
-     * @return array
+     * @var string
      */
-    public function textAsserts(array $groups = [])
-    {
-        return [
-            new Assert\NotBlank(
-                [
-                    'groups' => $groups,
-                ]
-            ),
-            new Assert\Regex(
-                [
-                    'groups' => $groups,
-                    'pattern' => '/^[\s\p{L}0-9]+$/u',
-                ]
-            ),-
-            new Assert\Length(
-                [
-                    'groups' => $groups,
-                    'max' => 45,
-                ]
-            ),
-        ];
-    }
+    private $slugRegexp = '/^[\s\p{L}0-9]+(?:[_-][\s\p{L}0-9]+)*$/u';
 
     /**
-     * Asserty spięte do jednej tablicy może potem
-     * możnaby je wyrzucić do osobnego obiektu jakby już ich
-     * było sporo powtarzających się
-     *
-     * @param array $groups validation_groups
-     *
-     * @return array
+     * @var string
      */
-    public function usernameAsserts(array $groups = [])
-    {
-        return [
-            new Assert\NotBlank(
-                [
-                    'groups' => $groups,
-                ]
-            ),
-            new Assert\Regex(
-                [
-                    'groups' => $groups,
-                    'pattern' => '/^[\s\p{L}0-9]+(?:[_-][\s\p{L}0-9]+)*$/u',
-                ]
-            ),
-            new Assert\Length(
-                [
-                    'groups' => $groups,
-                    'max' => 45,
-                ]
-            ),
-        ];
-    }
-
-    public function notObligatoryUsernameAsserts(array $groups = [])
-    {
-        return [
-            new Assert\Regex(
-                [
-                    'groups' => $groups,
-                    'pattern' => '/^[\s\p{L}0-9]+(?:[_-][\s\p{L}0-9]+)*$/u',
-                ]
-            ),
-            new Assert\Length(
-                [
-                    'groups' => $groups,
-                    'max' => 45,
-                ]
-            ),
-        ];
-    }
+    private $contentRegexp = '/^[^\-\"\'][^\"\';]*[^-\"\']$/';
 
     /**
-     * Checks long text input in made conditions
-     *
+     * @var string
+     */
+    private $name = '/^[\p{L}]+(-[\p{L}])*$/u';
+
+    /**
      * @param array $groups
      *
      * @return array
      */
-    public function longTextAsserts(array $groups)
+    public function slug(array $groups = [])
+    {
+        $slug = $this->slugOptional($groups);
+        $slug[] = new Assert\NotBlank(['groups' => $groups]);
+
+        return $slug;
+    }
+
+    /**
+     * @param array $groups
+     *
+     * @return array
+     */
+    public function slugOptional(array $groups = [])
     {
         return [
             new Assert\Regex(
                 [
                     'groups' => $groups,
-                    'pattern' => '/^[\s\p{L}0-9]+(?:[_-][\s\p{L}0-9]+)*$/u',
+                    'pattern' => $this->slugRegexp,
                 ]
             ),
             new Assert\Length(
                 [
                     'groups' => $groups,
-                    'max' => 250,
+                    'max' => 45,
                 ]
             ),
         ];
+    }
+
+    /**
+     * @param array $groups
+     *
+     * @return array
+     */
+    public function name(array $groups = [])
+    {
+        return [
+            new Assert\NotBlank(
+                [
+                    'groups' => $groups,
+                ]
+            ),
+            new Assert\Regex(
+                [
+                    'groups' => $groups,
+                    'pattern' => $this->name,
+                ]
+            ),
+            new Assert\Length(
+                [
+                    'groups' => $groups,
+                    'max' => 45,
+                ]
+            ),
+        ];
+    }
+
+    /**
+     * @param array $groups
+     *
+     * @return array
+     */
+    public function title(array $groups = [])
+    {
+        return [
+            new Assert\Regex(
+                [
+                    'groups' => $groups,
+                    'pattern' => $this->contentRegexp,
+                ]
+            ),
+            new Assert\Length(
+                [
+                    'groups' => $groups,
+                    'max' => 128,
+                ]
+            ),
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentRegexp()
+    {
+        return $this->contentRegexp;
     }
 }

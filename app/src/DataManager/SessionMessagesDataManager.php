@@ -83,7 +83,7 @@ class SessionMessagesDataManager
      *
      * @param string $action message name part
      */
-    private function success($action)
+    private function success(string $action)
     {
         $this->session->getFlashBag()->add(
             'messages',
@@ -99,7 +99,7 @@ class SessionMessagesDataManager
      *
      * @param string $action message name part
      */
-    private function error($action)
+    private function error(string $action)
     {
         $this->session->getFlashBag()->add(
             'messages',

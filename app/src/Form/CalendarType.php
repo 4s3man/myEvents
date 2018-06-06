@@ -48,7 +48,7 @@ class CalendarType extends AbstractType
             [
                 'label' => 'label.calendar_title',
                 'required' => true,
-                'constraints' => $this->popularAsserts->usernameAsserts('calendar_default'),
+                'constraints' => $this->popularAsserts->title(['calendar_default']),
             ]
         );
         $builder->add(
@@ -57,7 +57,20 @@ class CalendarType extends AbstractType
             [
                 'label' => 'label.calendar_description',
                 'required' => false,
-                'constraints' => $this->popularAsserts->longTextAsserts(['calendar_default']),
+                'constraints' => [
+                    new Assert\Regex(
+                        [
+                            'groups' => 'calendar_default',
+                            'pattern' => $this->popularAsserts->getContentRegexp(),
+                        ]
+                    ),
+                    new Assert\Length(
+                        [
+                            'groups' => 'calendar_default',
+                            'max' => 250,
+                        ]
+                    ),
+                ],
             ]
         );
     }

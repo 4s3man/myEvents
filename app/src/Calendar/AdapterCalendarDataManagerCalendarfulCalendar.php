@@ -31,10 +31,10 @@ class AdapterCalendarDataManagerCalendarfulCalendar implements EventRegistryInte
      * @param array $events          elements instance of Event
      * @param array $reccurentEvents elements instance of recurrentEvent
      */
-    public function __construct($events, $reccurentEvents)
+    public function __construct($events, $reccurentEvents = null)
     {
         $this->events = $events;
-        $this->recurentEvents = $reccurentEvents;
+        //        $this->recurentEvents = $reccurentEvents;
     }
 
     /**

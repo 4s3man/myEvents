@@ -14,9 +14,9 @@ use DataManager\SessionMessagesDataManager;
 use Form\CalendarType;
 use Form\EventType;
 use Form\Search\EventSearchType;
-use Form\Search\SearchType;
 use Repositiory\CalendarRepository;
 use Repositiory\EventRepository;
+use Repositiory\TagRepository;
 use Repositiory\UserRepository;
 use Search\Criteria\TitleCriteria;
 use Search\Criteria\TypeCriteria;
@@ -57,7 +57,8 @@ class CalendarController implements ControllerProviderInterface
             ->assert('page', '[1-9]\d*')
             ->assert('calendarId', '[1-9]\d*')
             ->bind('eventIndex');
-        $controller->get('/{calendarId}/event/{eventId}', [$this, 'eventPageAction'])
+        $controller->match('/{calendarId}/event/{eventId}', [$this, 'eventShowAction'])
+            ->method('POST|GET')
             ->assert('calendarId', '[1-9]\d*')
             ->assert('eventId', '[1-9]\d*')
             ->bind('eventShow');
@@ -102,8 +103,6 @@ class CalendarController implements ControllerProviderInterface
         $calendarDataManager = new CalendarDataManager($eventRepository, $date);
         $calendar = $calendarDataManager->makeCalendarMonthPage();
 
-        dump($calendar);
-
         return $app['twig']->render(
             'calendar/calendar.html.twig',
             [
@@ -127,28 +126,41 @@ class CalendarController implements ControllerProviderInterface
      */
     public function eventAddAction(Application $app, $calendarId, Request $request)
     {
+        //TODO tu robię
         $eventRepository = new EventRepository($app['db']);
+        $tagRepository = new TagRepository($app['db']);
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
 
-        $event = [];
-        $form = $app['form.factory']->CreateBuilder(EventType::class, $event)->getForm();
+        $event = ['title' => 'dwa', 'start' => '2018-01-01 00:00:00'];
+        $form = $app['form.factory']->CreateBuilder(
+            EventType::class,
+            $event,
+            [
+                'event_repository' => $eventRepository,
+                'tag_repository' => $tagRepository,
+            ]
+        )->getForm();
+
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $eventDataManager = new EventDataManager($form->getData(), $calendarId);
-            $eventRepository->save($eventDataManager->getEvent());
-            $sessionMessagesManager->added();
 
-            return $app
-                ->redirect(
-                    $app['url_generator']
-                    ->generate(
-                        'eventIndex',
-                        ['calendarId' => $calendarId, 'page' => 1]
-                    ),
-                    301
-                );
+            $eventRepository->save($eventDataManager->getEvent());
+
+
+            //            $sessionMessagesManager->added();
+
+            //            return $app
+            //                ->redirect(
+            //                    $app['url_generator']
+            //                    ->generate(
+            //                        'eventIndex',
+            //                        ['calendarId' => $calendarId, 'page' => 1]
+            //                    ),
+            //                    301
+            //                );
         }
 
         return $app['twig']->render(
@@ -176,7 +188,7 @@ class CalendarController implements ControllerProviderInterface
     public function eventIndexAction(Application $app, $calendarId, $page, Request $request)
     {
         $eventRepository = new EventRepository($app['db']);
-        //TODO OSTATNIE zrobić tak samo wyszukiwanie dla kalaendarzy
+        //TODO OSTATNIE co z tym wyszukiwaniem jeśli join nie działa spróbować własne?
         //ostlować search form
         //robić w końcu wgląd tych eventów czy edit i delete eventów najpierw?
         $query = $eventRepository->queryAll();
@@ -191,11 +203,9 @@ class CalendarController implements ControllerProviderInterface
             $eventSearchDataManager = new EventSearchDataManager(
                 [
                    new TitleCriteriaBuilder('e'),
-                   new TypeCriteriaBuilder('e'),
                 ],
                 [
                     new TitleCriteria($data['title']),
-                    new TypeCriteria($data['type']),
                 ],
                 $eventRepository->queryAll()
             );
@@ -232,11 +242,18 @@ class CalendarController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function eventPageAction(Application $app, $calendarId, $eventId)
+    public function eventShowAction(Application $app, $calendarId, $eventId)
     {
+        //TODO wygląd eventu, checkbox zapisów, zapisy
+        $eventRepository = new EventRepository($app['db']);
+        $eventDataManager = new EventDataManager(
+            $eventRepository->getEventById($eventId)
+        );
+
         return $app['twig']->render(
             'calendar/singleEvent.html.twig',
             [
+                'eventDataManager' => $eventDataManager,
                 'calendarId' => $calendarId,
                 'eventId' => $eventId,
             ]
