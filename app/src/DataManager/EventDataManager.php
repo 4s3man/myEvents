@@ -21,7 +21,7 @@ class EventDataManager
     protected $eventRepository = null;
 
     protected $allowedKeys = [
-        'signUp',
+        'sign_up',
         'calendar_id',
         'id',
         'title',
@@ -54,10 +54,11 @@ class EventDataManager
             );
         }
 
-        if (isset($formData['signUp']) && true === $formData['signUp']) {
-            //TODO make signUp
+        //TODO problem z fałszywą warością checkboxu
+        if (isset($formData['sign_up']) && 1 !== $formData['sign_up']) {
+            unset($formData['sign_up']);
         }
-        unset($formData['signUp']);
+
 
         $this->event = $formData;
         $this->event['calendar_id'] = isset($this->event['calendar_id']) ? : $calendarId;

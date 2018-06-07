@@ -26,7 +26,7 @@
         "twbs/bootstrap": "^4.1",
         "sorien/silex-dbal-profiler": "~2.0",
         "doctrine/dbal": "^2.5",
-        "pagerfanta/pagerfanta": "^2.0",
+        "pagerfanta/pagerfanta": "^1.1.0",
         "plummer/calendarful": "^0.2.1",
         "azuyalabs/yasumi": "^1.8",
         "krzysztof-gzocha/searcher": "~3.4.1"

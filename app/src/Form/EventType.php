@@ -163,11 +163,12 @@ class EventType extends AbstractType
         );
 
         $builder->add(
-            'signUp',
+            'sign_up',
             CheckboxType::class,
             [
               'label' => 'label.sign_up',
               'required' => false,
+              'value' => true,
             ]
         );
 
