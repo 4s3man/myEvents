@@ -71,7 +71,7 @@ class UserRepository extends AbstractRepository
      *
      * @return array
      */
-    public function loadUserByLogin(string $login)
+    public function loadUserByLogin($login)
     {
         try {
             $user = $this->getUserByLogin($login);

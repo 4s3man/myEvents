@@ -49,6 +49,7 @@ class EventType extends AbstractType
         $dateTime = new \DateTime('now');
 
         //TODO dodać ograniczenia event ma się kończyć po tym jak się rozpocznie
+        //TODO sprbowac z Assert/Range $options['data']
         //dodać media w osobnym linku ma się otwierać nowe okno
         $builder->add(
             'title',
@@ -81,6 +82,7 @@ class EventType extends AbstractType
             ]
         );
         //TODO pytanie jak zmienić domyślną wartość na obecny czas
+        // dataTransformerem
 
         $builder->add(
             'start',

@@ -80,6 +80,7 @@ class CalendarDataManager
             $this->range = $this->setRange();
 
             //TODO jak translacja na polski
+            //zrobic pod koniec ich nazwa |trans albo w ogole
             $this->holidays = Yasumi::create('Poland', $this->date->format('Y'));
 
             $eventsRaw = $eventRepository
@@ -226,7 +227,7 @@ class CalendarDataManager
      *
      * @return array
      */
-    private function formatDateArray(array $filters, string $format)
+    private function formatDateArray(array $filters, $format)
     {
         if (!(current($filters) instanceof \DateTime)) {
             throw new \InvalidArgumentException('All filters values must have instance of \DateTime.');
@@ -250,7 +251,7 @@ class CalendarDataManager
      *
      * @return array
      */
-    private function makeEventsFromRawData(array $rawEvents, string $class)
+    private function makeEventsFromRawData(array $rawEvents, $class)
     {
         $events = [];
         foreach ($rawEvents as $rawEevent) {

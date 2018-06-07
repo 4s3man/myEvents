@@ -81,7 +81,7 @@ class MediaController implements ControllerProviderInterface
     public function userMediaIndexAction(Application $app, $page, Request $request)
     {
         //TODO get id from logged user
-        //TODO search witch data transformer
+        //TODO search witch data transformer, nie zrobic wlasne :(
         $userId = 1;
 
         $mediaRepository = new MediaRepository($app['db']);
@@ -105,7 +105,7 @@ class MediaController implements ControllerProviderInterface
     public function calendarMediaIndexAction(Application $app, $calendarId, $page, Request $request)
     {
         //TODO get id from logged user
-        //TODO search witch data transformer
+        //TODO search witch data transformer, nie zrobic wlasne
         $userId = 1;
 
         $mediaRepository = new MediaRepository($app['db']);

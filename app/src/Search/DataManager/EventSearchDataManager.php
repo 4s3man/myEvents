@@ -118,7 +118,7 @@ class EventSearchDataManager
      *
      * @return bool
      */
-    protected function elementsHaveInstance(array $array, string $instance)
+    protected function elementsHaveInstance(array $array, $instance)
     {
         foreach ($array as $element) {
             if (!$element instanceof $instance) {

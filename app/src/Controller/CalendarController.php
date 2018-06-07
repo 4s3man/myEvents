@@ -185,7 +185,7 @@ class CalendarController implements ControllerProviderInterface
     public function eventIndexAction(Application $app, $calendarId, $page, Request $request)
     {
         $eventRepository = new EventRepository($app['db'], $calendarId);
-        //TODO OSTATNIE co z tym wyszukiwaniem jeśli join nie działa spróbować własne?
+        //TODO OSTATNIE co z tym wyszukiwaniem, zrobic wlasne
         //ostlować search form
         //robić w końcu wgląd tych eventów czy edit i delete eventów najpierw?
         $query = $eventRepository->queryAll();

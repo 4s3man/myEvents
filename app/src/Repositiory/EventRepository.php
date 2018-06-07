@@ -32,7 +32,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      *
      * @param Connection $db
      */
-    public function __construct(Connection $db, int $calendarId = null)
+    public function __construct(Connection $db, $calendarId = null)
     {
         parent::__construct($db);
         $this->tagRepository = new TagRepository($db);
@@ -72,7 +72,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      *
      * @return mixed
      */
-    public function getEventById(int $eventId)
+    public function getEventById($eventId)
     {
         $qb = $this->queryAll()->where('e.id = :eventId')
             ->setParameter(':eventId', $eventId, \PDO::PARAM_INT);

@@ -54,7 +54,7 @@ class UserCaledarRepository extends AbstractRepository
      * @throws DBALException
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function save(array $calendar, int $userId)
+    public function save(array $calendar, $userId)
     {
         $this->db->beginTransaction();
 
@@ -99,10 +99,9 @@ class UserCaledarRepository extends AbstractRepository
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder
      */
-    public function userCalendarJoinQuery(int $userId)
+    public function userCalendarJoinQuery($userId)
     {
-        //TODO jak to rozwiązać?
-        //Searcher don't work witch leftJoin :(
+        //TODO do search zrobic osobny query
         $qb = $this->db->createQueryBuilder();
         $qb = $qb->select('uC.calendar_id', 'c.title', 'c.description')
             ->from('user_calendars', 'uC')

@@ -54,7 +54,8 @@ class EventDataManager
             );
         }
 
-        //TODO problem z fałszywą warością checkboxu
+        //TODO problem z fałszywą warościa
+        //zrzutowac na int przed zapisem do repozytorium
         if (isset($formData['sign_up']) && 1 !== $formData['sign_up']) {
             unset($formData['sign_up']);
         }

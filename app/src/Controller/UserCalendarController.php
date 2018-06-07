@@ -68,7 +68,7 @@ class UserCalendarController implements ControllerProviderInterface
     public function userCalendarIndexAction(Application $app, $userId, $page, Request $request)
     {
         $userCalendarRepository = new UserCaledarRepository($app['db']);
-        $query = $userCalendarRepository->userCalendarJoinQuery($userId);
+        $query = $userCalendarRepository->userCalendarJoinQuery( $userId);
         //        $res = $query->where($query->expr()->isNotNull('typ'))
 
 
@@ -90,7 +90,7 @@ class UserCalendarController implements ControllerProviderInterface
         //            );
         //
         //        dump($query);
-        //TODO left join nie działa D:
+        //TODO zrobic wlasny search
         //        $query = $eventSearchDataManager->search();
         //        }
 
@@ -176,6 +176,7 @@ class UserCalendarController implements ControllerProviderInterface
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]), 301);
         }
         //TODO czy nie trzeba tutaj dodać walidacji formularza?
+        //TODO nie trzeba bo jest sprawdzane wyrzej czy kalendarz jest
         $form = $app['form.factory']->createBuilder(FormType::class, $calendar)->add('id', HiddenType::class)->getForm();
         $form->handleRequest($request);
 

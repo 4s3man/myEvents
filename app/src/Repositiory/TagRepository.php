@@ -35,7 +35,7 @@ class TagRepository extends AbstractRepository
      *
      * @return array|mixed
      */
-    public function findOneByName(string $name)
+    public function findOneByName($name)
     {
         $qb = $this->queryAll()->where('t.name = :name')
             ->setParameter(':name', $name, \PDO::PARAM_STR);

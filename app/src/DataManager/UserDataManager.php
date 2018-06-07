@@ -53,7 +53,7 @@ class UserDataManager
      *
      * @param string $user
      */
-    public function setUser(string $user)
+    public function setUser($user)
     {
         if (!in_array($user, $this->options)) {
             throw new InvalidArgumentException('Invalid option in dataManager setUser function');

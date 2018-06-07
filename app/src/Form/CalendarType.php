@@ -42,6 +42,7 @@ class CalendarType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         //TODO pytanie czy klasa Repository Asserts container z tablicami jak this->username assert nie lepsz od dziedziczenia?
+        //nie, zrobic klase z regexpami a poza tym nie chowac tych constraintow
         $builder->add(
             'title',
             TextType::class,
