@@ -57,6 +57,11 @@ FUN COLORS
   background-color: #f2f1f0;
 }
 
+.paginator-footer {
+  display: flex;
+  justify-content: center;
+}
+
 .paginator-items {
   display: flex;
   flex-flow: row wrap;
@@ -299,6 +304,18 @@ FUN COLORS
     padding: 60px 40px;
   }
 }
+.media_photo {
+  position: relative;
+  overflow: hidden;
+  width: 300px;
+  height: 200px;
+}
+.media_photo img {
+  position: absolute;
+  max-width: 100%;
+  height: auto;
+}
+
 html {
   min-height: 100%;
   position: relative;
@@ -311,13 +328,6 @@ body {
   grid-auto-rows: auto;
   color: #ebebeb;
   height: 100%;
-}
-
-.logged {
-  display: grid;
-  grid-template-columns: 100px auto;
-  grid-template-areas: "sidebar content";
-  grid-auto-rows: auto;
 }
 
 .form_submmit {

@@ -99,7 +99,7 @@ class CalendarController implements ControllerProviderInterface
      */
     public function calendarShowAction(Application $app, $calendarId, $date)
     {
-        $eventRepository = new EventRepository($app['db']);
+        $eventRepository = new EventRepository($app['db'], (int) $calendarId);
         $calendarDataManager = new CalendarDataManager($eventRepository, $date);
         $calendar = $calendarDataManager->makeCalendarMonthPage();
 
@@ -147,19 +147,17 @@ class CalendarController implements ControllerProviderInterface
             $eventDataManager = new EventDataManager($form->getData(), $calendarId);
 
             $eventRepository->save($eventDataManager->getEvent());
+            $sessionMessagesManager->added();
 
-
-            //            $sessionMessagesManager->added();
-
-            //            return $app
-            //                ->redirect(
-            //                    $app['url_generator']
-            //                    ->generate(
-            //                        'eventIndex',
-            //                        ['calendarId' => $calendarId, 'page' => 1]
-            //                    ),
-            //                    301
-            //                );
+            return $app
+                ->redirect(
+                    $app['url_generator']
+                    ->generate(
+                        'eventIndex',
+                        ['calendarId' => $calendarId, 'page' => 1]
+                    ),
+                    301
+                );
         }
 
         return $app['twig']->render(
@@ -186,7 +184,7 @@ class CalendarController implements ControllerProviderInterface
      */
     public function eventIndexAction(Application $app, $calendarId, $page, Request $request)
     {
-        $eventRepository = new EventRepository($app['db']);
+        $eventRepository = new EventRepository($app['db'], $calendarId);
         //TODO OSTATNIE co z tym wyszukiwaniem jeśli join nie działa spróbować własne?
         //ostlować search form
         //robić w końcu wgląd tych eventów czy edit i delete eventów najpierw?
@@ -293,6 +291,7 @@ class CalendarController implements ControllerProviderInterface
      */
     public function calendarIndexAction(Application $app, $calendarId, $page = 1)
     {
+        //TODO zrobić index urzytkowników kalendarza
         $userRepository = new UserRepository($app['db']);
         $paginator = new MyPaginatorShort($userRepository->queryAll(), 5, 'id', $page);
 
@@ -306,6 +305,7 @@ class CalendarController implements ControllerProviderInterface
         );
     }
 
+    //TODO dodawanie usera do kalendarza
     /**
      * Add user to this calendar associated witch calendarId
      *

@@ -24,6 +24,7 @@ class CalendarRepository extends AbstractRepository
     {
         $query = $this->db->createQueryBuilder();
 
+
         return $query->select('c.id', 'c.title', 'c.description')->from('calendar', 'c');
     }
 

@@ -25,15 +25,18 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
 
     protected $tagRepository = null;
 
+    protected $calendarId = null;
+
     /**
      * CalendarRepository constructor.
      *
      * @param Connection $db
      */
-    public function __construct(Connection $db)
+    public function __construct(Connection $db, int $calendarId = null)
     {
         parent::__construct($db);
         $this->tagRepository = new TagRepository($db);
+        $this->calendarId = $calendarId;
     }
 
     /**
@@ -43,10 +46,8 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      */
     public function queryAll()
     {
-        //TODO zrobić żeby query zaciągał eventy tylko z tego kalendarza!!
-        $query = $this->db->createQueryBuilder();
-
-        return $query->select(
+        $qb = $this->db->createQueryBuilder();
+        $qb->select(
             'e.id',
             'e.title',
             'e.content',
@@ -56,6 +57,12 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
             'e.cost',
             'e.calendar_id'
         )->from('event', 'e');
+        if (null !== $this->calendarId) {
+            $qb->where('calendar_id = :calendarId')
+                ->setParameter(':calendarId', $this->calendarId, \PDO::PARAM_INT);
+        }
+
+        return $qb;
     }
 
     /**
@@ -122,6 +129,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
             ->andWhere('DATEDIFF(end, :fromDate) >=0')
             ->setParameter(':toDate', $filters['toDate'], \PDO::PARAM_STR)
             ->setParameter(':fromDate', $filters['fromDate'], \PDO::PARAM_STR);
+
         $result = $qb->execute()->fetchAll();
 
         return isset($result) ? $result : [];

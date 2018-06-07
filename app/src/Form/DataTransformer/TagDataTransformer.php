@@ -6,7 +6,7 @@
  * Time: 17:39
  */
 
-namespace Form;
+namespace Form\DataTransformer;
 
 use Repositiory\TagRepository;
 use Symfony\Component\Form\DataTransformerInterface;

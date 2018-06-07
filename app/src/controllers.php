@@ -1,9 +1,10 @@
 <?php
 
 use Controller\AuthController;
+use Controller\MediaController;
+use Controller\SettingsControler;
 use Controller\UserController;
 use Controller\UserCalendarController;
-use Controller\SettingsControler;
 use Controller\CalendarController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,3 +41,4 @@ $app->mount('/user', new UserController());
 $app->mount('/calendar', new CalendarController());
 $app->mount('/userCalendar', new UserCalendarController());
 $app->mount('/auth', new AuthController());
+$app->mount('/media', new MediaController());

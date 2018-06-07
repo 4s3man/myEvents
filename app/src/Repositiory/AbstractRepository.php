@@ -24,4 +24,13 @@ abstract class AbstractRepository
     {
         $this->db = $db;
     }
+
+    public function findMediaWitchIdIn($ids){
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+
+        return $this->queryAll()->where('m.id IN (:ids)')
+            ->setParameter(':ids', $ids, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY);
+    }
 }

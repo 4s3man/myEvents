@@ -11,13 +11,13 @@ namespace Form;
 use Form\Helpers\PopularAssertGroups;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Form\DataTransformer\TagDataTransformer;
 
 /**
  * Class CalendarType used by form builder
@@ -46,9 +46,10 @@ class EventType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $dateTime = new \DateTime('now');
+
         //TODO dodać ograniczenia event ma się kończyć po tym jak się rozpocznie
-        //dodać media
-        //dodać tagi
+        //dodać media w osobnym linku ma się otwierać nowe okno
         $builder->add(
             'title',
             TextType::class,
@@ -88,6 +89,7 @@ class EventType extends AbstractType
                 'label' => 'label.event_start',
                 'required' => true,
                 'input' => 'string',
+                'attr' => ['class' => 'js-datepicker'],
                 'constraints' => [
                     new Assert\DateTime(
                         [
@@ -110,6 +112,7 @@ class EventType extends AbstractType
                 'label' => 'label.event_end',
                 'required' => true,
                 'input' => 'string',
+                'attr' => ['class' => 'js-datepicker'],
                 'constraints' => [
                     new Assert\DateTime(
                         [
@@ -132,10 +135,10 @@ class EventType extends AbstractType
                 'label' => 'label.events_cost',
                 'required' => false,
                 'constraints' => [
-                    new Assert\Type(
+                    new Assert\Range(
                         [
                             'groups' => ['event_default'],
-                            'type' => 'integer',
+                            'min' => 0,
                         ]
                     ),
                 ],
@@ -149,10 +152,10 @@ class EventType extends AbstractType
                 'label' => 'label.events_seats',
                 'required' => false,
                 'constraints' => [
-                    new Assert\Type(
+                    new Assert\Range(
                         [
                             'groups' => ['event_default'],
-                            'type' => 'integer',
+                            'min' => 0,
                         ]
                     ),
                 ],
