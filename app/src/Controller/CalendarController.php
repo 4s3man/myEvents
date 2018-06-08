@@ -14,8 +14,10 @@ use DataManager\SessionMessagesDataManager;
 use Form\CalendarType;
 use Form\EventType;
 use Form\Search\EventSearchType;
+use Form\SignUpType;
 use Repositiory\CalendarRepository;
 use Repositiory\EventRepository;
+use Repositiory\ParticipantRepository;
 use Repositiory\TagRepository;
 use Repositiory\UserRepository;
 use Search\Criteria\TitleCriteria;
@@ -140,13 +142,10 @@ class CalendarController implements ControllerProviderInterface
             ]
         )->getForm();
 
-
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $eventDataManager = new EventDataManager($form->getData(), $calendarId);
 
-            $eventRepository->save($eventDataManager->getEvent());
+            $eventRepository->save($form->getData(), $calendarId);
             $sessionMessagesManager->added();
 
             return $app
@@ -239,18 +238,42 @@ class CalendarController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function eventShowAction(Application $app, $calendarId, $eventId)
+    public function eventShowAction(Application $app, $calendarId, $eventId, Request $request)
     {
         //TODO wygląd eventu, zapisy
         $eventRepository = new EventRepository($app['db']);
+        $participantRepository = new ParticipantRepository($app['db']);
         $eventDataManager = new EventDataManager(
-            $eventRepository->getEventById($eventId)
+            $eventRepository->findOneById($eventId),
+            $calendarId
         );
+
+        $signUpFormView = null;
+        if ($eventDataManager->getSignUp() && $eventDataManager->seatsRemain()) {
+            $signUp = [];
+            $form = $app['form.factory']->createBuilder(SignUpType::class, $signUp, ['repository' => $participantRepository])
+                ->getForm();
+
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $participantRepository->save($form->getData(), $eventDataManager->getEvent());
+            }
+
+            $signUpFormView = $form->createView();
+        }
+
+        $info = null;
+        if (!$eventDataManager->seatsRemain() && $eventDataManager->getSignUp()) {
+            $info = 'info.no_seats_left';
+        }
+
+
 
         return $app['twig']->render(
             'calendar/singleEvent.html.twig',
             [
-                'eventDataManager' => $eventDataManager,
+                'event' => $eventDataManager->makeEvent(),
+                'signUp' => $signUpFormView,
                 'calendarId' => $calendarId,
                 'eventId' => $eventId,
             ]

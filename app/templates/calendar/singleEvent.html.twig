@@ -1,6 +1,4 @@
 {% extends 'layout.html.twig' %}
-{% set event = eventDataManager.getEvent() %}
-{% set signUp = eventDataManager.getSignUp() %}
 {% block title %}
     {{ event.title }}
 {% endblock %}
@@ -10,12 +8,12 @@
         <section class="event-details">
             {% if event.start is defined %}
                 <span>
-                    {{ 'calendar.event_start_time'|trans }}{{ event.start }}
+                    {{ 'calendar.event_start_time'|trans }}{{ event.start.format('G:i') }}
                 </span>
             {% endif %}
             {% if event.end is not null%}
                 <span>
-                        {{ 'calendar.event_end_time'|trans }}{{ event.end }}
+                        {{ 'calendar.event_end_time'|trans }}{{ event.end.format('G:i') }}
                 </span>
             {% endif %}
             {% if event.cost is not null %}
@@ -32,8 +30,12 @@
         <section class="event-content">
             {{ event.content }}
         </section>
-        <section class="event-singUp">
 
-        </section>
+        {% if signUp is not null %}
+            {% set form = signUp %}
+            <section class="event-singUp">
+                {% include 'form/form.html.twig' %}
+            </section>
+        {% endif %}
     </article>
 {% endblock %}

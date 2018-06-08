@@ -13,11 +13,12 @@ use Doctrine\DBAL\DBALException;
 use Silex\Provider\SecurityServiceProvider;
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Validator\Constraints\Interfaces\UniquenessInterface;
 
 /**
  * Class UserRepository
  */
-class UserRepository extends AbstractRepository
+class UserRepository extends AbstractRepository implements UniquenessInterface
 {
     /**
      * Prepare first query part

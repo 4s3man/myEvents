@@ -15,26 +15,9 @@ use Repositiory\EventRepository;
  */
 class EventDataManager
 {
+    protected $calendarId = null;
 
     protected $event = null;
-
-    protected $eventRepository = null;
-
-    protected $allowedKeys = [
-        'sign_up',
-        'calendar_id',
-        'id',
-        'title',
-        'content',
-        'cost',
-        'seats',
-        'start',
-        'end',
-        'media',
-        'tags',
-        ];
-
-    protected $signUp = null;
 
     /**
      * EventDataManager constructor.
@@ -42,42 +25,64 @@ class EventDataManager
      * @param array $formData
      * @param int   $calendarId
      */
-    public function __construct(array $formData, $calendarId = null)
+    public function __construct(array $event, $calendarId = null)
     {
-        if (count(array_diff(array_keys($formData), $this->allowedKeys))) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Invalid array keys for class %s 1st construct argument, allowed values are %s',
-                    __CLASS__,
-                    implode('","', $this->allowedKeys)
-                )
-            );
+        $this->event = $event;
+        $this->calendarId = $calendarId;
+    }
+
+    public function makeEventForSave()
+    {
+        $formData = $this->event;
+
+        if (isset($formData['sign_up'])) {
+            $formData['sign_up'] = (int) $formData['sign_up'];
         }
+        $formData['calendar_id'] = $this->calendarId;
+        $formData['sign_up'] = isset($formData['sign_up']) ? (int) $formData['sign_up'] : 0;
+        $formData['start'] = isset($formData['start']) ? $formData['start']->format('Y-m-d H:i:s') : null;
+        $formData['end'] = isset($formData['end']) ? $formData['end']->format('Y-m-d H:i:s') : null;
 
-        //TODO problem z fałszywą warościa
-        //zrzutowac na int przed zapisem do repozytorium
-        if (isset($formData['sign_up']) && 1 !== $formData['sign_up']) {
-            unset($formData['sign_up']);
-        }
-
-
-        $this->event = $formData;
-        $this->event['calendar_id'] = isset($this->event['calendar_id']) ? : $calendarId;
+        return $formData;
     }
 
     /**
      * @return null
      */
-    public function getEvent()
+    public function makeEvent()
     {
+        $this->event['start'] = new \DateTime($this->event['start']);
+        $this->event['end'] = new \DateTime($this->event['end']);
+
         return $this->event;
     }
 
     /**
      * @return null
      */
+    public function createSignUp($formFactory)
+    {
+        return 1;
+    }
+
     public function getSignUp()
     {
-        return $this->signUp;
+        $signUp = isset($this->event['sign_up']) ? $this->event['sign_up'] : false;
+
+        return $signUp;
+    }
+
+    public function seatsRemain()
+    {
+
+        return isset($this->event['seats']) && $this->event['seats'] > 0;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getEvent()
+    {
+        return $this->event;
     }
 }

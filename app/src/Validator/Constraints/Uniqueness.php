@@ -9,8 +9,11 @@
 namespace Validator\Constraints;
 
 use Repositiory\AbstractRepository;
+
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
+use Validator\Constraints\Interfaces\UniquenessInterface;
 
 /**
  * Class Uniqueness
@@ -57,6 +60,9 @@ class Uniqueness extends Constraint
 
         if (null === $this->repository || null === $this->uniqueColumn) {
             throw new MissingOptionsException(sprintf('Options uniqueColumn and repository are obligatory for constraint %s', __CLASS__), array('repository', 'uniqueColumn'));
+        }
+        if (!($this->repository instanceof UniquenessInterface)) {
+            throw new InvalidOptionsException(sprintf('Passed repository must implements %s', UniquenessInterface::class), array('repository'));
         }
     }
 }

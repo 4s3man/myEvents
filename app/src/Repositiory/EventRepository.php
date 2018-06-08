@@ -8,6 +8,7 @@
 
 namespace Repositiory;
 
+use DataManager\EventDataManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Plummer\Calendarful\Event\EventInterface;
@@ -55,7 +56,8 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
             'e.end',
             'e.seats',
             'e.cost',
-            'e.calendar_id'
+            'e.calendar_id',
+            'e.sign_up'
         )->from('event', 'e');
         if (null !== $this->calendarId) {
             $qb->where('calendar_id = :calendarId')
@@ -72,12 +74,27 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      *
      * @return mixed
      */
-    public function getEventById($eventId)
+    public function findOneById($eventId)
     {
         $qb = $this->queryAll()->where('e.id = :eventId')
             ->setParameter(':eventId', $eventId, \PDO::PARAM_INT);
 
         return $qb->execute()->fetch();
+    }
+
+    /**
+     * Updates Event where id matches
+     *
+     * @param array $event
+     */
+    public function updateEvent(array $event)
+    {
+        if (isset($event['id']) && ctype_digit((string) $event['id'])) {
+            $id = $event['id'];
+            unset($event['id']);
+
+            $this->db->update('event', $event, ['id' => $id]);
+        }
     }
 
     /**
@@ -87,10 +104,11 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      *
      * @return int
      */
-    public function save($event)
+    public function save($eventRaw, $calendarId)
     {
+        $eventDataManager = new EventDataManager($eventRaw, $calendarId);
+        $event = $eventDataManager->makeEventForSave();
         $this->db->beginTransaction();
-
         try {
             $tagsIds = isset($event['tags']) ? array_column($event['tags'], 'id') : [];
             unset($event['tags']);

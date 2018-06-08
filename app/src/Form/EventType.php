@@ -8,6 +8,7 @@
 
 namespace Form;
 
+use Form\DataTransformer\DateDataTransformer;
 use Form\Helpers\PopularAssertGroups;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -17,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Validator\Constraints as CustomAssert;
 use Form\DataTransformer\TagDataTransformer;
 
 /**
@@ -46,11 +48,7 @@ class EventType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $dateTime = new \DateTime('now');
-
-        //TODO dodać ograniczenia event ma się kończyć po tym jak się rozpocznie
-        //TODO sprbowac z Assert/Range $options['data']
-        //dodać media w osobnym linku ma się otwierać nowe okno
+        //TODO dodać media w osobnym linku ma się otwierać nowe okno
         $builder->add(
             'title',
             TextType::class,
@@ -81,8 +79,6 @@ class EventType extends AbstractType
                 ],
             ]
         );
-        //TODO pytanie jak zmienić domyślną wartość na obecny czas
-        // dataTransformerem
 
         $builder->add(
             'start',
@@ -90,8 +86,12 @@ class EventType extends AbstractType
             [
                 'label' => 'label.event_start',
                 'required' => true,
-                'input' => 'string',
                 'attr' => ['class' => 'js-datepicker'],
+                'years' => [
+                  date('Y'),
+                  date('Y', strtotime('+ 1 year')),
+                  date('Y', strtotime('+ 2 year')),
+                ],
                 'constraints' => [
                     new Assert\DateTime(
                         [
@@ -113,8 +113,12 @@ class EventType extends AbstractType
             [
                 'label' => 'label.event_end',
                 'required' => true,
-                'input' => 'string',
                 'attr' => ['class' => 'js-datepicker'],
+                'years' => [
+                    date('Y'),
+                    date('Y', strtotime('+ 1 year')),
+                    date('Y', strtotime('+ 2 year')),
+                ],
                 'constraints' => [
                     new Assert\DateTime(
                         [
@@ -124,6 +128,12 @@ class EventType extends AbstractType
                     new Assert\NotBlank(
                         [
                             'groups' => ['event_default'],
+                        ]
+                    ),
+                    new CustomAssert\DateRange(
+                        [
+                            'groups' => ['event_default'],
+                            'min' => isset($options['start']) ? $options['start'] : date('Y', strtotime('- 1 day')),
                         ]
                     ),
                 ],
@@ -186,6 +196,12 @@ class EventType extends AbstractType
             ]
         );
 
+        $builder->get('start')->addModelTransformer(
+            new DateDataTransformer()
+        );
+        $builder->get('end')->addModelTransformer(
+            new DateDataTransformer()
+        );
         $builder->get('tags')->addModelTransformer(
             new TagDataTransformer($options['tag_repository'])
         );
