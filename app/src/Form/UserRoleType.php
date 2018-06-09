@@ -26,6 +26,7 @@ use Validator\Constraints as CustomAsssert;
 class UserRoleType extends AbstractType
 {
     /**
+     *
      * @return string
      */
     public function getBlockPrefix()
@@ -48,6 +49,7 @@ class UserRoleType extends AbstractType
     }
 
     /**
+     *
      * @inheritdoc
      *
      * @param FormBuilderInterface $builder
@@ -67,12 +69,12 @@ class UserRoleType extends AbstractType
                 ],
                 'constraints' => [
                     new Assert\Choice(
-                      [
+                        [
                           'choices' => [
                               'EDITOR',
                               'ADMIN',
                           ],
-                      ]
+                        ]
                     ),
                 ],
             ]

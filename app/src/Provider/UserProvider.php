@@ -20,6 +20,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class UserProvider implements UserProviderInterface
 {
     /**
+     *
      * @var Connection|null
      */
     protected $db = null;

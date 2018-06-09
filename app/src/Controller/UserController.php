@@ -41,6 +41,7 @@ class UserController implements ControllerProviderInterface
     }
 
     /**
+     *
      * @param Application $app
      *
      * @return mixed

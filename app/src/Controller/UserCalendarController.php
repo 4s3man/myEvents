@@ -26,6 +26,7 @@ use Utils\MyPaginatorShort;
 class UserCalendarController implements ControllerProviderInterface
 {
     /**
+     *
      * @param Application $app
      *
      * @return mixed|\Silex\ControllerCollection
@@ -53,6 +54,7 @@ class UserCalendarController implements ControllerProviderInterface
     }
 
     /**
+     *
      * @param Application $app
      * @param Int         $userId
      * @param Int         $page
@@ -63,44 +65,23 @@ class UserCalendarController implements ControllerProviderInterface
     public function userCalendarIndexAction(Application $app, $userId, $page, Request $request)
     {
         $userCalendarRepository = new UserCaledarRepository($app['db']);
-        $query = $userCalendarRepository->userCalendarJoinQuery($userId);
-        //        $res = $query->where($query->expr()->isNotNull('typ'))
-
+        $queryParams = ['userId' => $userId, 'page' => $page];
+        $paginator = $userCalendarRepository->getSearchedAndPaginatedRecords($queryParams);
 
         $form = $app['form.factory']
             ->createBuilder(SearchType::class)
             ->getForm();
         $form->handleRequest($request);
 
-        //        if ($form->isSubmitted() && $form->isValid()) {
-        //            $data = $form->getData();
-        //            $eventSearchDataManager = new EventSearchDataManager(
-        //                [
-        //                    new TitleCriteriaBuilder('c'),
-        //                ],
-        //                [
-        //                    new TitleCriteria($data['title']),
-        //                ],
-        //                $userCalendarRepository->queryAll()
-        //            );
-        //
-        //        dump($query);
-        //TODO zrobic wlasny search
-        //        $query = $eventSearchDataManager->search();
-        //        }
-
-        $paginator = new MyPaginatorShort(
-            $query,
-            3,
-            'c.id',
-            $page
-        );
+        if ($form->isSubmitted() && $form->isValid()) {
+            $paginator = $userCalendarRepository->getSearchedAndPaginatedRecords($queryParams, $form->getData());
+        }
 
         return $app['twig']->render(
             'userCalendar/index.html.twig',
             [
                 'form' => $form->createView(),
-                'pagerfanta' => $paginator->pagerfanta,
+                'pagerfanta' => $paginator,
                 'routeName' => 'userCalendarIndex',
                 'userId' => $userId,
             ]
@@ -108,6 +89,7 @@ class UserCalendarController implements ControllerProviderInterface
     }
 
     /**
+     *
      * @param Application $app
      * @param int         $userId
      *

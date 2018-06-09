@@ -11,7 +11,6 @@ namespace Validator\Constraints\Interfaces;
 /**
  * Interface UniquenessInterface
  * needs to be implemented for custom Uniqueness Validator
- *
  */
 interface UniquenessInterface
 {

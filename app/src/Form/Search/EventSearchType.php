@@ -25,6 +25,7 @@ class EventSearchType extends SearchType
     }
 
     /**
+     *
      * @param FormBuilderInterface $builder
      * @param array                $options
      */
@@ -62,6 +63,7 @@ class EventSearchType extends SearchType
     }
 
     /**
+     *
      * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -74,6 +76,7 @@ class EventSearchType extends SearchType
     }
 
     /**
+     *
      * @return null|string
      */
     public function getBlockPrefix()

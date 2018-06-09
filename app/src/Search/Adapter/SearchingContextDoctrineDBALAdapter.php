@@ -20,6 +20,7 @@ use KGzocha\Searcher\Context\SearchingContextInterface;
 class SearchingContextDoctrineDBALAdapter implements SearchingContextInterface
 {
     /**
+     *
      * @var QueryBuilder
      */
     private $qb;

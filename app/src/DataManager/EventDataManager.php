@@ -14,11 +14,13 @@ namespace DataManager;
 class EventDataManager
 {
     /**
+     *
      * @var int|null
      */
     private $calendarId = null;
 
     /**
+     *
      * @var array|null
      */
     private $event = null;
@@ -56,6 +58,7 @@ class EventDataManager
     }
 
     /**
+     *
      * @return null
      */
     public function makeEvent()
@@ -89,6 +92,7 @@ class EventDataManager
     }
 
     /**
+     *
      * @return array|null
      */
     public function getEvent()

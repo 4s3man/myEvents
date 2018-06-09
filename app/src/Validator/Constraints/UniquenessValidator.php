@@ -17,6 +17,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 class UniquenessValidator extends ConstraintValidator
 {
     /**
+     *
      * @param mixed      $value
      * @param Constraint $constraint
      */

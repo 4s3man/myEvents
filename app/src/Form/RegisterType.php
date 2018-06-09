@@ -41,6 +41,7 @@ class RegisterType extends AbstractType
         $this->popularAsserts = new PopularAssertGroups();
     }
     /**
+     *
      * @return string
      */
     public function getBlockPrefix()
@@ -64,6 +65,7 @@ class RegisterType extends AbstractType
     }
 
     /**
+     *
      * @inheritdoc
      *
      * @param FormBuilderInterface $builder

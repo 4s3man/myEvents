@@ -1,4 +1,7 @@
-<?php /** @noinspection PhpCSValidationInspection */
+<?php /**
+       *
+       * @noinspection PhpCSValidationInspection 
+       */
 
 /**
  * Created by PhpStorm.

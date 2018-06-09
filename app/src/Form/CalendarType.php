@@ -21,6 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class CalendarType extends AbstractType
 {
     /**
+     *
      * @var PopularAssertGroups|null
      */
     private $popularAsserts = null;

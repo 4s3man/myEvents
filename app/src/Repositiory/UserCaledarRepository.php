@@ -8,6 +8,7 @@
 
 namespace Repositiory;
 
+use DataManager\Search\SearchDataManager;
 use DataManager\UserCalendarDataManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
@@ -19,6 +20,7 @@ use Utils\MyPaginatorShort;
 class UserCaledarRepository extends AbstractRepository
 {
     /**
+     *
      * @var CalendarRepository|null
      */
     private $calendarRepository = null;
@@ -32,6 +34,27 @@ class UserCaledarRepository extends AbstractRepository
     {
         parent::__construct($db);
         $this->calendarRepository = new CalendarRepository($db);
+    }
+
+    /**
+     * Gets paginated results form modified witch searchData query
+     * @param array $queryParams
+     * @param null  $searchData
+     *
+     * @return null|\Pagerfanta\Pagerfanta
+     */
+    public function getSearchedAndPaginatedRecords($queryParams, $searchData = null)
+    {
+        $query = $this->queryLinkedUserByCalendarId($queryParams['calendarId']);
+        $searchDataManager = new SearchDataManager($query, $searchData);
+        $paginator = new MyPaginatorShort(
+            $query,
+            '5',
+            'uC.id',
+            $queryParams['page']
+        );
+
+        return $paginator->pagerfanta;
     }
 
     /**
@@ -73,6 +96,12 @@ class UserCaledarRepository extends AbstractRepository
         }
     }
 
+    /**
+     * Find one record in user_calendars table by id
+     * @param int $userCalendarId
+     *
+     * @return array|mixed
+     */
     public function findOneById($userCalendarId)
     {
         $qb = $this->queryAll()->where('id = :id')
@@ -82,11 +111,24 @@ class UserCaledarRepository extends AbstractRepository
         return $result ? $result : [];
     }
 
-    public function updateUserRoleFoundById($userClendarId, $data)
+    /**
+     * Update user role in user_calendars table witch id = $usercalendarId
+     *
+     * @param int   $userClendarId
+     *
+     * @param array $data
+     *
+     * @return mixed
+     */
+    public function updateUserRoleFoundById($userClendarId, array $data)
     {
-       return $this->db->update('user_calendars', $data, ['id' => $userClendarId]);
+        return $this->db->update('user_calendars', $data, ['id' => $userClendarId]);
     }
 
+    /**
+     * Delete one record from user_calendars
+     * @param int $userCalendarId
+     */
     public function deleteLink($userCalendarId)
     {
         $this->db->delete('user_calendars', ['id' => $userCalendarId]);
@@ -102,8 +144,8 @@ class UserCaledarRepository extends AbstractRepository
     public function linkUserToCalendar($userId, $userRole, $calendarId)
     {
         if ($calendarId && ctype_digit((string) $calendarId)) {
-         $this->db->insert(
-            'user_calendars',
+            $this->db->insert(
+                'user_calendars',
                 [
                     'user_id' => $userId,
                     'user_role' => $userRole,
@@ -113,6 +155,13 @@ class UserCaledarRepository extends AbstractRepository
         }
     }
 
+    /**
+     * Check wheather user and calendar are linked, if so true else false
+     * @param int $userId
+     * @param int $calendarId
+     *
+     * @return bool
+     */
     public function isLinked($userId, $calendarId)
     {
         $qb = $this->queryAll()->where('user_id = :userId')
@@ -145,6 +194,12 @@ class UserCaledarRepository extends AbstractRepository
         }
     }
 
+    /**
+     * Query one user and it's links to calendar by calendarId
+     * @param int $calendarId
+     *
+     * @return mixed
+     */
     public function queryLinkedUserByCalendarId($calendarId)
     {
         $qb = $this->db->createQueryBuilder();
@@ -157,6 +212,12 @@ class UserCaledarRepository extends AbstractRepository
         return $qb;
     }
 
+    /**
+     * Find user and its links by users_calendar table id
+     * @param int $userCalendarId
+     *
+     * @return array
+     */
     public function findLinkedUserById($userCalendarId)
     {
         $qb = $this->db->createQueryBuilder();
@@ -170,6 +231,13 @@ class UserCaledarRepository extends AbstractRepository
         return $result ? $result : [];
     }
 
+    /**
+     * Get paginated by Pagerfanta Object, users and its roles
+     * @param int $calendarId
+     * @param int $page
+     *
+     * @return null|\Pagerfanta\Pagerfanta
+     */
     public function getPaginatedUserAndRolesByCalendarId($calendarId, $page)
     {
         $paginator = new MyPaginatorShort(
@@ -189,7 +257,7 @@ class UserCaledarRepository extends AbstractRepository
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder
      */
-    public function userCalendarJoinQuery($userId)
+    public function getLinkedCalendars($userId)
     {
         //TODO do search zrobic osobny query
         //TODO zmienić nazwę

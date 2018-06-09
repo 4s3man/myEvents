@@ -14,16 +14,19 @@ namespace DataManager;
 class UserCalendarDataManager
 {
     /**
+     *
      * @var mixed|null
      */
     private $calendar = null;
 
     /**
+     *
      * @var mixed|null
      */
     private $user = null;
 
     /**
+     *
      * @var Array|null
      */
     private $userCalendarData = null;
@@ -50,6 +53,7 @@ class UserCalendarDataManager
     }
 
     /**
+     *
      * @return Array|null $this->userCalendarData
      */
     public function getUserCalendarData()

@@ -19,6 +19,7 @@ use Search\Criteria\TitleCriteria;
 class TitleCriteriaBuilder implements CriteriaBuilderInterface
 {
     /**
+     *
      * @var null
      */
     public $alias = null;
@@ -34,6 +35,7 @@ class TitleCriteriaBuilder implements CriteriaBuilderInterface
     }
 
     /**
+     *
      * @param CriteriaInterface         $criteria
      * @param SearchingContextInterface $searchingContext
      */
@@ -45,6 +47,7 @@ class TitleCriteriaBuilder implements CriteriaBuilderInterface
     }
 
     /**
+     *
      * @param CriteriaInterface $criteria
      *
      * @return bool
@@ -55,6 +58,7 @@ class TitleCriteriaBuilder implements CriteriaBuilderInterface
     }
 
     /**
+     *
      * @param SearchingContextInterface $searchingContext
      *
      * @return bool

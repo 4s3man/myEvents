@@ -10,6 +10,7 @@
                 <div class="btn btn-light">
                     <a href="{{ url('userAdd', {'calendarId':calendarId} ) }}">{{ 'link.user_add'|trans }}</a>
                 </div>
+        {% include 'form/searchForm.html.twig' %}
     {% endblock %}
 
     {% block paginatorData %}

@@ -26,29 +26,39 @@ class DateRangeValidator extends ConstraintValidator
         }
 
         if (!($value instanceof \DateTime)) {
-            $this->context->addViolation($constraint->invalidMessage, array(
+            $this->context->addViolation(
+                $constraint->invalidMessage,
+                array(
                 '{{ value }}' => $value,
-            ));
+                )
+            );
 
             return;
         }
 
         if (null !== $constraint->max && $value > $constraint->max) {
-            $this->context->addViolation($constraint->maxMessage, array(
-                '{{ value }}' => $value,
-                '{{ limit }}' => $this->formatDate($constraint->max),
-            ));
+            $this->context->addViolation(
+                $constraint->maxMessage,
+                array(
+                    '{{ value }}' => $value,
+                    '{{ limit }}' => $this->formatDate($constraint->max),
+                )
+            );
         }
 
         if (null !== $constraint->min && $value < $constraint->min) {
-            $this->context->addViolation($constraint->minMessage, array(
-                '{{ value }}' => $value,
-                '{{ limit }}' => $this->formatDate($constraint->min),
-            ));
+            $this->context->addViolation(
+                $constraint->minMessage,
+                array(
+                    '{{ value }}' => $value,
+                    '{{ limit }}' => $this->formatDate($constraint->min),
+                )
+            );
         }
     }
 
     /**
+     *
      * @param \DateTime $date
      *
      * @return string
@@ -67,9 +77,10 @@ class DateRangeValidator extends ConstraintValidator
     }
 
     /**
-     * @param  \IntlDateFormatter $formatter
      *
-     * @param  \Datetime          $date
+     * @param \IntlDateFormatter $formatter
+     *
+     * @param \Datetime          $date
      *
      * @return string
      */

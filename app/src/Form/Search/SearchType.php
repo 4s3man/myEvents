@@ -20,6 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class SearchType extends AbstractType
 {
     /**
+     *
      * @var PopularAssertGroups|null
      */
     protected $popularAsserts = null;
@@ -33,6 +34,7 @@ class SearchType extends AbstractType
     }
 
     /**
+     *
      * @param FormBuilderInterface $builder
      * @param array                $options
      */
@@ -50,6 +52,7 @@ class SearchType extends AbstractType
     }
 
     /**
+     *
      * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -62,6 +65,7 @@ class SearchType extends AbstractType
     }
 
     /**
+     *
      * @return null|string
      */
     public function getBlockPrefix()

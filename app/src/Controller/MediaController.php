@@ -60,6 +60,7 @@ class MediaController implements ControllerProviderInterface
     }
 
     /**
+     *
      * @param Application $app
      *
      * @param Request     $request
@@ -96,6 +97,7 @@ class MediaController implements ControllerProviderInterface
     }
 
     /**
+     *
      * @param Application $app
      *
      * @param int         $page
@@ -130,6 +132,7 @@ class MediaController implements ControllerProviderInterface
     }
 
     /**
+     *
      * @param Application $app
      *
      * @param int         $calendarId

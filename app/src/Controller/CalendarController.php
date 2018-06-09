@@ -198,10 +198,11 @@ class CalendarController implements ControllerProviderInterface
     public function eventIndexAction(Application $app, $calendarId, $page, Request $request)
     {
         $eventRepository = new EventRepository($app['db'], $calendarId);
-        //TODO OSTATNIE co z tym wyszukiwaniem, zrobic wlasne
-        //ostlować search form
+        //TODO ostlować search form
         //robić w końcu wgląd tych eventów czy edit i delete eventów najpierw?
-        $query = $eventRepository->queryAll();
+
+        $queryParams = ['page' => $page];
+        $paginator = $eventRepository->getSearchedAndPaginatedRecords($queryParams);
 
         $form = $app['form.factory']
             ->createBuilder(EventSearchType::class)
@@ -209,31 +210,13 @@ class CalendarController implements ControllerProviderInterface
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $eventSearchDataManager = new EventSearchDataManager(
-                [
-                   new TitleCriteriaBuilder('e'),
-                ],
-                [
-                    new TitleCriteria($data['title']),
-                ],
-                $eventRepository->queryAll()
-            );
-
-            $query = $eventSearchDataManager->search();
+            $paginator = $eventRepository->getSearchedAndPaginatedRecords($queryParams, $form->getData());
         }
-
-        $paginator = new MyPaginatorShort(
-            $query,
-            '3',
-            'e.id',
-            $page
-        );
 
         return $app['twig']->render(
             'calendar/eventIndex.html.twig',
             [
-                'pagerfanta' => $paginator->pagerfanta,
+                'pagerfanta' => $paginator,
                 'routeName' => 'eventIndex',
                 'calendarId' => $calendarId,
                 'form' => $form->createView(),
@@ -333,15 +316,29 @@ class CalendarController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function calendarUserIndexAction(Application $app, $calendarId, $page = 1)
+    public function calendarUserIndexAction(Application $app, $calendarId, $page = 1, Request $request)
     {
         //TODO zrobić index urzytkowników kalendarza
         $userCalendarRepository = new UserCaledarRepository($app['db']);
-        $paginator = $userCalendarRepository->getPaginatedUserAndRolesByCalendarId($calendarId, $page);
+
+        $queryParams = ['calendarId' => $calendarId, 'page' => $page];
+        $paginator = $userCalendarRepository->getSearchedAndPaginatedRecords($queryParams);
+
+        //TODO inny form szukanie po funkcji, imieniu, nazwisku, lub emailu
+//        $form = $app['form.factory']
+//            ->createBuilder(EventSearchType::class)
+//            ->getForm();
+//        $form->handleRequest($request);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $paginator = $userCalendarRepository->getSearchedAndPaginatedRecords($queryParams, $form->getData());
+//        }
+
 
         return $app['twig']->render(
             'calendar/userIndex.html.twig',
             [
+//                'form' => $form->createView(),
                 'calendarId' => $calendarId,
                 'pagerfanta' => $paginator,
                 'routeName' => 'userIndex',
@@ -352,12 +349,13 @@ class CalendarController implements ControllerProviderInterface
     //TODO dodawanie usera do kalendarza
     /**
      * Add user to this calendar associated witch calendarId
-     *
      * @param Application $app
      *
      * @param int         $calendarId
      *
-     * @return mixed
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function userAddAction(Application $app, $calendarId, Request $request)
     {
@@ -384,13 +382,14 @@ class CalendarController implements ControllerProviderInterface
                 );
                 $sessionMessagesDataManager->added();
 
-                return $app->redirect($app['url_generator']->generate(
-                    'userIndex',
-                    [
+                return $app->redirect(
+                    $app['url_generator']->generate(
+                        'userIndex',
+                        [
                         'calendarId' => $calendarId,
                         'page' => 1,
-                    ]
-                ),
+                        ]
+                    ),
                     301
                 );
             }
@@ -406,13 +405,16 @@ class CalendarController implements ControllerProviderInterface
     }
 
     /**
+     * Edit user role linked to calnedar
+     *
      * @param Application $app
      *
+     * @param int         $calendarId
      * @param int         $userCalendarId
      *
      * @param Request     $request
      *
-     * @return mixed
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function userEditAction(Application $app, $calendarId, $userCalendarId, Request $request)
     {
@@ -430,13 +432,14 @@ class CalendarController implements ControllerProviderInterface
             $userCalendarRepository->updateUserRoleFoundById($userCalendarId, $form->getData());
             $sessionDataManager->changed();
 
-            return $app->redirect($app['url_generator']->generate(
-                'userIndex',
-                [
+            return $app->redirect(
+                $app['url_generator']->generate(
+                    'userIndex',
+                    [
                     'calendarId' => $calendarId,
                     'page' => 1,
-                ]
-            ),
+                    ]
+                ),
                 301
             );
         }
@@ -450,6 +453,17 @@ class CalendarController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * Delete user linked to calnedar
+     * @param Application $app
+     *
+     * @param int         $calendarId
+     * @param int         $userCalendarId
+     *
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function userDeleteAction(Application $app, $calendarId, $userCalendarId, Request $request)
     {
         $userCalendarRepository = new UserCaledarRepository($app['db']);
@@ -458,13 +472,15 @@ class CalendarController implements ControllerProviderInterface
 
         if (!$userCalendar) {
             $sessionDataManager->recordNotFound();
-            return $app->redirect($app['url_generator']->generate(
-                'userIndex',
-                [
+
+            return $app->redirect(
+                $app['url_generator']->generate(
+                    'userIndex',
+                    [
                     'calendarId' => $calendarId,
                     'page' => 1,
-                ]
-            ),
+                    ]
+                ),
                 301
             );
         }
@@ -474,20 +490,22 @@ class CalendarController implements ControllerProviderInterface
                 ->getForm();
             $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $form->getData();
-                $userCalendarRepository->deleteLink($userCalendarId);
-                $sessionDataManager->deleted();
-                return $app->redirect($app['url_generator']->generate(
+        if ($form->isSubmitted() && $form->isValid()) {
+            $form->getData();
+            $userCalendarRepository->deleteLink($userCalendarId);
+            $sessionDataManager->deleted();
+
+            return $app->redirect(
+                $app['url_generator']->generate(
                     'userIndex',
                     [
-                        'calendarId' => $calendarId,
-                        'page' => 1,
+                    'calendarId' => $calendarId,
+                    'page' => 1,
                     ]
                 ),
-                    301
-                );
-            }
+                301
+            );
+        }
 
         return $app['twig']->render(
             'calendar/deleteUser.html.twig',
@@ -500,6 +518,7 @@ class CalendarController implements ControllerProviderInterface
     }
 
     /**
+     *
      * @param Application $app
      * @param int         $calendarId
      * @param Request     $request

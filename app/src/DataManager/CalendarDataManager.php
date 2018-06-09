@@ -1,4 +1,5 @@
 <?php /**
+       *
        * @noinspection PhpCSValidationInspection 
        */
 
@@ -27,31 +28,37 @@ use Yasumi\Yasumi;
 class CalendarDataManager
 {
     /**
+     *
      * @var null|string
      */
     protected $date = null;
 
     /**
+     *
      * @var array|null
      */
     protected $events = null;
 
     /**
+     *
      * @var array|null
      */
     protected $recurrentEvents = null;
 
     /**
+     *
      * @var null
      */
     protected $daysInMonth = null;
 
     /**
+     *
      * @var array|null
      */
     protected $range = null;
 
     /**
+     *
      * @var null|Calendar
      */
     protected $eventsList = null;
@@ -191,6 +198,7 @@ class CalendarDataManager
     }
 
     /**
+     *
      * @param Event     $event
      * @param \DateTime $date
      *
@@ -263,6 +271,7 @@ class CalendarDataManager
     }
 
     /**
+     *
      * @return RecurrenceFactory
      */
     private function makeRecurrenceFactory()

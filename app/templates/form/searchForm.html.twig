@@ -1,8 +1,10 @@
 {#//TODO ostylować css-em posługując się search_type i form name = search_type#}
-{% form_theme form with ['bootstrap_3_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
-{{ form_start(form, { method: 'post', action: global.request.uri }) }}
-<div class="form-group">
-    <input type="submit" value="{{ 'label.search'|trans }}">
-</div>
-{{ form_widget(form) }}
-{{ form_end(form) }}
+{% if form is defined %}
+    {% form_theme form with ['bootstrap_3_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+    {{ form_start(form, { method: 'post', action: global.request.uri }) }}
+    <div class="form-group">
+        <input type="submit" value="{{ 'label.search'|trans }}">
+    </div>
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+{% endif %}

@@ -26,6 +26,7 @@ use Validator\Constraints as CustomAsssert;
 class LinkUserCalendarType extends AbstractType
 {
     /**
+     *
      * @return string
      */
     public function getBlockPrefix()
@@ -49,6 +50,7 @@ class LinkUserCalendarType extends AbstractType
     }
 
     /**
+     *
      * @inheritdoc
      *
      * @param FormBuilderInterface $builder

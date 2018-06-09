@@ -20,6 +20,7 @@ class UserRepository extends AbstractRepository implements UniquenessInterface
 {
     /**
      * UserRepository constructor.
+     *
      * @param Connection $db
      */
     public function __construct(Connection $db)

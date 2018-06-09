@@ -18,12 +18,14 @@ use Validator\Constraints\Interfaces\UniquenessInterface;
 class ParticipantRepository extends AbstractRepository implements UniquenessInterface
 {
     /**
+     *
      * @var null|EventRepository
      */
     protected $eventRepository = null;
 
     /**
      * ParticipantRepository constructor.
+     *
      * @param Connection $db
      */
     public function __construct(Connection $db)
@@ -35,6 +37,7 @@ class ParticipantRepository extends AbstractRepository implements UniquenessInte
     //TODO z rejestracją i partycypowaniem zrobić tak żeby user wysyłał email i wtedy następowało potwierdzenie
 
     /**
+     *
      * @param array $participant
      * @param array $event
      *

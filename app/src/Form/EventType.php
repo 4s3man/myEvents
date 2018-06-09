@@ -28,6 +28,7 @@ class EventType extends AbstractType
 {
 
     /**
+     *
      * @var PopularAssertGroups|null
      */
     private $popularAsserts = null;

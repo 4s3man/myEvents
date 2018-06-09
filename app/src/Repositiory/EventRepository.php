@@ -9,28 +9,32 @@
 namespace Repositiory;
 
 use DataManager\EventDataManager;
+use DataManager\Search\SearchDataManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Plummer\Calendarful\Event\EventInterface;
 use Plummer\Calendarful\Event\EventRegistryInterface;
+use Utils\MyPaginatorShort;
 
 /**
  * Class EventRepository
-
  */
 class EventRepository extends AbstractRepository implements EventRegistryInterface
 {
     /**
+     *
      * @var Connection|null Database to use
      */
     protected $db = null;
 
     /**
+     *
      * @var null|TagRepository
      */
     private $tagRepository = null;
 
     /**
+     *
      * @var int|null
      */
     private $calendarId = null;
@@ -47,6 +51,27 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
         parent::__construct($db);
         $this->tagRepository = new TagRepository($db);
         $this->calendarId = $calendarId;
+    }
+
+    /**
+     * Gets paginated results form modified witch searchData query
+     * @param array $queryParams
+     * @param null  $searchData
+     *
+     * @return null|\Pagerfanta\Pagerfanta
+     */
+    public function getSearchedAndPaginatedRecords($queryParams, $searchData = null)
+    {
+        $query = $this->queryAllForCalendarId($this->calendarId);
+        $searchDataManager = new SearchDataManager($query, $searchData);
+        $paginator = new MyPaginatorShort(
+            $query,
+            '5',
+            'e.id',
+            $queryParams['page']
+        );
+
+        return $paginator->pagerfanta;
     }
 
     /**
@@ -68,10 +93,14 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
             'e.calendar_id',
             'e.sign_up'
         )->from('event', 'e');
-        if (null !== $this->calendarId) {
-            $qb->where('calendar_id = :calendarId')
+
+        return $qb;
+    }
+
+    public function queryAllForCalendarId($calendarId)
+    {
+        $qb = $this->queryAll()->where('calendar_id = :calendarId')
                 ->setParameter(':calendarId', $this->calendarId, \PDO::PARAM_INT);
-        }
 
         return $qb;
     }
@@ -152,7 +181,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      */
     public function getEvents(array $filters = array())
     {
-        $qb = $this->queryAll()
+        $qb = $this->queryAllForCalendarId($this->calendarId)
             ->where('DATEDIFF(start, :toDate) <=0')
             ->andWhere('DATEDIFF(end, :fromDate) >=0')
             ->setParameter(':toDate', $filters['toDate'], \PDO::PARAM_STR)
@@ -207,6 +236,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     }
 
     /**
+     *
      * @param int $eventId
      *
      * @return int result

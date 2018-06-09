@@ -17,6 +17,7 @@ class CalendarRepository extends AbstractRepository
 {
     /**
      * CalendarRepository constructor.
+     *
      * @param Connection $db
      */
     public function __construct(Connection $db)
@@ -31,9 +32,11 @@ class CalendarRepository extends AbstractRepository
      */
     public function queryAll()
     {
-        $query = $this->db->createQueryBuilder();
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('c.id', 'c.title', 'c.description')->from('calendar', 'c');
 
-        return $query->select('c.id', 'c.title', 'c.description')->from('calendar', 'c');
+        return $qb;
+
     }
 
     /**
@@ -73,6 +76,7 @@ class CalendarRepository extends AbstractRepository
     }
 
     /**
+     *
      * @param int $id of clendar to be deleted
      *
      * @return int

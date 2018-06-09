@@ -14,26 +14,31 @@ namespace Calendar;
 class CalendarPage
 {
     /**
+     *
      * @var array
      */
     protected $days = [];
 
     /**
+     *
      * @var null|string
      */
     protected $year = null;
 
     /**
+     *
      * @var mixed|null
      */
     protected $monthName = null;
 
     /**
+     *
      * @var null|string
      */
     protected $daysWeekNum = null;
 
     /**
+     *
      * @var array
      */
     protected $monthNames = [
@@ -52,6 +57,7 @@ class CalendarPage
         ];
 
     /**
+     *
      * @var array
      */
     protected $weekNames = [
@@ -79,6 +85,7 @@ class CalendarPage
     }
 
     /**
+     *
      * @return array
      */
     public function getDays()
@@ -87,6 +94,7 @@ class CalendarPage
     }
 
     /**
+     *
      * @return null|string
      */
     public function getYear()
@@ -95,6 +103,7 @@ class CalendarPage
     }
 
     /**
+     *
      * @return mixed|null
      */
     public function getMonthName()
@@ -103,6 +112,7 @@ class CalendarPage
     }
 
     /**
+     *
      * @return null|string
      */
     public function getDaysWeekNum()
@@ -111,6 +121,7 @@ class CalendarPage
     }
 
     /**
+     *
      * @return array
      */
     public function getMonthNames()
@@ -119,6 +130,7 @@ class CalendarPage
     }
 
     /**
+     *
      * @return array
      */
     public function getWeekNames()

@@ -46,6 +46,7 @@ class MyPaginatorShort
     }
 
     /**
+     *
      * @param Pagerfanta $pagerfanta
      *
      * @param int        $page

@@ -16,11 +16,13 @@ use Plummer\Calendarful\Event\EventRegistryInterface;
 class AdapterCalendarDataManagerCalendarfulCalendar implements EventRegistryInterface
 {
     /**
+     *
      * @var array|null
      */
     protected $events = null;
 
     /**
+     *
      * @var array|null
      */
     protected $recurentEvents = null;
@@ -38,6 +40,7 @@ class AdapterCalendarDataManagerCalendarfulCalendar implements EventRegistryInte
     }
 
     /**
+     *
      * @param array $filters
      *
      * @return array|null|\Plummer\Calendarful\Event\EventInterface[]
@@ -48,6 +51,7 @@ class AdapterCalendarDataManagerCalendarfulCalendar implements EventRegistryInte
     }
 
     /**
+     *
      * @param array $filters
      *
      * @return array|null|\Plummer\Calendarful\Event\EventInterface[]

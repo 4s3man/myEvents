@@ -16,31 +16,37 @@ use Plummer\Calendarful\Event\EventInterface;
 class Event implements EventInterface
 {
     /**
+     *
      * @var id|null
      */
     protected $id = null;
 
     /**
+     *
      * @var \DateTime|null
      */
     protected $startDate = null;
 
     /**
+     *
      * @var \DateTime|null
      */
     protected $endDate = null;
 
     /**
+     *
      * @var int|null
      */
     protected $parentId = null;
 
     /**
+     *
      * @var \DateTime|null
      */
     protected $occurrenceDate = null;
 
     /**
+     *
      * @var array|null
      */
     protected $data = null;
@@ -66,6 +72,7 @@ class Event implements EventInterface
     }
 
     /**
+     *
      * @return id|mixed|null
      */
     public function getId()
@@ -74,6 +81,7 @@ class Event implements EventInterface
     }
 
     /**
+     *
      * @return mixed
      */
     public function getName()
@@ -82,6 +90,7 @@ class Event implements EventInterface
     }
 
     /**
+     *
      * @return \DateTime|null
      */
     public function getStartDate()
@@ -90,6 +99,7 @@ class Event implements EventInterface
     }
 
     /**
+     *
      * @param \DateTime $startDate
      */
     public function setStartDate(\DateTime $startDate)
@@ -98,6 +108,7 @@ class Event implements EventInterface
     }
 
     /**
+     *
      * @return \DateTime|null
      */
     public function getEndDate()
@@ -106,6 +117,7 @@ class Event implements EventInterface
     }
 
     /**
+     *
      * @param \DateTime $endDate
      */
     public function setEndDate(\DateTime $endDate)
@@ -114,6 +126,7 @@ class Event implements EventInterface
     }
 
     /**
+     *
      * @return bool|\DateInterval
      */
     public function getDuration()
@@ -122,6 +135,7 @@ class Event implements EventInterface
     }
 
     /**
+     *
      * @return int|mixed|null
      */
     public function getParentId()
@@ -130,6 +144,7 @@ class Event implements EventInterface
     }
 
     /**
+     *
      * @return \DateTime|null
      */
     public function getOccurrenceDate()
@@ -138,6 +153,7 @@ class Event implements EventInterface
     }
 
     /**
+     *
      * @return array|null
      */
     public function getData()

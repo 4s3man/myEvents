@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 class AuthController implements ControllerProviderInterface
 {
     /**
+     *
      * @param Application $app
      *
      * @return mixed|ControllerCollection
@@ -39,6 +40,7 @@ class AuthController implements ControllerProviderInterface
     }
 
     /**
+     *
      * @param Application $app
      * @param Request     $request
      *

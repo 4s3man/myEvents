@@ -17,11 +17,13 @@ use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 class UserDataManager
 {
     /**
+     *
      * @var array|null
      */
     private $user = null;
 
     /**
+     *
      * @var array $options
      */
     private $options = ['NORMAL_USER', 'SUPER_USER'];
@@ -40,6 +42,7 @@ class UserDataManager
     }
 
     /**
+     *
      * @return null
      */
     public function getUser()

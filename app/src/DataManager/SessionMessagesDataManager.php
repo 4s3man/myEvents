@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class SessionMessagesDataManager
 {
     /**
+     *
      * @var null|Session
      */
     private $session = null;
@@ -31,7 +32,7 @@ class SessionMessagesDataManager
     }
 
     /**
-     * Display message for added
+     * Add flash message messsage.added_success
      */
     public function added()
     {
@@ -39,7 +40,7 @@ class SessionMessagesDataManager
     }
 
     /**
-     * Display message changed
+     * Add flash message messsage.changed_success
      */
     public function changed()
     {
@@ -47,25 +48,31 @@ class SessionMessagesDataManager
     }
 
     /**
-     * Display sussess registered
+     * Add flash message messsage.registered_success
      */
     public function registered()
     {
         $this->success('registered');
     }
 
+    /**
+     * Add flash message messsage.mail_send_success
+     */
     public function emailSend()
     {
         $this->success('email_send');
     }
 
+    /**
+     * Add flash message message.signed_up_success
+     */
     public function signedUp()
     {
         $this->success('signed_up');
     }
 
     /**
-     * Display success deleted
+     * Display message.deleted_success
      */
     public function deleted()
     {
@@ -73,7 +80,7 @@ class SessionMessagesDataManager
     }
 
     /**
-     * Display record not found
+     * Add flash message message.record_not_found_error
      */
     public function recordNotFound()
     {
@@ -81,7 +88,7 @@ class SessionMessagesDataManager
     }
 
     /**
-     * Error invalid input
+     * Add flash message message.invelid_input_error
      */
     public function invalidInput()
     {
@@ -89,7 +96,7 @@ class SessionMessagesDataManager
     }
 
     /**
-     * Error already linked
+     * Add flash message message.already_linked_error
      */
     public function alereadyLinked()
     {

@@ -21,21 +21,25 @@ use Search\Adapter\SearchingContextDoctrineDBALAdapter;
 class EventSearchDataManager
 {
     /**
+     *
      * @var Searcher|null
      */
     protected $searcher = null;
 
     /**
+     *
      * @var CriteriaCollection|null
      */
     protected $criteriaCollection = null;
 
     /**
+     *
      * @var CriteriaBuilderCollection|null
      */
     protected $builderCollection = null;
 
     /**
+     *
      * @var null|SearchingContextDoctrineDBALAdapter
      */
     protected $context = null;
@@ -73,6 +77,7 @@ class EventSearchDataManager
     }
 
     /**
+     *
      * @param array $builderCollection
      */
     protected function addCriteriaBuilders(array $builderCollection)
@@ -93,6 +98,7 @@ class EventSearchDataManager
     }
 
     /**
+     *
      * @param array $criterias
      */
     protected function addCriterias(array $criterias)
@@ -113,6 +119,7 @@ class EventSearchDataManager
     }
 
     /**
+     *
      * @param array  $array    to search in
      * @param string $instance to check
      *

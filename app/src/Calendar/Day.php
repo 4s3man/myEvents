@@ -14,16 +14,19 @@ namespace Calendar;
 class Day
 {
     /**
+     *
      * @var \DateTime|null
      */
     protected $date = null;
 
     /**
+     *
      * @var null
      */
     protected $events = null;
 
     /**
+     *
      * @var array|null
      */
     protected $holiday = null;
@@ -46,6 +49,7 @@ class Day
     }
 
     /**
+     *
      * @return null
      */
     public function getEvents()
@@ -54,6 +58,7 @@ class Day
     }
 
     /**
+     *
      * @return array|null
      */
     public function getHoliday()

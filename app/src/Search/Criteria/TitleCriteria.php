@@ -15,6 +15,7 @@ use KGzocha\Searcher\Criteria\CriteriaInterface;
 class TitleCriteria implements CriteriaInterface
 {
     /**
+     *
      * @var null
      */
     private $title = null;
@@ -30,6 +31,7 @@ class TitleCriteria implements CriteriaInterface
     }
 
     /**
+     *
      * @return bool
      */
     public function shouldBeApplied()
@@ -38,6 +40,7 @@ class TitleCriteria implements CriteriaInterface
     }
 
     /**
+     *
      * @return mixed
      */
     public function getTitle()

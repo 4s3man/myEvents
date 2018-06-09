@@ -39,6 +39,7 @@ class SignUpType extends AbstractType
         $this->popularAsserts = new PopularAssertGroups();
     }
     /**
+     *
      * @return string
      */
     public function getBlockPrefix()
@@ -62,6 +63,7 @@ class SignUpType extends AbstractType
     }
 
     /**
+     *
      * @inheritdoc
      *
      * @param FormBuilderInterface $builder

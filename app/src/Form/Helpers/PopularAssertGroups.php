@@ -16,21 +16,25 @@ use Symfony\Component\Validator\Constraints as Assert;
 class PopularAssertGroups
 {
     /**
+     *
      * @var string
      */
     private $slugRegexp = '/^[\s\p{L}0-9]+(?:[_-][\s\p{L}0-9]+)*$/u';
 
     /**
+     *
      * @var string
      */
     private $contentRegexp = '/^[^\-\"\'][^\"\';]*[^-\"\']$/';
 
     /**
+     *
      * @var string
      */
     private $name = '/^[\p{L}]+(-[\p{L}])*$/u';
 
     /**
+     *
      * @param array $groups
      *
      * @return array
@@ -44,6 +48,7 @@ class PopularAssertGroups
     }
 
     /**
+     *
      * @param array $groups
      *
      * @return array
@@ -67,6 +72,7 @@ class PopularAssertGroups
     }
 
     /**
+     *
      * @param array $groups
      *
      * @return array
@@ -95,6 +101,7 @@ class PopularAssertGroups
     }
 
     /**
+     *
      * @param array $groups
      *
      * @return array
@@ -118,6 +125,7 @@ class PopularAssertGroups
     }
 
     /**
+     *
      * @return string
      */
     public function getContentRegexp()

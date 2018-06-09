@@ -15,11 +15,13 @@ use Plummer\Calendarful\Event\RecurrentEventInterface;
 class RecurrentEvent extends Event implements RecurrentEventInterface
 {
     /**
+     *
      * @var null
      */
     protected $recurrenceType = null;
 
     /**
+     *
      * @var \DateTime|null
      */
     protected $recurrenceUntil = null;
@@ -39,6 +41,7 @@ class RecurrentEvent extends Event implements RecurrentEventInterface
     }
 
     /**
+     *
      * @return mixed|null
      */
     public function getRecurrenceType()
@@ -47,6 +50,7 @@ class RecurrentEvent extends Event implements RecurrentEventInterface
     }
 
     /**
+     *
      * @param null $type
      */
     public function setRecurrenceType($type = null)
@@ -59,6 +63,7 @@ class RecurrentEvent extends Event implements RecurrentEventInterface
     }
 
     /**
+     *
      * @return \DateTime|null
      */
     public function getRecurrenceUntil()

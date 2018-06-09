@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class LoginType extends AbstractType
 {
     /**
+     *
      * @param FormBuilderInterface $builder
      * @param array                $options
      */
@@ -69,6 +70,7 @@ class LoginType extends AbstractType
     }
 
     /**
+     *
      * @return null|string
      */
     public function getBlockPrefix()

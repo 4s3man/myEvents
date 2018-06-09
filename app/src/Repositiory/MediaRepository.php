@@ -17,6 +17,7 @@ use Doctrine\DBAL\DBALException;
 class MediaRepository extends AbstractRepository
 {
     /**
+     *
      * @var Connection|null
      */
     protected $db = null;
@@ -53,6 +54,7 @@ class MediaRepository extends AbstractRepository
     }
 
     /**
+     *
      * @param array    $photo
      *
      * @param int      $userId
