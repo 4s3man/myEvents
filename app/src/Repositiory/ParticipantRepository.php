@@ -12,9 +12,14 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Validator\Constraints\Interfaces\UniquenessInterface;
 
+/**
+ * Class ParticipantRepository
+ */
 class ParticipantRepository extends AbstractRepository implements UniquenessInterface
 {
-
+    /**
+     * @var null|EventRepository
+     */
     protected $eventRepository = null;
 
     /**
@@ -29,13 +34,18 @@ class ParticipantRepository extends AbstractRepository implements UniquenessInte
 
     //TODO z rejestracją i partycypowaniem zrobić tak żeby user wysyłał email i wtedy następowało potwierdzenie
 
-
-    public function save($participant,array $event)
+    /**
+     * @param array $participant
+     * @param array $event
+     *
+     * @throws DBALException
+     */
+    public function save($participant, array $event)
     {
         $this->db->beginTransaction();
         $participant['event_id'] = $event['id'];
         try {
-            $event['seats']--;
+            $event['seats'] -= 1;
             if (isset($event['seats']) && 0 < $event['seats']) {
                 $this->eventRepository->updateEvent($event);
                 $this->db->insert('participant', $participant);
@@ -47,7 +57,13 @@ class ParticipantRepository extends AbstractRepository implements UniquenessInte
         }
     }
 
-    public function queryAll(){
+    /**
+     * Query all from participant table
+     *
+     * @return mixed
+     */
+    public function queryAll()
+    {
         $qb = $this->db->createQueryBuilder();
         $qb->select('p.first_name', 'p.last_name', 'p.email', 'p.event_id')->from('participant', 'p');
 

@@ -8,29 +8,38 @@
 
 namespace DataManager;
 
-use Repositiory\EventRepository;
-
 /**
  * Class EventDataManager
  */
 class EventDataManager
 {
-    protected $calendarId = null;
+    /**
+     * @var int|null
+     */
+    private $calendarId = null;
 
-    protected $event = null;
+    /**
+     * @var array|null
+     */
+    private $event = null;
 
     /**
      * EventDataManager constructor.
      *
-     * @param array $formData
+     * @param array $event
      * @param int   $calendarId
      */
-    public function __construct(array $event, $calendarId = null)
+    public function __construct(array $event, $calendarId)
     {
         $this->event = $event;
         $this->calendarId = $calendarId;
     }
 
+    /**
+     * Format data from form for save to db
+     *
+     * @return array|null
+     */
     public function makeEventForSave()
     {
         $formData = $this->event;
@@ -58,13 +67,10 @@ class EventDataManager
     }
 
     /**
-     * @return null
+     * Gets signUp if needs to render it
+     *
+     * @return bool|mixed
      */
-    public function createSignUp($formFactory)
-    {
-        return 1;
-    }
-
     public function getSignUp()
     {
         $signUp = isset($this->event['sign_up']) ? $this->event['sign_up'] : false;
@@ -72,9 +78,13 @@ class EventDataManager
         return $signUp;
     }
 
+    /**
+     * Check if any seets/tickets for event remain
+     *
+     * @return bool
+     */
     public function seatsRemain()
     {
-
         return isset($this->event['seats']) && $this->event['seats'] > 0;
     }
 

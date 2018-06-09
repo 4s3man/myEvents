@@ -25,7 +25,12 @@ class MediaRepository extends AbstractRepository
 
     /**
      * MediaRepository constructor.
-     * @param null $tagsRepository
+     *
+     * @param Connection $db
+     *
+     * @param null       $userId
+     *
+     * @param null       $calendarId
      */
     public function __construct(Connection $db, $userId = null, $calendarId = null)
     {
@@ -48,18 +53,19 @@ class MediaRepository extends AbstractRepository
     }
 
     /**
-     * Save record.
+     * @param array    $photo
      *
-     * @param array $photo Photo
+     * @param int      $userId
+     * @param int|null $calnedarId
      *
-     * @return boolean Result
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function save($photo, $userId, $calnedarId = null)
     {
         $this->db->beginTransaction();
-        dump($photo);
         try {
-            if (isset($photo['id']) && ctype_digit((string)$photo['id'])) {
+            if (isset($photo['id']) && ctype_digit((string) $photo['id'])) {
                 $id = $photo['id'];
                 unset($photo['id']);
 
@@ -76,6 +82,13 @@ class MediaRepository extends AbstractRepository
         }
     }
 
+    /**
+     * Links tables media and user via id in table user_media
+     *
+     * @param int $userId
+     *
+     * @param int $mediaId
+     */
     private function linkMediaToUser($userId, $mediaId)
     {
         $this->db->insert(

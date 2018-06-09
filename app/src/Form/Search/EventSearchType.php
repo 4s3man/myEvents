@@ -8,7 +8,6 @@
 
 namespace Form\Search;
 
-use Form\Helpers\PopularAssertGroups;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

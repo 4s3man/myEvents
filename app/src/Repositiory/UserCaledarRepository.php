@@ -11,6 +11,7 @@ namespace Repositiory;
 use DataManager\UserCalendarDataManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Utils\MyPaginatorShort;
 
 /**
  * Class UserCaledarRepository
@@ -56,6 +57,7 @@ class UserCaledarRepository extends AbstractRepository
      */
     public function save(array $calendar, $userId)
     {
+        //TODO user update
         $this->db->beginTransaction();
 
         try {
@@ -69,6 +71,57 @@ class UserCaledarRepository extends AbstractRepository
             $this->db->rollBack();
             throw $e;
         }
+    }
+
+    public function findOneById($userCalendarId)
+    {
+        $qb = $this->queryAll()->where('id = :id')
+            ->setParameter(':id', $userCalendarId, \PDO::PARAM_INT);
+        $result = $qb->execute()->fetch();
+
+        return $result ? $result : [];
+    }
+
+    public function updateUserRoleFoundById($userClendarId, $data)
+    {
+       return $this->db->update('user_calendars', $data, ['id' => $userClendarId]);
+    }
+
+    public function deleteLink($userCalendarId)
+    {
+        $this->db->delete('user_calendars', ['id' => $userCalendarId]);
+    }
+
+    /**
+     * Link user to calendar
+     *
+     * @param int $userId
+     * @param int $userRole
+     * @param int $calendarId
+     */
+    public function linkUserToCalendar($userId, $userRole, $calendarId)
+    {
+        if ($calendarId && ctype_digit((string) $calendarId)) {
+         $this->db->insert(
+            'user_calendars',
+                [
+                    'user_id' => $userId,
+                    'user_role' => $userRole,
+                    'calendar_id' => $calendarId,
+                ]
+            );
+        }
+    }
+
+    public function isLinked($userId, $calendarId)
+    {
+        $qb = $this->queryAll()->where('user_id = :userId')
+            ->andWhere('calendar_id = :calendarId')
+            ->setParameter(':userId', $userId, \PDO::PARAM_STR)
+            ->setParameter(':calendarId', $calendarId, \PDO::PARAM_STR);
+        $result = $qb->execute()->fetchAll();
+
+        return $result && count($result);
     }
 
     /**
@@ -92,6 +145,43 @@ class UserCaledarRepository extends AbstractRepository
         }
     }
 
+    public function queryLinkedUserByCalendarId($calendarId)
+    {
+        $qb = $this->db->createQueryBuilder();
+        $qb = $qb->select('u.email', 'u.first_name', 'u.last_name', 'uC.user_role', 'uC.id')
+            ->from('user_calendars', 'uC')
+            ->innerJoin('uC', 'user', 'u', 'uC.user_id = u.id')
+            ->where('uC.calendar_id = :calendarId')
+            ->setParameter(':calendarId', $calendarId, \PDO::PARAM_INT);
+
+        return $qb;
+    }
+
+    public function findLinkedUserById($userCalendarId)
+    {
+        $qb = $this->db->createQueryBuilder();
+        $qb = $qb->select('u.email', 'u.first_name', 'u.last_name', 'uC.user_role', 'uC.id')
+            ->from('user_calendars', 'uC')
+            ->innerJoin('uC', 'user', 'u', 'uC.user_id = u.id')
+            ->where('uC.id = :id')
+            ->setParameter(':id', $userCalendarId, \PDO::PARAM_INT);
+        $result = $qb->execute()->fetch();
+
+        return $result ? $result : [];
+    }
+
+    public function getPaginatedUserAndRolesByCalendarId($calendarId, $page)
+    {
+        $paginator = new MyPaginatorShort(
+            $this->queryLinkedUserByCalendarId($calendarId),
+            5,
+            'uC.id',
+            $page
+        );
+
+        return $paginator->pagerfanta;
+    }
+
     /**
      * Returns query for join user_calendar and calendar data
      *
@@ -102,6 +192,7 @@ class UserCaledarRepository extends AbstractRepository
     public function userCalendarJoinQuery($userId)
     {
         //TODO do search zrobic osobny query
+        //TODO zmienić nazwę
         $qb = $this->db->createQueryBuilder();
         $qb = $qb->select('uC.calendar_id', 'c.title', 'c.description')
             ->from('user_calendars', 'uC')

@@ -22,12 +22,17 @@ class DateRange extends Constraint
     public $min;
     public $max;
 
+    /**
+     * DateRange constructor.
+     *
+     * @param null $options
+     */
     public function __construct($options = null)
     {
         parent::__construct($options);
 
         if (null === $this->min && null === $this->max) {
-            throw new MissingOptionsException('Either option "min" or "max" must be given for constraint ' . __CLASS__, array('min', 'max'));
+            throw new MissingOptionsException(sprintf('Either option "min" or "max" must be given for constraint %s', __CLASS__), array('min', 'max'));
         }
 
         if (null !== $this->min) {

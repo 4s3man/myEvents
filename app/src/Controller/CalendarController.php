@@ -13,12 +13,15 @@ use DataManager\EventDataManager;
 use DataManager\SessionMessagesDataManager;
 use Form\CalendarType;
 use Form\EventType;
+use Form\LinkUserCalendarType;
 use Form\Search\EventSearchType;
 use Form\SignUpType;
+use Form\UserRoleType;
 use Repositiory\CalendarRepository;
 use Repositiory\EventRepository;
 use Repositiory\ParticipantRepository;
 use Repositiory\TagRepository;
+use Repositiory\UserCaledarRepository;
 use Repositiory\UserRepository;
 use Search\Criteria\TitleCriteria;
 use Search\Criteria\TypeCriteria;
@@ -27,6 +30,9 @@ use Search\CriteriaBuilder\TypeCriteriaBuilder;
 use Search\DataManager\EventSearchDataManager;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
 use Utils\MyPaginatorShort;
 
@@ -68,18 +74,27 @@ class CalendarController implements ControllerProviderInterface
             ->assert('calendarId', '[1-9]\d*')
             ->assert('eventId', '[1-9]\d*')
             ->bind('eventEdit');
-        $controller->get('/{calendarId}/event/{eventId}/edit', [$this, 'eventDeleteAction'])
+        $controller->get('/{calendarId}/event/{eventId}/delete', [$this, 'eventDeleteAction'])
             ->assert('calendarId', '[1-9]\d*')
             ->assert('eventId', '[1-9]\d*')
             ->bind('eventDelete');
-        $controller->match('{calendarId}/index/page/{page}', [$this, 'calendarIndexAction'])
+        $controller->match('{calendarId}/user/index/page/{page}', [$this, 'calendarUserIndexAction'])
             ->method('POST|GET')
             ->assert('calendarId', '[1-9]\d*')
             ->assert('page', '[1-9]\d*')
             ->bind('userIndex');
-        $controller->get('{calendarId}/add', [$this, 'userAddAction'])
+        $controller->match('{calendarId}/addUser', [$this, 'userAddAction'])
+            ->method('POST|GET')
             ->assert('calendarId', '[1-9]\d*')
             ->bind('userAdd');
+        $controller->match('/{calendarId}/{userCalendarId}/editUser', [$this, 'userEditAction'])
+            ->method('POST|GET')
+            ->assert('userCalendarId', '[1-9]\d*')
+            ->bind('userEdit');
+        $controller->match('/{calendarId}/{userCalendarId}/deleteUser', [$this, 'userDeleteAction'])
+            ->method('POST|GET')
+            ->assert('userCalendarId', '[1-9]\d*')
+            ->bind('userDelete');
         $controller->match('/{calendarId}/edit', [$this, 'editCalendarAction'])
             ->method('POST|GET')
             ->assert('calendarId', '[1-9]\d*')
@@ -144,7 +159,6 @@ class CalendarController implements ControllerProviderInterface
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             $eventRepository->save($form->getData(), $calendarId);
             $sessionMessagesManager->added();
 
@@ -233,14 +247,19 @@ class CalendarController implements ControllerProviderInterface
      *
      * @param Application $app
      *
-     * @param String      $calendarId
-     * @param String      $eventId
+     * @param int         $calendarId
+     * @param int         $eventId
+     *
+     * @param Request     $request
      *
      * @return mixed
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function eventShowAction(Application $app, $calendarId, $eventId, Request $request)
     {
-        //TODO wygląd eventu, zapisy
+        //TODO spytać się jak by to lepiej
+        //TODO na koniec sign up przez potwierdzenie email
         $eventRepository = new EventRepository($app['db']);
         $participantRepository = new ParticipantRepository($app['db']);
         $eventDataManager = new EventDataManager(
@@ -256,7 +275,10 @@ class CalendarController implements ControllerProviderInterface
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
+                $sessionMessagesMenager = new SessionMessagesDataManager($app['session']);
+
                 $participantRepository->save($form->getData(), $eventDataManager->getEvent());
+                $sessionMessagesMenager->signedUp();
             }
 
             $signUpFormView = $form->createView();
@@ -267,13 +289,12 @@ class CalendarController implements ControllerProviderInterface
             $info = 'info.no_seats_left';
         }
 
-
-
         return $app['twig']->render(
             'calendar/singleEvent.html.twig',
             [
                 'event' => $eventDataManager->makeEvent(),
                 'signUp' => $signUpFormView,
+                'info' => $info,
                 'calendarId' => $calendarId,
                 'eventId' => $eventId,
             ]
@@ -312,17 +333,17 @@ class CalendarController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function calendarIndexAction(Application $app, $calendarId, $page = 1)
+    public function calendarUserIndexAction(Application $app, $calendarId, $page = 1)
     {
         //TODO zrobić index urzytkowników kalendarza
-        $userRepository = new UserRepository($app['db']);
-        $paginator = new MyPaginatorShort($userRepository->queryAll(), 5, 'id', $page);
+        $userCalendarRepository = new UserCaledarRepository($app['db']);
+        $paginator = $userCalendarRepository->getPaginatedUserAndRolesByCalendarId($calendarId, $page);
 
         return $app['twig']->render(
             'calendar/userIndex.html.twig',
             [
                 'calendarId' => $calendarId,
-                'pagerfanta' => $paginator->pagerfanta,
+                'pagerfanta' => $paginator,
                 'routeName' => 'userIndex',
             ]
         );
@@ -338,14 +359,142 @@ class CalendarController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function userAddAction(Application $app, $calendarId)
+    public function userAddAction(Application $app, $calendarId, Request $request)
     {
+        $sessionMessagesDataManager = new SessionMessagesDataManager($app['session']);
+        $userRepository = new UserRepository($app['db']);
+        $userCalendar = [];
+        $form = $app['form.factory']
+            ->createBuilder(LinkUserCalendarType::class, $userCalendar, ['repository' => $userRepository])
+            ->getForm();
+        $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid()) {
+            $userCalendarRepository = new UserCaledarRepository($app['db']);
+            $userCalendar = $form->getData();
+            $user = $userRepository->findOneByEmail($userCalendar['email']);
+
+            if ($userCalendarRepository->isLinked($user['id'], $calendarId)) {
+                $sessionMessagesDataManager->alereadyLinked();
+            } else {
+                $userCalendarRepository->linkUserToCalendar(
+                    $user['id'],
+                    $userCalendar['user_role'],
+                    $calendarId
+                );
+                $sessionMessagesDataManager->added();
+
+                return $app->redirect($app['url_generator']->generate(
+                    'userIndex',
+                    [
+                        'calendarId' => $calendarId,
+                        'page' => 1,
+                    ]
+                ),
+                    301
+                );
+            }
+        }
 
         return $app['twig']->render(
-            'user/add.html.twig',
+            'calendar/addUser.html.twig',
             [
+                'form' => $form->createView(),
                 'calendarId' => $calendarId,
+            ]
+        );
+    }
+
+    /**
+     * @param Application $app
+     *
+     * @param int         $userCalendarId
+     *
+     * @param Request     $request
+     *
+     * @return mixed
+     */
+    public function userEditAction(Application $app, $calendarId, $userCalendarId, Request $request)
+    {
+        $userCalendarRepository = new UserCaledarRepository($app['db']);
+        $sessionDataManager = new SessionMessagesDataManager($app['session']);
+
+        $userType = $userCalendarRepository->findOneById($userCalendarId);
+        $form = $app['form.factory']
+            ->createBuilder(UserRoleType::class, $userType)
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $userCalendarRepository->updateUserRoleFoundById($userCalendarId, $form->getData());
+            $sessionDataManager->changed();
+
+            return $app->redirect($app['url_generator']->generate(
+                'userIndex',
+                [
+                    'calendarId' => $calendarId,
+                    'page' => 1,
+                ]
+            ),
+                301
+            );
+        }
+
+        return $app['twig']->render(
+            'calendar/editUser.html.twig',
+            [
+                'form' => $form->createView(),
+                'userCalendarId' => $userCalendarId,
+            ]
+        );
+    }
+
+    public function userDeleteAction(Application $app, $calendarId, $userCalendarId, Request $request)
+    {
+        $userCalendarRepository = new UserCaledarRepository($app['db']);
+        $userCalendar = $userCalendarRepository->findLinkedUserById($userCalendarId);
+        $sessionDataManager = new SessionMessagesDataManager($app['session']);
+
+        if (!$userCalendar) {
+            $sessionDataManager->recordNotFound();
+            return $app->redirect($app['url_generator']->generate(
+                'userIndex',
+                [
+                    'calendarId' => $calendarId,
+                    'page' => 1,
+                ]
+            ),
+                301
+            );
+        }
+            $form = $app['form.factory']
+                ->createBuilder(FormType::class, $userCalendar)
+                ->add('id', HiddenType::class)
+                ->getForm();
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $form->getData();
+                $userCalendarRepository->deleteLink($userCalendarId);
+                $sessionDataManager->deleted();
+                return $app->redirect($app['url_generator']->generate(
+                    'userIndex',
+                    [
+                        'calendarId' => $calendarId,
+                        'page' => 1,
+                    ]
+                ),
+                    301
+                );
+            }
+
+        return $app['twig']->render(
+            'calendar/deleteUser.html.twig',
+            [
+                'form' => $form->createView(),
+                'userCalendarId' => $userCalendarId,
+                'dataToDelete' => $userCalendar,
             ]
         );
     }

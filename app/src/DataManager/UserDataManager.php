@@ -10,7 +10,6 @@ namespace DataManager;
 
 use Pagerfanta\Exception\InvalidArgumentException;
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
-use Symfony\Component\Security\Http\Tests\TestFailureHandlerInterface;
 
 /**
  * Class UserPasswordManager

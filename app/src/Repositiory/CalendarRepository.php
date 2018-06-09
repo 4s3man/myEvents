@@ -16,6 +16,15 @@ use Doctrine\DBAL\Connection;
 class CalendarRepository extends AbstractRepository
 {
     /**
+     * CalendarRepository constructor.
+     * @param Connection $db
+     */
+    public function __construct(Connection $db)
+    {
+        parent::__construct($db);
+    }
+
+    /**
      * Query all from calendar
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder
@@ -23,7 +32,6 @@ class CalendarRepository extends AbstractRepository
     public function queryAll()
     {
         $query = $this->db->createQueryBuilder();
-
 
         return $query->select('c.id', 'c.title', 'c.description')->from('calendar', 'c');
     }

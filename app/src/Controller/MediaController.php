@@ -8,18 +8,26 @@
 
 namespace Controller;
 
-
 use Form\MediaType;
 use Repositiory\MediaRepository;
 use Service\FileUploader;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
-use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Utils\MyPaginatorShort;
 
+/**
+ * Class MediaController
+ */
 class MediaController implements ControllerProviderInterface
 {
+    /**
+     * Sets routing
+     *
+     * @param Application $app
+     *
+     * @return mixed|\Silex\ControllerCollection
+     */
     public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
@@ -51,6 +59,15 @@ class MediaController implements ControllerProviderInterface
         return $controller;
     }
 
+    /**
+     * @param Application $app
+     *
+     * @param Request     $request
+     *
+     * @return mixed
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function addMediaAction(Application $app, Request $request)
     {
         //TODO get id from logged user
@@ -78,16 +95,26 @@ class MediaController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * @param Application $app
+     *
+     * @param int         $page
+     *
+     * @param Request     $request
+     *
+     * @return mixed
+     */
     public function userMediaIndexAction(Application $app, $page, Request $request)
     {
         //TODO get id from logged user
         //TODO search witch data transformer, nie zrobic wlasne :(
+        //TODO paginator do repozytorium i inne query do niego
         $userId = 1;
 
         $mediaRepository = new MediaRepository($app['db']);
 
         $paginator = new MyPaginatorShort(
-            $mediaRepository->findMediaWitchIdIn(4),
+            $mediaRepository->queryAll(),
             5,
             'm.id',
             $page
@@ -102,16 +129,27 @@ class MediaController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * @param Application $app
+     *
+     * @param int         $calendarId
+     * @param int         $page
+     *
+     * @param Request     $request
+     *
+     * @return mixed
+     */
     public function calendarMediaIndexAction(Application $app, $calendarId, $page, Request $request)
     {
         //TODO get id from logged user
         //TODO search witch data transformer, nie zrobic wlasne
+        //TODO paginator do repozytorium i inne query do niego
         $userId = 1;
 
         $mediaRepository = new MediaRepository($app['db']);
 
         $paginator = new MyPaginatorShort(
-            $mediaRepository->findMediaWitchIdIn(4),
+            $mediaRepository->queryAll(),
             5,
             'm.id',
             $page
@@ -126,5 +164,4 @@ class MediaController implements ControllerProviderInterface
             ]
         );
     }
-
 }

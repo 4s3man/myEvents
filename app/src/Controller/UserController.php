@@ -10,7 +10,6 @@ namespace Controller;
 
 use DataManager\SessionMessagesDataManager;
 use Form\RegisterType;
-use Pagerfanta\Pagerfanta;
 use Repositiory\UserRepository;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;

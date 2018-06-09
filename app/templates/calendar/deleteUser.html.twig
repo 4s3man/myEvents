@@ -1,0 +1,15 @@
+{% extends 'default/_baseDelete.html.twig' %}
+{% block title %}
+    {{ 'title.delete_link'|trans }}
+{% endblock %}
+
+{% block dataToDeleteDisplay %}
+    {% if dataToDelete is defined %}
+        <div class="paginator-items userCalendarLink">
+            <div class="paginator-item email">{{ dataToDelete.email }}</div>
+            <div class="paginator-item user_role">{{ dataToDelete.user_role }}</div>
+            <div class="paginator-item first_name">{{ dataToDelete.first_name }}</div>
+            <div class="paginator-item last_name">{{ dataToDelete.last_name }}</div>
+        </div>
+    {% endif %}
+{% endblock %}

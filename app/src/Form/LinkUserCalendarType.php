@@ -10,6 +10,7 @@ namespace Form;
 
 use Form\Helpers\PopularAssertGroups;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,28 +23,14 @@ use Validator\Constraints as CustomAsssert;
  *
  * Used by creatBuilder funcition in controller
  */
-class SignUpType extends AbstractType
+class LinkUserCalendarType extends AbstractType
 {
-    /**
-     * Asserts helper
-     *
-     * @var PopularAssertGroups|null
-     */
-    private $popularAsserts = null;
-
-    /**
-     * SignUpType constructor.
-     */
-    public function __construct()
-    {
-        $this->popularAsserts = new PopularAssertGroups();
-    }
     /**
      * @return string
      */
     public function getBlockPrefix()
     {
-        return 'sign_up_type';
+        return 'link_user_calendar_type';
     }
 
     /**
@@ -55,7 +42,7 @@ class SignUpType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'validation_groups' => 'sign_up_default',
+                'validation_groups' => 'link_user_calendar_default',
                 'repository' => null,
             ]
         );
@@ -69,27 +56,6 @@ class SignUpType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-        $builder->add(
-            'first_name',
-            TextType::class,
-            [
-                'label' => 'label.first_name',
-                'required' => true,
-                'attr' => [],
-                'constraints' => $this->popularAsserts->name([ 'sign_up_default' ]),
-            ]
-        );
-        $builder->add(
-            'last_name',
-            TextType::class,
-            [
-                'label' => 'label.last_name',
-                'required' => true,
-                'attr' => [],
-                'constraints' => $this->popularAsserts->name([ 'sign_up_default' ]),
-            ]
-        );
         $builder->add(
             'email',
             EmailType::class,
@@ -99,21 +65,33 @@ class SignUpType extends AbstractType
                 'constraints' => [
                     new Assert\Email(
                         [
-                            'groups' => [ 'sign_up_default' ],
+                            'groups' => [ 'link_user_calendar_default' ],
                         ]
                     ),
-                    new CustomAsssert\Uniqueness(
+                    new CustomAsssert\NotUniqueness(
                         [
-                        'groups' => [ 'sign_up_default' ],
+                        'groups' => [ 'link_user_calendar_default' ],
                         'repository' => isset($options['repository']) ? $options['repository'] : null,
                         'uniqueColumn' => 'email',
                         ]
                     ),
                     new Assert\NotBlank(
                         [
-                             'groups' => ['sign_up_default'],
+                             'groups' => ['link_user_calendar_default'],
                         ]
                     ),
+                ],
+            ]
+        );
+
+        $builder->add(
+            'user_role',
+            ChoiceType::class,
+            [
+                'label' => 'label.user_choice_type',
+                'choices' => [
+                    'editor' => 'EDITOR',
+                    'admin' => 'ADMIN',
                 ],
             ]
         );

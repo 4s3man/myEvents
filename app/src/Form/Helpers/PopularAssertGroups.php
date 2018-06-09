@@ -8,7 +8,6 @@
 
 namespace Form\Helpers;
 
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**

@@ -8,16 +8,11 @@
 
 namespace Controller;
 
-use DataManager\EventDataManager;
 use DataManager\SessionMessagesDataManager;
-use Doctrine\DBAL\Query\QueryBuilder;
 use Form\CalendarType;
 use Form\Search\SearchType;
 use Repositiory\CalendarRepository;
 use Repositiory\UserCaledarRepository;
-use Search\Criteria\TitleCriteria;
-use Search\CriteriaBuilder\TitleCriteriaBuilder;
-use Search\DataManager\EventSearchDataManager;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -68,7 +63,7 @@ class UserCalendarController implements ControllerProviderInterface
     public function userCalendarIndexAction(Application $app, $userId, $page, Request $request)
     {
         $userCalendarRepository = new UserCaledarRepository($app['db']);
-        $query = $userCalendarRepository->userCalendarJoinQuery( $userId);
+        $query = $userCalendarRepository->userCalendarJoinQuery($userId);
         //        $res = $query->where($query->expr()->isNotNull('typ'))
 
 
@@ -175,8 +170,6 @@ class UserCalendarController implements ControllerProviderInterface
 
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]), 301);
         }
-        //TODO czy nie trzeba tutaj dodać walidacji formularza?
-        //TODO nie trzeba bo jest sprawdzane wyrzej czy kalendarz jest
         $form = $app['form.factory']->createBuilder(FormType::class, $calendar)->add('id', HiddenType::class)->getForm();
         $form->handleRequest($request);
 

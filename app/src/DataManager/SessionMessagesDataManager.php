@@ -54,6 +54,16 @@ class SessionMessagesDataManager
         $this->success('registered');
     }
 
+    public function emailSend()
+    {
+        $this->success('email_send');
+    }
+
+    public function signedUp()
+    {
+        $this->success('signed_up');
+    }
+
     /**
      * Display success deleted
      */
@@ -76,6 +86,14 @@ class SessionMessagesDataManager
     public function invalidInput()
     {
         $this->error('invalid_input');
+    }
+
+    /**
+     * Error already linked
+     */
+    public function alereadyLinked()
+    {
+        $this->error('already_linked');
     }
 
     /**
@@ -104,7 +122,7 @@ class SessionMessagesDataManager
         $this->session->getFlashBag()->add(
             'messages',
             [
-                'type' => 'error',
+                'type' => 'danger',
                 'message' => 'message.'.$action.'_error',
             ]
         );

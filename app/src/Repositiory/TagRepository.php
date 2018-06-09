@@ -17,6 +17,14 @@ use Doctrine\DBAL\Connection;
 class TagRepository extends AbstractRepository
 {
     /**
+     * TagRepository constructor.
+     */
+    public function __construct(Connection $db)
+    {
+        parent::__construct($db);
+    }
+
+    /**
      * Query all from calendar
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder

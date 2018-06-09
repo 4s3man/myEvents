@@ -11,6 +11,9 @@ namespace Validator\Constraints;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
+/**
+ * Class DateRangeValidator
+ */
 class DateRangeValidator extends ConstraintValidator
 {
     /**
@@ -45,7 +48,12 @@ class DateRangeValidator extends ConstraintValidator
         }
     }
 
-    protected function formatDate($date)
+    /**
+     * @param \DateTime $date
+     *
+     * @return string
+     */
+    protected function formatDate(\DateTime $date)
     {
         $formatter = new \IntlDateFormatter(
             null,
@@ -60,7 +68,9 @@ class DateRangeValidator extends ConstraintValidator
 
     /**
      * @param  \IntlDateFormatter $formatter
+     *
      * @param  \Datetime          $date
+     *
      * @return string
      */
     protected function processDate(\IntlDateFormatter $formatter, \Datetime $date)

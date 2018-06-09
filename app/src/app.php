@@ -1,7 +1,6 @@
 <?php
 
 use Silex\Application;
-use Symfony\Component\HttpFoundation\Request;
 use Silex\Provider\AssetServiceProvider;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;

@@ -10,8 +10,6 @@ namespace Repositiory;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
-use Silex\Provider\SecurityServiceProvider;
-use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Validator\Constraints\Interfaces\UniquenessInterface;
 
@@ -20,6 +18,16 @@ use Validator\Constraints\Interfaces\UniquenessInterface;
  */
 class UserRepository extends AbstractRepository implements UniquenessInterface
 {
+    /**
+     * UserRepository constructor.
+     * @param Connection $db
+     */
+    public function __construct(Connection $db)
+    {
+        parent::__construct($db);
+    }
+
+
     /**
      * Prepare first query part
      *
@@ -100,6 +108,22 @@ class UserRepository extends AbstractRepository implements UniquenessInterface
         } catch (UsernameNotFoundException $exception) {
             throw $exception;
         }
+    }
+
+    /**
+     * Finds one record by email
+     *
+     * @param string $email
+     *
+     * @return array|mixed
+     */
+    public function findOneByEmail($email)
+    {
+        $qb = $this->queryAll()->where('u.email = :email')
+            ->setParameter(':email', $email, \PDO::PARAM_STR);
+        $result = $qb->execute()->fetch();
+
+        return $result ? $result : [];
     }
 
     /**

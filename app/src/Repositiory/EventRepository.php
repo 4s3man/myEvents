@@ -15,7 +15,8 @@ use Plummer\Calendarful\Event\EventInterface;
 use Plummer\Calendarful\Event\EventRegistryInterface;
 
 /**
- * Class CalendarRepository
+ * Class EventRepository
+
  */
 class EventRepository extends AbstractRepository implements EventRegistryInterface
 {
@@ -24,14 +25,22 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      */
     protected $db = null;
 
-    protected $tagRepository = null;
-
-    protected $calendarId = null;
+    /**
+     * @var null|TagRepository
+     */
+    private $tagRepository = null;
 
     /**
-     * CalendarRepository constructor.
+     * @var int|null
+     */
+    private $calendarId = null;
+
+    /**
+     * EventRepository constructor.
      *
      * @param Connection $db
+     *
+     * @param int|null   $calendarId
      */
     public function __construct(Connection $db, $calendarId = null)
     {
@@ -100,9 +109,11 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     /**
      * Saves data to event table
      *
-     * @param array $event
+     * @param array $eventRaw
+     * @param int   $calendarId
      *
-     * @return int
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function save($eventRaw, $calendarId)
     {
@@ -141,13 +152,11 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      */
     public function getEvents(array $filters = array())
     {
-        $innerQb = $this->db->createQueryBuilder();
         $qb = $this->queryAll()
             ->where('DATEDIFF(start, :toDate) <=0')
             ->andWhere('DATEDIFF(end, :fromDate) >=0')
             ->setParameter(':toDate', $filters['toDate'], \PDO::PARAM_STR)
             ->setParameter(':fromDate', $filters['fromDate'], \PDO::PARAM_STR);
-
         $result = $qb->execute()->fetchAll();
 
         return isset($result) ? $result : [];

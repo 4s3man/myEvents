@@ -8,7 +8,6 @@
 
 namespace Form\DataTransformer;
 
-use Repositiory\TagRepository;
 use Symfony\Component\Form\DataTransformerInterface;
 
 /**
@@ -19,20 +18,21 @@ class DateDataTransformer implements DataTransformerInterface
     /**
      * Function runed filling form witch data
      *
-     * @param mixed $tags
+     * @param string $date
      *
      * @return mixed|string
      */
     public function transform($date)
     {
         $date = new \DateTime('now');
+
         return $date;
     }
 
     /**
-     * Function runed at form submmit
+     * Function runed at form submit
      *
-     * @param mixed $string
+     * @param mixed $date
      *
      * @return array|mixed
      */
