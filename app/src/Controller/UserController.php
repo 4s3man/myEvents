@@ -41,22 +41,6 @@ class UserController implements ControllerProviderInterface
     }
 
     /**
-     *
-     * @param Application $app
-     *
-     * @return mixed
-     */
-    public function loginAction(Application $app)
-    {
-        return $app['twig']->render(
-            'user/login.html.twig',
-            [
-
-            ]
-        );
-    }
-
-    /**
      * Register user
      *
      * @param Application $app

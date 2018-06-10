@@ -1,10 +1,11 @@
 <?php
 
 use Controller\AuthController;
+use Controller\EventController;
 use Controller\MediaController;
 use Controller\SettingsControler;
 use Controller\UserController;
-use Controller\UserCalendarController;
+use Controller\CalendarUserController;
 use Controller\CalendarController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,6 +40,7 @@ $app->error(
 
 $app->mount('/user', new UserController());
 $app->mount('/calendar', new CalendarController());
-$app->mount('/userCalendar', new UserCalendarController());
+$app->mount('/event', new EventController());
+$app->mount('/calendarUser', new CalendarUserController());
 $app->mount('/auth', new AuthController());
 $app->mount('/media', new MediaController());

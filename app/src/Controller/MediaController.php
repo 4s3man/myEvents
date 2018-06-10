@@ -9,6 +9,7 @@
 namespace Controller;
 
 use Form\MediaType;
+use Form\Search\SearchType;
 use Repositiory\MediaRepository;
 use Service\FileUploader;
 use Silex\Api\ControllerProviderInterface;
@@ -38,19 +39,16 @@ class MediaController implements ControllerProviderInterface
             ->assert('userId', '[1-9]\d*')
             ->assert('page', '[1-9]\d*')
             ->bind('addMedia');
-
         $controller->match('/{mediaId}/edit', [$this, 'editMediaAction'])
             ->method('POST|GET')
             ->bind('editMedia');
         $controller->match('/{mediaId}/delete', [$this, 'editMediaAction'])
             ->method('POST|GET')
             ->bind('deleteMedia');
-
         $controller->match('/index/page/{page}', [$this, 'userMediaIndexAction'])
             ->assert('page', '[1-9]\d*')
             ->bind('userMediaIndex');
-
-        $controller->match('{calendarId}/index/page/{page}', [$this, 'calendarMediaIndexAction'])
+        $controller->match('calendar/{calendarId}/index/page/{page}', [$this, 'calendarMediaIndexAction'])
             ->method('POST|GET')
             ->assert('userId', '[1-9]\d*')
             ->assert('page', '[1-9]\d*')
@@ -100,32 +98,35 @@ class MediaController implements ControllerProviderInterface
      *
      * @param Application $app
      *
-     * @param int         $page
-     *
      * @param Request     $request
+     *
+     * @param int         $page
      *
      * @return mixed
      */
-    public function userMediaIndexAction(Application $app, $page, Request $request)
+    public function userMediaIndexAction(Application $app, Request $request, $page = 1)
     {
         //TODO get id from logged user
-        //TODO search witch data transformer, nie zrobic wlasne :(
-        //TODO paginator do repozytorium i inne query do niego
         $userId = 1;
 
         $mediaRepository = new MediaRepository($app['db']);
+        $queryParams = ['userId' => $userId, 'page' => $page];
+        $paginator = $mediaRepository->getSearchedAndPaginatedRecordsForUser($queryParams);
 
-        $paginator = new MyPaginatorShort(
-            $mediaRepository->queryAll(),
-            5,
-            'm.id',
-            $page
-        );
+        $form = $app['form.factory']
+            ->createBuilder(SearchType::class)
+            ->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $paginator = $mediaRepository->getSearchedAndPaginatedRecordsForUser($queryParams, $form->getData());
+        }
 
         return $app['twig']->render(
             'media/index.html.twig',
             [
-                'pagerfanta' => $paginator->pagerfanta,
+                'form' => $form->createView(),
+                'pagerfanta' => $paginator,
                 'userId' => $userId,
             ]
         );
@@ -136,13 +137,14 @@ class MediaController implements ControllerProviderInterface
      * @param Application $app
      *
      * @param int         $calendarId
-     * @param int         $page
      *
      * @param Request     $request
      *
+     * @param int         $page
+     *
      * @return mixed
      */
-    public function calendarMediaIndexAction(Application $app, $calendarId, $page, Request $request)
+    public function calendarMediaIndexAction(Application $app, $calendarId, Request $request, $page = 1)
     {
         //TODO get id from logged user
         //TODO search witch data transformer, nie zrobic wlasne
@@ -151,17 +153,24 @@ class MediaController implements ControllerProviderInterface
 
         $mediaRepository = new MediaRepository($app['db']);
 
-        $paginator = new MyPaginatorShort(
-            $mediaRepository->queryAll(),
-            5,
-            'm.id',
-            $page
-        );
+        $queryParams = ['userId' => $userId, 'calendarId' => $calendarId, 'page' => $page];
+        $paginator = $mediaRepository->getSearchedAndPaginatedRecordsForUserAndCalendar($queryParams);
+
+        $form = $app['form.factory']
+            ->createBuilder(SearchType::class)
+            ->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $paginator = $mediaRepository
+                ->getSearchedAndPaginatedRecordsForUserAndCalendar($queryParams, $form->getData());
+        }
 
         return $app['twig']->render(
             'media/index.html.twig',
             [
-                'pagerfanta' => $paginator->pagerfanta,
+                'form' => $form->createView(),
+                'pagerfanta' => $paginator,
                 'userId' => $userId,
                 'calenarId' => $calendarId,
             ]

@@ -8,8 +8,10 @@
 
 namespace Repositiory;
 
+use DataManager\Search\SearchDataManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Utils\MyPaginatorShort;
 
 /**
  * Class CalendarRepository
@@ -39,6 +41,47 @@ class MediaRepository extends AbstractRepository
         $this->tagsRepository = new TagRepository($db);
     }
 
+    /**
+     * Gets paginated results form modified witch searchData query
+     * @param array $queryParams
+     * @param null  $searchData
+     *
+     * @return null|\Pagerfanta\Pagerfanta
+     */
+    public function getSearchedAndPaginatedRecordsForUserAndCalendar($queryParams, $searchData = null)
+    {
+        $query = $this->queryCalendarAndUserMedia($queryParams['userId'], $queryParams['calendarId']);
+        $searchDataManager = new SearchDataManager($query, $searchData);
+        $paginator = new MyPaginatorShort(
+            $query,
+            '5',
+            'm.id',
+            $queryParams['page']
+        );
+
+        return $paginator->pagerfanta;
+    }
+
+    /**
+     * Gets paginated results form modified witch searchData query
+     * @param array $queryParams
+     * @param null  $searchData
+     *
+     * @return null|\Pagerfanta\Pagerfanta
+     */
+    public function getSearchedAndPaginatedRecordsForUser($queryParams, $searchData = null)
+    {
+        $query = $this->queryUserMedia($queryParams['userId']);
+        $searchDataManager = new SearchDataManager($query, $searchData);
+        $paginator = new MyPaginatorShort(
+            $query,
+            '5',
+            'm.id',
+            $queryParams['page']
+        );
+
+        return $paginator->pagerfanta;
+    }
 
     /**
      * Query all from calendar
@@ -91,7 +134,7 @@ class MediaRepository extends AbstractRepository
      *
      * @param int $mediaId
      */
-    private function linkMediaToUser($userId, $mediaId)
+    public function linkMediaToUser($userId, $mediaId)
     {
         $this->db->insert(
             'user_media',
@@ -100,5 +143,49 @@ class MediaRepository extends AbstractRepository
                'media_id' => $mediaId,
             ]
         );
+    }
+
+    public function linkMediaToCalendar($calendarId, $mediaId)
+    {
+        $this->db->insert(
+            'calendar_media',
+            [
+                'calendar_id' => $calendarId,
+                'media_id' => $mediaId,
+            ]
+        );
+    }
+
+    private function queryUserMedia($userId){
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('uM.user_id', 'm.id','m.photo','m.title')->from('media', 'm')
+            ->join('m', 'user_media','uM', 'uM.media_id = m.id')
+            ->where('uM.user_id = :userId')
+            ->setParameter(':userId', $userId, \PDO::PARAM_INT);
+
+        return $qb;
+    }
+
+    private function queryCalendarMedia($calendarId){
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('cM.calendar_id', 'm.id','m.photo','m.title')->from('media', 'm')
+            ->join('m', 'calendar_media','cM', 'cM.media_id = m.id')
+            ->where('cM.calendar_id= :calendarId')
+            ->setParameter(':calendarId', $calendarId, \PDO::PARAM_INT);
+
+        return $qb;
+    }
+
+    public function queryCalendarAndUserMedia($calendarId, $userId){
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('m.id','m.photo','m.title')->from('media', 'm')
+            ->leftJoin('m', 'calendar_media','cM', 'cM.media_id = m.id')
+            ->leftJoin('m','user_media','uM','uM.media_id = m.id')
+            ->where('cM.calendar_id = :calendarId')
+            ->orWhere('uM.user_id = :userId')
+            ->setParameter(':calendarId', $calendarId, \PDO::PARAM_INT)
+            ->setParameter(':userId', $userId, \PDO::PARAM_INT);
+
+        return $qb;
     }
 }

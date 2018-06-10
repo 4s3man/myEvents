@@ -86,8 +86,6 @@ class CalendarDataManager
 
             $this->range = $this->setRange();
 
-            //TODO jak translacja na polski
-            //zrobic pod koniec ich nazwa |trans albo w ogole
             $this->holidays = Yasumi::create('Poland', $this->date->format('Y'));
 
             $eventsRaw = $eventRepository

@@ -36,7 +36,6 @@ class CalendarRepository extends AbstractRepository
         $qb->select('c.id', 'c.title', 'c.description')->from('calendar', 'c');
 
         return $qb;
-
     }
 
     /**

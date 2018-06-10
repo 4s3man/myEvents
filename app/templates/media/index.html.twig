@@ -5,10 +5,7 @@
     {% endblock %}
 
     {% block navigation %}
-                {#<div class="btn btn-light">#}
-                    {#<a href="{{ url('calendarAdd', {'userId':userId} ) }}">{{ 'link.calendar_add'|trans }}</a>#}
-                {#</div>#}
-                {#{% include 'form/searchForm.html.twig' %}#}
+                {% include 'form/searchForm.html.twig' %}
     {% endblock %}
 
     {% block paginatorData %}

@@ -6,7 +6,7 @@
 {% block dataToDeleteDisplay %}
     {% if dataToDelete is defined %}
         <div class="paginator-items calendar">
-            <a href="{{ url('calendarShow', {'calendarId':dataToDelete.id}) }}" class="paginator-item ">
+            <a href="{{ url('calendarShow', {'calendarId':dataToDelete.id, 'date':"now"|date("Y-m")}) }}" class="paginator-item ">
                 <div class="paginator-item">
                     <i class="fa fa-calendar fa-3x"></i>
                 </div>

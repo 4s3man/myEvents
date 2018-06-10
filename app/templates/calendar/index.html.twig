@@ -6,7 +6,7 @@
 
     {% block navigation %}
                 <div class="btn btn-light">
-                    <a href="{{ url('calendarAdd', {'userId':userId} ) }}">{{ 'link.calendar_add'|trans }}</a>
+                    <a href="{{ url('calendarAdd') }}">{{ 'link.calendar_add'|trans }}</a>
                 </div>
                 {% include 'form/searchForm.html.twig' %}
     {% endblock %}

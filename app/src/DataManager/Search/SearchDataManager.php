@@ -6,10 +6,13 @@
  * Time: 18:38
  */
 
-namespace DataManager\Search;;
+namespace DataManager\Search;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 
+/**
+ * Class SearchDataManager
+ */
 class SearchDataManager
 {
     /**
@@ -20,13 +23,14 @@ class SearchDataManager
     /**
      * @var array $allowedKeys
      */
-    private $allowedKeys = ['title', 'dateRange', 'signUp', 'user_role', 'seatsRange', 'costRange'];
+    private $allowedKeys = ['title', 'email', 'user_role'];
 
     /**
      * SearchDataManager constructor.
-     * @param null $query
+     * @param QueryBuilder $query
+     * @param array|null   $keys
      */
-    public function __construct(QueryBuilder $query,array $keys = null)
+    public function __construct(QueryBuilder $query, array $keys = null)
     {
         $this->query = $query;
         if (is_array($keys)) {
@@ -45,30 +49,32 @@ class SearchDataManager
         return $this->query;
     }
 
-    private function addFilters($searchData)
+    /**
+     * Adds andWhere to passed query
+     * @param array $searchData
+     */
+    private function addFilters(array $searchData)
     {
         foreach ($searchData as $key => $val) {
-            switch ($key) {
-                case 'title':
-                    if ($val) {
-                        $this->query->andWhere('title like :title')
-                        ->setParameter(':title', $val.'%', \PDO::PARAM_STR);
-                    }
-                    break;
-                case 'signUp':
-
-                    break;
+            if ($val) {
+                $this->query->andWhere($key.' like :value')
+                    ->setParameter(':value', $val.'%', \PDO::PARAM_STR);
             }
         }
     }
 
-    private function checkKeys($searchData)
+    /**
+     * Check if keys queries are supported
+     * @param array $searchData
+     */
+    private function checkKeys(array $searchData)
     {
         $keys = array_keys($searchData);
         foreach ($keys as $key) {
             if (!in_array($key, $this->allowedKeys)) {
                 throw new \InvalidArgumentException(
-                    sprintf('Unallowed argument! Arguments passed to class %s construct, have to be one of "%s"',
+                    sprintf(
+                        'Unallowed argument! Arguments passed to class %s construct, have to be one of "%s"',
                         __CLASS__,
                         implode('","', $this->allowedKeys)
                     )

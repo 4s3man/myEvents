@@ -97,6 +97,12 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
         return $qb;
     }
 
+    /**
+     * Query all events with specific calendarId
+     * @param int $calendarId
+     *
+     * @return \Doctrine\DBAL\Query\QueryBuilder
+     */
     public function queryAllForCalendarId($calendarId)
     {
         $qb = $this->queryAll()->where('calendar_id = :calendarId')
@@ -182,7 +188,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     public function getEvents(array $filters = array())
     {
         $qb = $this->queryAllForCalendarId($this->calendarId)
-            ->where('DATEDIFF(start, :toDate) <=0')
+            ->andwhere('DATEDIFF(start, :toDate) <=0')
             ->andWhere('DATEDIFF(end, :fromDate) >=0')
             ->setParameter(':toDate', $filters['toDate'], \PDO::PARAM_STR)
             ->setParameter(':fromDate', $filters['fromDate'], \PDO::PARAM_STR);

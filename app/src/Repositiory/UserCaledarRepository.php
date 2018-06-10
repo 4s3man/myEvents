@@ -37,15 +37,38 @@ class UserCaledarRepository extends AbstractRepository
     }
 
     /**
-     * Gets paginated results form modified witch searchData query
+     * Gets paginated users and roles for calendar
+     * form modified witch searchData query
      * @param array $queryParams
      * @param null  $searchData
      *
      * @return null|\Pagerfanta\Pagerfanta
      */
-    public function getSearchedAndPaginatedRecords($queryParams, $searchData = null)
+    public function getSearchPaginatedUsersByCalendarId($queryParams, $searchData = null)
     {
         $query = $this->queryLinkedUserByCalendarId($queryParams['calendarId']);
+        $searchDataManager = new SearchDataManager($query, $searchData);
+        $paginator = new MyPaginatorShort(
+            $query,
+            '5',
+            'uC.id',
+            $queryParams['page']
+        );
+
+        return $paginator->pagerfanta;
+    }
+
+    /**
+     * Gets paginated users and roles for calendar
+     * form modified witch searchData query
+     * @param array $queryParams
+     * @param null  $searchData
+     *
+     * @return null|\Pagerfanta\Pagerfanta
+     */
+    public function getSearchPaginatedCalendarsByUserId($queryParams, $searchData = null)
+    {
+        $query = $this->getLinkedCalendarsByUserId($queryParams['userId']);
         $searchDataManager = new SearchDataManager($query, $searchData);
         $paginator = new MyPaginatorShort(
             $query,
@@ -80,7 +103,6 @@ class UserCaledarRepository extends AbstractRepository
      */
     public function save(array $calendar, $userId)
     {
-        //TODO user update
         $this->db->beginTransaction();
 
         try {
@@ -232,35 +254,14 @@ class UserCaledarRepository extends AbstractRepository
     }
 
     /**
-     * Get paginated by Pagerfanta Object, users and its roles
-     * @param int $calendarId
-     * @param int $page
-     *
-     * @return null|\Pagerfanta\Pagerfanta
-     */
-    public function getPaginatedUserAndRolesByCalendarId($calendarId, $page)
-    {
-        $paginator = new MyPaginatorShort(
-            $this->queryLinkedUserByCalendarId($calendarId),
-            5,
-            'uC.id',
-            $page
-        );
-
-        return $paginator->pagerfanta;
-    }
-
-    /**
      * Returns query for join user_calendar and calendar data
      *
      * @param int $userId
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder
      */
-    public function getLinkedCalendars($userId)
+    public function getLinkedCalendarsByUserId($userId)
     {
-        //TODO do search zrobic osobny query
-        //TODO zmienić nazwę
         $qb = $this->db->createQueryBuilder();
         $qb = $qb->select('uC.calendar_id', 'c.title', 'c.description')
             ->from('user_calendars', 'uC')

@@ -7,6 +7,7 @@
  */
 
 namespace DataManager\Search;
+
 use Pagerfanta\Pagerfanta;
 
 /**
@@ -23,6 +24,5 @@ interface SearchPaginateInterface
      *
      * @return Pagerfanta
      */
-    public function getSearchedAndPaginatedRecords(array $queryParams, array $searchData = null );
-
+    public function getSearchedAndPaginatedRecords(array $queryParams, array $searchData = null);
 }

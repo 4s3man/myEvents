@@ -31,12 +31,12 @@ body{
   color:$textColor;
   height:100%;
 }
-//.logged{
-//  display: grid;
-//  grid-template-columns: 100px auto;
-//  grid-template-areas: "sidebar content";
-//  grid-auto-rows: auto;
-//}
+.logged{
+  display: grid;
+  grid-template-columns: 100px auto;
+  grid-template-areas: "sidebar content";
+  grid-auto-rows: auto;
+}
 .form_submmit{
   background-color: red !important;
   &:hover{
