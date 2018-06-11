@@ -15,11 +15,11 @@
                     </div>
                     <div class="row year-wrap">
                         <div class="rok year_nav">
-                            <a id="JScaldendarPrev">
+                            <a id="JScalendarPrev" href="{{ url('calendarShow', {'calendarId':calendarId, 'date':prevDate}) }}">
                                 ◄
                             </a>
                             <span id="JSyear">{{ calendar.year }}</span>
-                            <a id="JScaldendarNext">
+                            <a id="JScalendarNext" href="{{ url('calendarShow', {'calendarId':calendarId, 'date':nextDate}) }}">
                                 ►
                             </a>
                         </div>
