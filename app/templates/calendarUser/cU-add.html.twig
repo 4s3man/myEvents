@@ -2,7 +2,9 @@
 {% block title %}
     {{ 'title.calendar_user_add'|trans }}
 {% endblock %}
-
+{% block sidebar %}
+    {% include 'sidebar/sidebar-calendar.html.twig' %}
+{% endblock %}
 {% block content %}
     {% include 'form/form.html.twig' %}
 {% endblock %}

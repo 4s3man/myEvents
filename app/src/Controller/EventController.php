@@ -111,7 +111,7 @@ class EventController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'event/add.html.twig',
+            'event/ev-add.html.twig',
             [
                 'form' => $form->createView(),
                 'calendarId' => $calendarId,
@@ -137,7 +137,6 @@ class EventController implements ControllerProviderInterface
         //robić w końcu wgląd tych eventów czy edit i delete eventów najpierw?
 
         $queryParams = ['page' => $page];
-        $paginator = $eventRepository->getSearchedAndPaginatedRecords($queryParams);
 
         $form = $app['form.factory']
             ->createBuilder(EventSearchType::class)
@@ -145,11 +144,14 @@ class EventController implements ControllerProviderInterface
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $paginator = $eventRepository->getSearchedAndPaginatedRecords($queryParams, $form->getData());
+            //TODO pytanie tutaj nie mam żadnych walidatorów a robie if is valid jakie asserty to search form?
+            $paginator= $eventRepository->getSearchedAndPaginatedRecords($queryParams, $form->getData());
+        } else {
+            $paginator = $eventRepository->getSearchedAndPaginatedRecords($queryParams);
         }
 
         return $app['twig']->render(
-            'event/index.html.twig',
+            'event/ev-index.html.twig',
             [
                 'pagerfanta' => $paginator,
                 'routeName' => 'eventIndex',
@@ -207,7 +209,7 @@ class EventController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'event/single.html.twig',
+            'event/ev-single.html.twig',
             [
                 'event' => $eventDataManager->makeEvent(),
                 'signUp' => $signUpFormView,
@@ -230,7 +232,7 @@ class EventController implements ControllerProviderInterface
     public function eventEditAction(Application $app, $calendarId, $eventId)
     {   //TODO edit event
         return $app['twig']->render(
-            'event/edit.html.twig',
+            'event/ev-edit.html.twig',
             [
                 'calendarId' => $calendarId,
                 'eventId' => $eventId,
@@ -250,7 +252,7 @@ class EventController implements ControllerProviderInterface
     public function eventDeleteAction(Application $app, $calendarId, $eventId)
     {   //TODO edit event
         return $app['twig']->render(
-            'event/delete.html.twig',
+            'event/ev-delete.html.twig',
             [
                 'calendarId' => $calendarId,
                 'eventId' => $eventId,

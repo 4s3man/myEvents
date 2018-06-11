@@ -4,6 +4,10 @@
         {{ 'title.user_calendar_index'|trans }}
     {% endblock %}
 
+    {% block sidebar %}
+        {% include 'sidebar/sidebar-calendar.html.twig' %}
+    {% endblock %}
+
     {% block navigation %}
         <div class="btn btn-light">
             <a href="{{ url('eventAdd', {'calendarId':calendarId} ) }}">{{ 'link.event_add'|trans }}</a>
@@ -13,17 +17,27 @@
 
     {% block paginatorData %}
         {% for datum in pagerfanta.currentPageResults %}
-            <div class="paginator-items calendar">
+            <div class="paginator-items event-list">
                 <a href="{{ url('eventShow', {'calendarId':datum.calendar_id, 'eventId':datum.id}) }}" class="paginator-item ">
                     <div class="paginator-item">
                         <i class="fa fa-flag fa-3x"></i>
                     </div>
                     <div class="title-desc-wrap">
-                        <div class="paginator-item title">
+                        <div class="paginator-item event-title">
                             <h2>{{ datum.title}}</h2>
                         </div>
-                        <div class="paginator-item email">
-                            <h6>{{ datum.content }}</h6>
+                        <div class="paginator-item event-email">
+                            <h6>{{ datum.content[:50] }}</h6>
+                        </div>
+                        <div class="paginator-item event-start">
+                            {% set start = datum.start|split(' ') %}
+                            <h6>{{ 'event.start'|trans }}  {{ start.0 }}</h6>
+                            <h6> {{ start.1 }}</h6>
+                        </div>
+                        <div class="paginator-item event-start">
+                            {% set end = datum.end|split(' ') %}
+                            <h6>{{ 'event.end'|trans }}  {{ end.0 }}</h6>
+                            <h6> {{ end.1 }}</h6>
                         </div>
                     </div>
                 </a>

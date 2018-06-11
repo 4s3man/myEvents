@@ -1,35 +1,58 @@
 .logged > .admin-sidebar {
-    grid-area: sidebar;
-    background-color: #122b1e;
-    border-right: #ebebeb 2px dotted;
-  }
-  .sidebar-menu {
-    width: 100%;
-    height: auto;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-  }
-  .sidebar-menu-item {
-    width: 100%;
-    text-align: center;
-    padding: 15px 5px 0px 5px;
-    i {
-      font-size: 3em;
-      color: #ebebeb;
-      &:hover{
-        color: #a84e44;
-        transform: scale(1.05);
-        transition: color 500ms, transform 500ms;
-      }
+  grid-area: sidebar;
+  background-color: #122b1e;
+  border-right: #ebebeb 2px dotted;
+}
+.sidebar-menu {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+}
+.sidebar-menu-item {
+  width: 100%;
+  text-align: center;
+  padding: 15px 5px 0px 5px;
+  i{
+    font-size: 3em;
+    color: #ebebeb;
+    &:hover{
+      color: #a84e44;
+      transform: scale(1.05);
+      transition: color 500ms, transform 500ms;
     }
   }
-
+}
+.sidebar-menu-item_collection{
+  width: 100%;
+  text-align: center;
+  padding: 15px 5px 0px 5px;
+    &:hover{
+      color: #a84e44 !important;
+      transform: scale(1.05);
+      transition: color 500ms, transform 500ms;
+    }
+  a {
+    color: #ebebeb;
+    text-decoration: none;
+    &:hover{
+      color: inherit;
+    }
+  }
+  i{
+    font-size: 1.4em;
+    color: inherit;
+  }
+}
 @media (min-width: 1px) and (max-width: 547px) {
 
 }
 @media (max-width: 768px){
   .sidebar-menu-item i{
     font-size: 2em;
+  }
+  .sidebar-menu-item_collection i{
+    font-size: 0.8em;
   }
 }

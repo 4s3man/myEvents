@@ -2,7 +2,9 @@
 {% block title %}
     {{ 'title.edit_calendar'|trans }}
 {% endblock %}
-
+{% block sidebar %}
+    {% include 'sidebar/sidebar-calendar.html.twig' %}
+{% endblock %}
 {% block content %}
         <div class="article">
             <div class="header">

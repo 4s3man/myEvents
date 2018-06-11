@@ -91,13 +91,15 @@ class CalendarController implements ControllerProviderInterface
         //TODO dodać styl dla świąt
         $eventRepository = new EventRepository($app['db'], (int) $calendarId);
         $calendarDataManager = new CalendarDataManager($eventRepository, $date);
-        $calendar = $calendarDataManager->makeCalendarMonthPage();
+        $calendarMonthPage = $calendarDataManager->makeCalendarMonthPage();
 
         return $app['twig']->render(
-            'calendar/calendar.html.twig',
+            'calendar/calendar-show.html.twig',
             [
+                'nextDate' => $calendarDataManager->getNextMonth()->format('Y-m'),
+                'prevDate' => $calendarDataManager->getPrevMonth()->format('Y-m'),
                 'calendarId' => $calendarId,
-                'calendar' => $calendar,
+                'calendar' => $calendarMonthPage,
             ]
         );
     }
@@ -134,7 +136,7 @@ class CalendarController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'calendar/add.html.twig',
+            'calendar/calendar-add.html.twig',
             [
                 'form' => $form->createView(),
                 'userId' => $userId,
@@ -178,7 +180,7 @@ class CalendarController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'calendar/edit.html.twig',
+            'calendar/calendar-edit.html.twig',
             [
                 'calendarId' => $calendarId,
                 'calendar' => $calendar,
@@ -225,7 +227,7 @@ class CalendarController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'calendar/delete.html.twig',
+            'calendar/calendar-delete.html.twig',
             [
                 'calendarId' => $calendarId,
                 'dataToDelete' => $calendar,
@@ -260,7 +262,7 @@ class CalendarController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'calendar/index.html.twig',
+            'calendar/calendar-index.html.twig',
             [
                 'form' => $form->createView(),
                 'pagerfanta' => $paginator,

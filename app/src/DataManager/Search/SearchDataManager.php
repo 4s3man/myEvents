@@ -23,22 +23,16 @@ class SearchDataManager
     /**
      * @var array $allowedKeys
      */
-    private $allowedKeys = ['title', 'email', 'user_role'];
+    private $allowedKeys = ['title', 'email', 'user_role', 'start', 'end'];
 
     /**
      * SearchDataManager constructor.
      * @param QueryBuilder $query
-     * @param array|null   $keys
+     * @param array|null $keys
      */
-    public function __construct(QueryBuilder $query, array $keys = null)
+    public function __construct(QueryBuilder $query)
     {
         $this->query = $query;
-        if (is_array($keys)) {
-            $this->checkKeys($keys);
-            $this->query = $this->addFilters($keys);
-        } elseif (null !== $keys) {
-            throw new \InvalidArgumentException(sprintf('2 argument of %s construct needs to be array or null', __CLASS__));
-        }
     }
 
     /**
@@ -53,12 +47,22 @@ class SearchDataManager
      * Adds andWhere to passed query
      * @param array $searchData
      */
-    private function addFilters(array $searchData)
+    public function addFilters($searchData)
+    {
+        if (is_array($searchData)) {
+            $this->checkKeys($searchData);
+            $this->query = $this->filter($searchData);
+        } elseif (null !== $searchData) {
+            throw new \InvalidArgumentException(sprintf('2 argument of %s construct needs to be array or null', __CLASS__));
+        }
+    }
+
+    private function filter($searchData)
     {
         foreach ($searchData as $key => $val) {
             if ($val) {
-                $this->query->andWhere($key.' like :value')
-                    ->setParameter(':value', $val.'%', \PDO::PARAM_STR);
+                $this->query->andWhere($key . ' like :value')
+                    ->setParameter(':value', $val . '%', \PDO::PARAM_STR);
             }
         }
     }

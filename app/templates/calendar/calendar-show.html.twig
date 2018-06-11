@@ -2,6 +2,10 @@
 
 {% extends 'layout.html.twig' %}
 {% block title %}
+    {{ 'title.calendarTitle'|trans }}
+{% endblock %}
+{% block sidebar %}
+    {% include 'sidebar/sidebar-calendar.html.twig' %}
 {% endblock %}
 {% block content %}
     <div id="calendar" class="calendar">

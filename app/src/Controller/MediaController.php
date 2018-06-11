@@ -86,7 +86,7 @@ class MediaController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'media/add.html.twig',
+            'media/md-add.html.twig',
             [
                 'form' => $form->createView(),
                 'userId' => $userId,
@@ -123,7 +123,7 @@ class MediaController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'media/index.html.twig',
+            'media/md-index.html.twig',
             [
                 'form' => $form->createView(),
                 'pagerfanta' => $paginator,
@@ -167,7 +167,7 @@ class MediaController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'media/index.html.twig',
+            'media/md-index.html.twig',
             [
                 'form' => $form->createView(),
                 'pagerfanta' => $paginator,

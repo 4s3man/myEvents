@@ -97,7 +97,7 @@ class CalendarUserController implements ControllerProviderInterface
 
 
         return $app['twig']->render(
-            'calendarUser/index.html.twig',
+            'calendarUser/cU-index.html.twig',
             [
                 'form' => $form->createView(),
                 'calendarId' => $calendarId,
@@ -156,7 +156,7 @@ class CalendarUserController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'calendarUser/add.html.twig',
+            'calendarUser/cU-add.html.twig',
             [
                 'form' => $form->createView(),
                 'calendarId' => $calendarId,
@@ -205,10 +205,11 @@ class CalendarUserController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'calendarUser/edit.html.twig',
+            'calendarUser/uC-edit.html.twig',
             [
                 'form' => $form->createView(),
                 'userCalendarId' => $userCalendarId,
+                'calendarId' => $calendarId,
             ]
         );
     }
@@ -268,11 +269,12 @@ class CalendarUserController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'calendarUser/delete.html.twig',
+            'calendarUser/cU-delete.html.twig',
             [
                 'form' => $form->createView(),
                 'userCalendarId' => $userCalendarId,
                 'dataToDelete' => $userCalendar,
+                'calendarId' => $calendarId,
             ]
         );
     }

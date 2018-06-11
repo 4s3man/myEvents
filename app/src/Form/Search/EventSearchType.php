@@ -8,8 +8,10 @@
 
 namespace Form\Search;
 
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class SearchType
@@ -32,34 +34,25 @@ class EventSearchType extends SearchType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
+        $builder->add(
+            'start',
+            TextType::class,
+            [
+                'label' => 'label.searchYearMonth',
+                'required' => false,
+                'constraints' => [
+                    new Assert\Regex(
+                      [
+                          'groups' => ['search_default'],
+                          'pattern' => '/[1-3]{1}[0-9]{3}-(0[1-9]|1[0-2])/',
+                      ]
+                    ),
+                ]
+            ]
 
-        //        $builder->add(
-        //            'type',
-        //            ChoiceType::class,
-        //            [
-        //                'choices' => [
-        //                  'all' => 'all',
-        //                  'normal' => 'non_recurrent',
-        //                  'recurrent' => 'recurrent',
-        //                  'daily recurrent' => 'daily',
-        //                   'weekly recurrent' => 'weekly',
-        //                   'monthly recurrent' => 'monthly',
-        //                ],
-        //                'constraints' => [
-        //                    new Assert\Choice(
-        //                        [
-        //                            'choices' => [
-        //                                'non_recurrent',
-        //                                'recurrent',
-        //                                'daily',
-        //                                'weekly',
-        //                                'monthly',
-        //                            ],
-        //                        ]
-        //                    ),
-        //                ],
-        //            ]
-        //        );
+
+
+        );
     }
 
     /**

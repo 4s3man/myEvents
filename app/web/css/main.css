@@ -36,9 +36,35 @@ FUN COLORS
   transition: color 500ms, transform 500ms;
 }
 
+.sidebar-menu-item_collection {
+  width: 100%;
+  text-align: center;
+  padding: 15px 5px 0px 5px;
+}
+.sidebar-menu-item_collection:hover {
+  color: #a84e44 !important;
+  transform: scale(1.05);
+  transition: color 500ms, transform 500ms;
+}
+.sidebar-menu-item_collection a {
+  color: #ebebeb;
+  text-decoration: none;
+}
+.sidebar-menu-item_collection a:hover {
+  color: inherit;
+}
+.sidebar-menu-item_collection i {
+  font-size: 1.4em;
+  color: inherit;
+}
+
 @media (max-width: 768px) {
   .sidebar-menu-item i {
     font-size: 2em;
+  }
+
+  .sidebar-menu-item_collection i {
+    font-size: 0.8em;
   }
 }
 .content {
@@ -316,18 +342,32 @@ FUN COLORS
   height: auto;
 }
 
+@media screen and (max-width: 500px) {
+  .event-list {
+    padding: 60px 40px;
+  }
+}
 html {
   min-height: 100%;
   position: relative;
 }
 
 body {
-  display: grid;
-  grid-template-columns: auto;
-  grid-template-areas: "content";
-  grid-auto-rows: auto;
+  display: block;
   color: #ebebeb;
   height: 100%;
+}
+
+.debug {
+  background-color: red;
+  grid-area: debug;
+}
+
+.logged {
+  display: grid;
+  grid-template-columns: 100px auto;
+  grid-template-areas: "sidebar content";
+  grid-auto-rows: auto;
 }
 
 .form_submmit {
@@ -335,6 +375,15 @@ body {
 }
 .form_submmit:hover {
   background-color: red;
+}
+
+.nav-log {
+  position: fixed;
+  top: 0;
+  right: 0;
+  display: flex;
+  word-break: break-all;
+  margin: 10px;
 }
 
 /*# sourceMappingURL=file:///home/kuba/PhpstormProjects/skeletCis/app/web/css/main.css.map */

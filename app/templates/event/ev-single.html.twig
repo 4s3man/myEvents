@@ -2,6 +2,9 @@
 {% block title %}
     {{ event.title }}
 {% endblock %}
+{% block sidebar %}
+    {% include 'sidebar/sidebar-calendar.html.twig' %}
+{% endblock %}
 {% block content %}
     <article class="container event-container">
         <h2 class="text-center">{{ event.title }}</h2>

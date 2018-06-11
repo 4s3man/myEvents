@@ -1,25 +1,29 @@
-<div class="sidebar-menu-item">
-    {#<a href="{{ url('userCalendarIndex',{'userId':loggedUserId, 'page':1}) }}">#}
-        <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
-    {#</a>#}
-</div>
-<div class="sidebar-menu-item">
-    {#<a href="{{ url('settingsIndex',{'calendarId':calendarId, 'page':1}) }}">#}
-    <i class="fa fa-cogs" aria-hidden="true"></i>
-    {#</a>#}
-</div>
-<div class="sidebar-menu-item">
-    {#<a href="{{ url('userIndex',{'calendarId':calendarId, 'page':1}) }}">#}
-        <i class="fa fa-address-book" aria-hidden="true"></i>
-    {#</a>#}
-</div>
-<div class="sidebar-menu-item">
-    {#<a href="{{ url('eventIndex', {'calendarId':calendarId, 'page':1} ) }}">#}
-        <i class="fa fa-list-ul" aria-hidden="true"></i>
-    {#</a>#}
-</div>
-<div class="sidebar-menu-item">
-    {#<a href="{{ url('calendarShow', { 'calendarId':calendarId, 'date':"now"|date('Y-m') }) }}">#}
-        <i class="fa fa-calendar" aria-hidden="true"></i>
-    {#</a>#}
+<div class="admin-sidebar">
+    <nav class="sidebar-menu">
+        <div class="sidebar-menu-item">
+            {#<a href="{{ url('userCalendarIndex',{'userId':loggedUserId, 'page':1}) }}">#}
+                <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+            {#</a>#}
+        </div>
+        <div class="sidebar-menu-item">
+            {#<a href="{{ url('settingsIndex',{'calendarId':calendarId, 'page':1}) }}">#}
+            <i class="fa fa-cogs" aria-hidden="true"></i>
+            {#</a>#}
+        </div>
+        <div class="sidebar-menu-item">
+            {#<a href="{{ url('userIndex',{'calendarId':calendarId, 'page':1}) }}">#}
+                <i class="fa fa-address-book" aria-hidden="true"></i>
+            {#</a>#}
+        </div>
+        <div class="sidebar-menu-item">
+            {#<a href="{{ url('eventIndex', {'calendarId':calendarId, 'page':1} ) }}">#}
+                <i class="fa fa-list-ul" aria-hidden="true"></i>
+            {#</a>#}
+        </div>
+        <div class="sidebar-menu-item">
+            {#<a href="{{ url('calendarShow', { 'calendarId':calendarId, 'date':"now"|date('Y-m') }) }}">#}
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+            {#</a>#}
+        </div>
+    </nav>
 </div>

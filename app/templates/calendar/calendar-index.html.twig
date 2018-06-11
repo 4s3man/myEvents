@@ -1,35 +1,37 @@
 {% extends 'default/_baseIndex.html.twig' %}
 
-    {% block indexTitle %}
-        {{ 'title.user_calendar_index'|trans }}
-    {% endblock %}
+{% block indexTitle %}
+    {{ 'title.user_calendar_index'|trans }}
+{% endblock %}
+{% block sidebar %}
+    {% include 'sidebar/sidebar-user.html.twig' %}
+{% endblock %}
+{% block navigation %}
+            <div class="btn btn-light">
+                <a href="{{ url('calendarAdd') }}">{{ 'link.calendar_add'|trans }}</a>
+            </div>
+            {% include 'form/searchForm.html.twig' %}
+{% endblock %}
 
-    {% block navigation %}
-                <div class="btn btn-light">
-                    <a href="{{ url('calendarAdd') }}">{{ 'link.calendar_add'|trans }}</a>
-                </div>
-                {% include 'form/searchForm.html.twig' %}
-    {% endblock %}
-
-    {% block paginatorData %}
-        {% for datum in pagerfanta.currentPageResults %}
-        <div class="paginator-items calendar">
-            <a href="{{ url('calendarShow', {'calendarId':datum.calendar_id, 'date':"now"|date("Y-m")}) }}" class="paginator-item ">
-                <div class="paginator-item">
-                    <i class="fa fa-calendar fa-3x"></i>
-                </div>
-                    <div class="title-desc-wrap">
-                        <div class="paginator-item title">
-                            <h2>{{ datum.title}}</h2>
-                        </div>
-                        <div class="paginator-item email">
-                            <h6>{{ datum.description }}</h6>
-                        </div>
+{% block paginatorData %}
+    {% for datum in pagerfanta.currentPageResults %}
+    <div class="paginator-items calendar">
+        <a href="{{ url('calendarShow', {'calendarId':datum.calendar_id, 'date':"now"|date("Y-m")}) }}" class="paginator-item ">
+            <div class="paginator-item">
+                <i class="fa fa-calendar fa-3x"></i>
+            </div>
+                <div class="title-desc-wrap">
+                    <div class="paginator-item title">
+                        <h2>{{ datum.title}}</h2>
                     </div>
-            </a>
-            <div class="paginator-item edit"><a href="{{ url('calendarEdit', {'calendarId':datum.calendar_id}) }}">{{ 'link.edit'|trans }}</a></div>
-            <div class="paginator-item delete"><a href="{{ url('calendarDelete', {'calendarId':datum.calendar_id}) }}">{{ 'link.delete'|trans }}</a></div>
-        </div>
-        <hr>
-        {% endfor %}
-    {% endblock %}
+                    <div class="paginator-item email">
+                        <h6>{{ datum.description }}</h6>
+                    </div>
+                </div>
+        </a>
+        <div class="paginator-item edit"><a href="{{ url('calendarEdit', {'calendarId':datum.calendar_id}) }}">{{ 'link.edit'|trans }}</a></div>
+        <div class="paginator-item delete"><a href="{{ url('calendarDelete', {'calendarId':datum.calendar_id}) }}">{{ 'link.delete'|trans }}</a></div>
+    </div>
+    <hr>
+    {% endfor %}
+{% endblock %}

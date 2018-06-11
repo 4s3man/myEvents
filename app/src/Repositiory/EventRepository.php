@@ -63,7 +63,8 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     public function getSearchedAndPaginatedRecords($queryParams, $searchData = null)
     {
         $query = $this->queryAllForCalendarId($this->calendarId);
-        $searchDataManager = new SearchDataManager($query, $searchData);
+        $searchDataManager = new SearchDataManager($query);
+        $searchDataManager->addFilters($searchData);
         $paginator = new MyPaginatorShort(
             $query,
             '5',
@@ -72,6 +73,30 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
         );
 
         return $paginator->pagerfanta;
+    }
+
+    private function dateToDatetimeObject($results)
+    {
+        $results = $this->columnToDataTime($results, 'start');
+        $results = $this->columnToDataTime($results, 'end');
+
+        return $results;
+    }
+
+    private function columnToDataTime(array $array, $column)
+    {
+        $result = $array;
+        $arrayColumn = array_column($array,$column);
+
+        foreach ($arrayColumn as $key=>$value) {
+            $arrayColumn[$key] = new \DateTime($value);
+        }
+
+        foreach ($result as $key => &$val) {
+            $val[$column] = $arrayColumn[$key];
+        }
+
+        return $result;
     }
 
     /**

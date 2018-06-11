@@ -2,7 +2,9 @@
 {% block title %}
     Add new calendar
 {% endblock %}
-
+{% block sidebar %}
+    {% include 'sidebar/sidebar-user.html.twig' %}
+{% endblock %}
 {% block dataToDeleteDisplay %}
     {% if dataToDelete is defined %}
         <div class="paginator-items calendar">

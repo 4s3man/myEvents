@@ -2,7 +2,9 @@
 {% block title %}
     {{ 'title.delete_link'|trans }}
 {% endblock %}
-
+{% block sidebar %}
+    {% include 'sidebar/sidebar-calendar.html.twig' %}
+{% endblock %}
 {% block dataToDeleteDisplay %}
     {% if dataToDelete is defined %}
         <div class="paginator-items userCalendarLink">

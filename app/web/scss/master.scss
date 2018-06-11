@@ -18,18 +18,20 @@ $textColor: #ebebeb;
 @import "paginator";
 @import "calendar";
 @import "media";
+@import "event-list";
 
 html{
   min-height: 100%;
   position: relative;
 }
 body{
-  display: grid;
-  grid-template-columns: auto;
-  grid-template-areas: "content";
-  grid-auto-rows: auto;
+  display: block;
   color:$textColor;
   height:100%;
+}
+.debug{
+  background-color: red;
+  grid-area: debug;
 }
 .logged{
   display: grid;
@@ -42,4 +44,12 @@ body{
   &:hover{
     background-color: red;
   }
+}
+.nav-log{
+  position: fixed;
+  top:0;
+  right: 0;
+  display: flex;
+  word-break: break-all;
+  margin:10px;
 }

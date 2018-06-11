@@ -63,9 +63,14 @@ class CalendarDataManager
      */
     protected $eventsList = null;
 
-
+    /**
+     * @var null|\Yasumi\Provider\AbstractProvider
+     */
     protected $holidays = null;
 
+    /**
+     * @var null
+     */
     protected $eventRepository = null;
 
     /**
@@ -134,6 +139,18 @@ class CalendarDataManager
         $calendarPage = new CalendarPage($days, $this->range['fromDate']);
 
         return $calendarPage;
+    }
+
+    public function getNextMonth()
+    {
+        $date = clone $this->date;
+        return $date->add(\DateInterval::createFromDateString('+1 month'));
+    }
+
+    public function getPrevMonth()
+    {
+        $date = clone $this->date;
+        return $date->add(\DateInterval::createFromDateString('-1 month'));
     }
 
     /**
