@@ -30,6 +30,7 @@ $app['twig'] = $app->extend(
         return $twig;
     }
 );
+
 $app->register(new LocaleServiceProvider());
 $app->register(
     new TranslationServiceProvider(),

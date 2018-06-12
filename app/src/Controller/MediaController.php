@@ -8,6 +8,7 @@
 
 namespace Controller;
 
+use DataManager\SessionMessagesDataManager;
 use Form\MediaType;
 use Form\Search\SearchType;
 use Repositiory\MediaRepository;
@@ -38,21 +39,35 @@ class MediaController implements ControllerProviderInterface
             ->method('POST|GET')
             ->assert('userId', '[1-9]\d*')
             ->assert('page', '[1-9]\d*')
-            ->bind('addMedia');
+            ->bind('userAddMedia');
+
+        $controller->match('calendar/{calendarId}/add', [$this, 'calendarAddMediaAction'])
+            ->method('POST|GET')
+            ->assert('calendarId', '[1-9]\d*')
+            ->assert('page', '[1-9]\d*')
+            ->bind('calendarAddMedia');
+
         $controller->match('/{mediaId}/edit', [$this, 'editMediaAction'])
             ->method('POST|GET')
             ->bind('editMedia');
-        $controller->match('/{mediaId}/delete', [$this, 'editMediaAction'])
+
+        $controller->match('/{mediaId}/delete', [$this, 'deleteMediaAction'])
             ->method('POST|GET')
             ->bind('deleteMedia');
+
         $controller->match('/index/page/{page}', [$this, 'userMediaIndexAction'])
             ->assert('page', '[1-9]\d*')
             ->bind('userMediaIndex');
+
+        $controller->match('event/{calendarId}/index/page/{page}', [$this, 'eventMediaIndexAction'])
+            ->method('POST|GET')
+            ->assert('page', '[1-9]\d*')
+            ->bind('eventMediaIndex');
+
         $controller->match('calendar/{calendarId}/index/page/{page}', [$this, 'calendarMediaIndexAction'])
             ->method('POST|GET')
-            ->assert('userId', '[1-9]\d*')
             ->assert('page', '[1-9]\d*')
-            ->bind('userCalendarMediaIndex');
+            ->bind('calendarMediaIndex');
 
         return $controller;
     }
@@ -86,7 +101,54 @@ class MediaController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'media/md-add.html.twig',
+            'media/md-add_toUser.html.twig',
+            [
+                'form' => $form->createView(),
+                'userId' => $userId,
+            ]
+        );
+    }
+
+    /**
+     *
+     * @param Application $app
+     *
+     * @param int         $calendarId
+     *
+     * @param Request     $request
+     *
+     * @return mixed
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function calendarAddMediaAction(Application $app, $calendarId, Request $request)
+    {
+        //TODO get id from logged user
+        $userId = 1;
+        $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+
+        $media = [];
+        $form = $app['form.factory']->createBuilder(MediaType::class, $media)->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $photo  = $form->getData();
+            $fileUploader = new FileUploader($app['config.photos_directory']);
+            $fileName = $fileUploader->upload($photo['photo']);
+            $photo['photo'] = $fileName;
+            $mediaRepository = new MediaRepository($app['db']);
+            $mediaRepository->saveToCalendar($photo, $userId);
+
+            $sessionMessagesManager->added();
+
+            return $app->redirect(
+                $app['url_generator']->generate('calendarMediaIndex', ['calendarId' => $calendarId, 'page' => 1]),
+                301
+            );
+        }
+
+        return $app['twig']->render(
+            'media/md-add_toCalendar.html.twig',
             [
                 'form' => $form->createView(),
                 'userId' => $userId,
@@ -123,11 +185,57 @@ class MediaController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'media/md-index.html.twig',
+            'media/md-user_index.html.twig',
             [
                 'form' => $form->createView(),
                 'pagerfanta' => $paginator,
                 'userId' => $userId,
+            ]
+        );
+    }
+
+    /**
+     *
+     * @param Application $app
+     *
+     * @param int         $calendarId
+     *
+     * @param Request     $request
+     *
+     * @param int         $page
+     *
+     * @return mixed
+     */
+    public function eventMediaIndexAction(Application $app, $calendarId, Request $request, $page = 1)
+    {
+        //TODO get id from logged user
+        //TODO search witch data transformer, nie zrobic wlasne
+        //TODO paginator do repozytorium i inne query do niego
+        //todo usun jeśli nieużywane
+        $userId = 1;
+
+        $mediaRepository = new MediaRepository($app['db']);
+
+        $queryParams = ['userId' => $userId, 'calendarId' => $calendarId, 'page' => $page];
+        $paginator = $mediaRepository->getSearchedAndPaginatedRecordsForUserAndCalendar($queryParams);
+
+        $form = $app['form.factory']
+            ->createBuilder(SearchType::class)
+            ->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $paginator = $mediaRepository
+                ->getSearchedAndPaginatedRecordsForUserAndCalendar($queryParams, $form->getData());
+        }
+
+        return $app['twig']->render(
+            'media/md-calendar_index.html.twig',
+            [
+                'form' => $form->createView(),
+                'pagerfanta' => $paginator,
+                'userId' => $userId,
+                'calendarId' => $calendarId,
             ]
         );
     }
@@ -153,8 +261,8 @@ class MediaController implements ControllerProviderInterface
 
         $mediaRepository = new MediaRepository($app['db']);
 
-        $queryParams = ['userId' => $userId, 'calendarId' => $calendarId, 'page' => $page];
-        $paginator = $mediaRepository->getSearchedAndPaginatedRecordsForUserAndCalendar($queryParams);
+        $queryParams = [ 'calendarId' => $calendarId, 'page' => $page];
+        $paginator = $mediaRepository->getSearchedAndPaginatedRecordsForCalendar($queryParams);
 
         $form = $app['form.factory']
             ->createBuilder(SearchType::class)
@@ -163,16 +271,16 @@ class MediaController implements ControllerProviderInterface
 
         if ($form->isSubmitted() && $form->isValid()) {
             $paginator = $mediaRepository
-                ->getSearchedAndPaginatedRecordsForUserAndCalendar($queryParams, $form->getData());
+                ->getSearchedAndPaginatedRecordsForCalendar($queryParams, $form->getData());
         }
 
         return $app['twig']->render(
-            'media/md-index.html.twig',
+            'media/md-calendar_index.html.twig',
             [
                 'form' => $form->createView(),
                 'pagerfanta' => $paginator,
                 'userId' => $userId,
-                'calenarId' => $calendarId,
+                'calendarId' => $calendarId,
             ]
         );
     }

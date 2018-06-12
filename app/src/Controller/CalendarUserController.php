@@ -109,6 +109,7 @@ class CalendarUserController implements ControllerProviderInterface
 
     /**
      * Add user to this calendar associated witch calendarId
+     *
      * @param Application $app
      *
      * @param int         $calendarId
@@ -216,6 +217,7 @@ class CalendarUserController implements ControllerProviderInterface
 
     /**
      * Delete user linked to calnedar
+     *
      * @param Application $app
      *
      * @param int         $calendarId

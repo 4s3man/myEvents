@@ -16,19 +16,21 @@ use Doctrine\DBAL\Query\QueryBuilder;
 class SearchDataManager
 {
     /**
+     *
      * @var QueryBuilder|null
      */
     private $query = null;
 
     /**
+     *
      * @var array $allowedKeys
      */
     private $allowedKeys = ['title', 'email', 'user_role', 'start', 'end'];
 
     /**
      * SearchDataManager constructor.
+     *
      * @param QueryBuilder $query
-     * @param array|null $keys
      */
     public function __construct(QueryBuilder $query)
     {
@@ -36,6 +38,7 @@ class SearchDataManager
     }
 
     /**
+     *
      * @return QueryBuilder|null
      */
     public function getQuery()
@@ -44,7 +47,8 @@ class SearchDataManager
     }
 
     /**
-     * Adds andWhere to passed query
+     * Checks what to do witch passed data
+     *
      * @param array $searchData
      */
     public function addFilters($searchData)
@@ -57,18 +61,24 @@ class SearchDataManager
         }
     }
 
-    private function filter($searchData)
+    /**
+     * Adds andWhere filters to query passed in construct
+     *
+     * @param array $searchData
+     */
+    private function filter(array $searchData)
     {
         foreach ($searchData as $key => $val) {
             if ($val) {
-                $this->query->andWhere($key . ' like :value')
-                    ->setParameter(':value', $val . '%', \PDO::PARAM_STR);
+                $this->query->andWhere($key.' like :value')
+                    ->setParameter(':value', $val.'%', \PDO::PARAM_STR);
             }
         }
     }
 
     /**
      * Check if keys queries are supported
+     *
      * @param array $searchData
      */
     private function checkKeys(array $searchData)

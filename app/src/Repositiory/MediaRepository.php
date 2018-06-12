@@ -43,6 +43,7 @@ class MediaRepository extends AbstractRepository
 
     /**
      * Gets paginated results form modified witch searchData query
+     *
      * @param array $queryParams
      * @param null  $searchData
      *
@@ -50,7 +51,44 @@ class MediaRepository extends AbstractRepository
      */
     public function getSearchedAndPaginatedRecordsForUserAndCalendar($queryParams, $searchData = null)
     {
-        $query = $this->queryCalendarAndUserMedia($queryParams['userId'], $queryParams['calendarId']);
+        $query = $this->queryCalendarAndUserMedia($queryParams['calendarId'], $queryParams['userId']);
+        $searchDataManager = new SearchDataManager($query, $searchData);
+        $paginator = new MyPaginatorShort(
+            $query,
+            '5',
+            'm.id',
+            $queryParams['page']
+        );
+
+        return $paginator->pagerfanta;
+    }
+
+    /**
+     * Find all records for specified user and calendar
+     * @param int $userId
+     * @param int $calendarId
+     *
+     * @return array
+     */
+    public function findAllForUserAndCalendar($userId, $calendarId)
+    {
+        $qb = $this->queryCalendarAndUserMedia($calendarId, $userId);
+        $result = $qb->execute()->fetchAll();
+
+        return $result;
+    }
+
+    /**
+     * Gets paginated results form modified witch searchData query
+     *
+     * @param array $queryParams
+     * @param null  $searchData
+     *
+     * @return null|\Pagerfanta\Pagerfanta
+     */
+    public function getSearchedAndPaginatedRecordsForUser($queryParams, $searchData = null)
+    {
+        $query = $this->queryUserMedia($queryParams['userId']);
         $searchDataManager = new SearchDataManager($query, $searchData);
         $paginator = new MyPaginatorShort(
             $query,
@@ -64,14 +102,15 @@ class MediaRepository extends AbstractRepository
 
     /**
      * Gets paginated results form modified witch searchData query
+     *
      * @param array $queryParams
      * @param null  $searchData
      *
      * @return null|\Pagerfanta\Pagerfanta
      */
-    public function getSearchedAndPaginatedRecordsForUser($queryParams, $searchData = null)
+    public function getSearchedAndPaginatedRecordsForCalendar($queryParams, $searchData = null)
     {
-        $query = $this->queryUserMedia($queryParams['userId']);
+        $query = $this->queryCalendarMedia($queryParams['calendarId']);
         $searchDataManager = new SearchDataManager($query, $searchData);
         $paginator = new MyPaginatorShort(
             $query,
@@ -128,6 +167,37 @@ class MediaRepository extends AbstractRepository
     }
 
     /**
+     *
+     * @param array    $photo
+     *
+     * @param int      $userId
+     * @param int|null $calnedarId
+     *
+     * @throws DBALException
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function saveToCalendar($photo, $userId, $calnedarId = null)
+    {
+        $this->db->beginTransaction();
+        try {
+            if (isset($photo['id']) && ctype_digit((string) $photo['id'])) {
+                $id = $photo['id'];
+                unset($photo['id']);
+
+                $this->db->update('media', $photo, ['id' => $id]);
+            } else {
+                $this->db->insert('media', $photo);
+                $mediaId = $this->db->lastInsertId();
+                $this->linkMediaToCalendar($userId, $mediaId);
+            }
+            $this->db->commit();
+        } catch (DBALException $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
      * Links tables media and user via id in table user_media
      *
      * @param int $userId
@@ -145,6 +215,11 @@ class MediaRepository extends AbstractRepository
         );
     }
 
+    /**
+     * Link media to calendar in calendar_media table
+     * @param int $calendarId
+     * @param int $mediaId
+     */
     public function linkMediaToCalendar($calendarId, $mediaId)
     {
         $this->db->insert(
@@ -156,35 +231,57 @@ class MediaRepository extends AbstractRepository
         );
     }
 
-    private function queryUserMedia($userId){
+    /**
+     * Query media linked to specified calendar and user
+     * @param int $calendarId
+     * @param int $userId
+     *
+     * @return \Doctrine\DBAL\Query\QueryBuilder
+     */
+    public function queryCalendarAndUserMedia($calendarId, $userId)
+    {
         $qb = $this->db->createQueryBuilder();
-        $qb->select('uM.user_id', 'm.id','m.photo','m.title')->from('media', 'm')
-            ->join('m', 'user_media','uM', 'uM.media_id = m.id')
+        $qb->select('m.id', 'm.photo', 'm.title')->from('media', 'm')
+            ->leftJoin('m', 'calendar_media', 'cM', 'cM.media_id = m.id')
+            ->leftJoin('m', 'user_media', 'uM', 'uM.media_id = m.id')
+            ->where('cM.calendar_id = :calendarId')
+            ->orWhere('uM.user_id = :userId')
+            ->setParameter(':calendarId', $calendarId, \PDO::PARAM_INT)
+            ->setParameter(':userId', $userId, \PDO::PARAM_INT);
+
+        return $qb;
+    }
+
+    /**
+     * Query user and media linked to him
+     * @param int $userId
+     *
+     * @return \Doctrine\DBAL\Query\QueryBuilder
+     */
+    private function queryUserMedia($userId)
+    {
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('uM.user_id', 'm.id', 'm.photo', 'm.title')->from('media', 'm')
+            ->join('m', 'user_media', 'uM', 'uM.media_id = m.id')
             ->where('uM.user_id = :userId')
             ->setParameter(':userId', $userId, \PDO::PARAM_INT);
 
         return $qb;
     }
 
-    private function queryCalendarMedia($calendarId){
+    /**
+     * Query calendar_id and media liked to it
+     * @param int $calendarId
+     *
+     * @return \Doctrine\DBAL\Query\QueryBuilder
+     */
+    private function queryCalendarMedia($calendarId)
+    {
         $qb = $this->db->createQueryBuilder();
-        $qb->select('cM.calendar_id', 'm.id','m.photo','m.title')->from('media', 'm')
-            ->join('m', 'calendar_media','cM', 'cM.media_id = m.id')
+        $qb->select('cM.calendar_id', 'm.id', 'm.photo', 'm.title')->from('media', 'm')
+            ->join('m', 'calendar_media', 'cM', 'cM.media_id = m.id')
             ->where('cM.calendar_id= :calendarId')
             ->setParameter(':calendarId', $calendarId, \PDO::PARAM_INT);
-
-        return $qb;
-    }
-
-    public function queryCalendarAndUserMedia($calendarId, $userId){
-        $qb = $this->db->createQueryBuilder();
-        $qb->select('m.id','m.photo','m.title')->from('media', 'm')
-            ->leftJoin('m', 'calendar_media','cM', 'cM.media_id = m.id')
-            ->leftJoin('m','user_media','uM','uM.media_id = m.id')
-            ->where('cM.calendar_id = :calendarId')
-            ->orWhere('uM.user_id = :userId')
-            ->setParameter(':calendarId', $calendarId, \PDO::PARAM_INT)
-            ->setParameter(':userId', $userId, \PDO::PARAM_INT);
 
         return $qb;
     }

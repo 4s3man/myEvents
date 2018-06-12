@@ -14,6 +14,7 @@ use Form\EventType;
 use Form\Search\EventSearchType;
 use Form\SignUpType;
 use Repositiory\EventRepository;
+use Repositiory\MediaRepository;
 use Repositiory\ParticipantRepository;
 use Repositiory\TagRepository;
 use Search\Criteria\TypeCriteria;
@@ -22,6 +23,9 @@ use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class EventController
+ */
 class EventController implements ControllerProviderInterface
 {
     /**
@@ -67,6 +71,7 @@ class EventController implements ControllerProviderInterface
 
     /**
      * Adding event site
+     *
      * @param Application $app
      *
      * @param int         $calendarId
@@ -82,7 +87,11 @@ class EventController implements ControllerProviderInterface
     {
         $eventRepository = new EventRepository($app['db']);
         $tagRepository = new TagRepository($app['db']);
+        $mediaRepository = new MediaRepository($app['db']);
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+
+        //Todo get id from logged user
+        $userId = 1;
 
         $event = [];
         $form = $app['form.factory']->CreateBuilder(
@@ -91,6 +100,9 @@ class EventController implements ControllerProviderInterface
             [
                 'event_repository' => $eventRepository,
                 'tag_repository' => $tagRepository,
+                'media_repository' => $mediaRepository,
+                'calendarId' => $calendarId,
+                'userId' => $userId,
             ]
         )->getForm();
 
@@ -121,6 +133,7 @@ class EventController implements ControllerProviderInterface
 
     /**
      * Show list of calendar events
+     *
      * @param Application $app
      *
      * @param int         $calendarId
@@ -144,8 +157,8 @@ class EventController implements ControllerProviderInterface
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            //TODO pytanie tutaj nie mam żadnych walidatorów a robie if is valid jakie asserty to search form?
-            $paginator= $eventRepository->getSearchedAndPaginatedRecords($queryParams, $form->getData());
+            //TODO pytanie tutaj nie mam żadnych walidatorów a robie if is valid jakie asserty do search form?
+            $paginator = $eventRepository->getSearchedAndPaginatedRecords($queryParams, $form->getData());
         } else {
             $paginator = $eventRepository->getSearchedAndPaginatedRecords($queryParams);
         }
@@ -222,6 +235,7 @@ class EventController implements ControllerProviderInterface
 
     /**
      * Edit event site
+     *
      * @param Application $app
      *
      * @param String      $calendarId
@@ -230,7 +244,8 @@ class EventController implements ControllerProviderInterface
      * @return mixed
      */
     public function eventEditAction(Application $app, $calendarId, $eventId)
-    {   //TODO edit event
+    {
+        //TODO edit event
         return $app['twig']->render(
             'event/ev-edit.html.twig',
             [
@@ -242,6 +257,7 @@ class EventController implements ControllerProviderInterface
 
     /**
      * Delete event
+     *
      * @param Application $app
      *
      * @param String      $calendarId
@@ -250,7 +266,8 @@ class EventController implements ControllerProviderInterface
      * @return mixed
      */
     public function eventDeleteAction(Application $app, $calendarId, $eventId)
-    {   //TODO edit event
+    {
+        //TODO edit event
         return $app['twig']->render(
             'event/ev-delete.html.twig',
             [
@@ -259,5 +276,4 @@ class EventController implements ControllerProviderInterface
             ]
         );
     }
-
 }

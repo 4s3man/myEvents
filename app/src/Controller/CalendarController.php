@@ -28,7 +28,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Form\Search\SearchType;
 
-
 /**
  * Class CalendarController
  */
@@ -76,11 +75,12 @@ class CalendarController implements ControllerProviderInterface
 
     /**
      * Show Calendar with events
+     *
      * @param Application $app
      *
      * @param int         $calendarId
      *
-     * @param string      $date format 'Y-m'
+     * @param string      $date       format 'Y-m'
      *
      * @return mixed
      *

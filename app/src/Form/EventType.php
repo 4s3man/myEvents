@@ -9,9 +9,13 @@
 namespace Form;
 
 use Form\DataTransformer\DateDataTransformer;
+use Form\DataTransformer\MainImgDataTransformer;
+use Form\DataTransformer\MediaToChoicesDataTransformer;
 use Form\Helpers\PopularAssertGroups;
+use Repositiory\MediaRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -197,6 +201,25 @@ class EventType extends AbstractType
             ]
         );
 
+        //todo wybierz obrazek wyróżniający
+        $media = $this->getMedia($options['media_repository'], $options['calendarId'], $options['userId']);
+        $choices = $this->mediaToChoices($media);
+        $builder->add(
+            'main_img',
+            MainImgType::class,
+            [
+              'choices' => $choices,
+              'media' => $media,
+              'constraints' => [
+                  new Assert\Choice(
+                      [
+                        'choices' => array_column($choices, 'id'),
+                      ]
+                  ),
+              ],
+            ]
+        );
+
         $builder->get('start')->addModelTransformer(
             new DateDataTransformer()
         );
@@ -220,6 +243,9 @@ class EventType extends AbstractType
                 'validation_groups' => 'event_default',
                 'event_repository' => null,
                 'tag_repository' => null,
+                'media_repository' => null,
+                'userId' => null,
+                'calendarId' => null,
             ]
         );
     }
@@ -232,5 +258,35 @@ class EventType extends AbstractType
     public function getBlockPrefix()
     {
         return 'event_type';
+    }
+
+    //todo gdzie to powinno być?
+    /**
+     * @param mixed $media gotten from database
+     *
+     * @return array
+     */
+    private function mediaToChoices($media)
+    {
+        $choices = [];
+        foreach ($media as $medium) {
+            $choices[$medium['title']] = $medium['id'];
+        }
+
+        return $choices;
+    }
+
+    /**
+     * TODO gdzie to ma być?
+     * @param MediaRepository $repository
+     *
+     * @param int             $calendarId
+     * @param int             $userId
+     *
+     * @return array
+     */
+    private function getMedia(MediaRepository $repository, $calendarId, $userId)
+    {
+        return $repository->findAllForUserAndCalendar($userId, $calendarId);
     }
 }

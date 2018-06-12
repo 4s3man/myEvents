@@ -64,11 +64,13 @@ class CalendarDataManager
     protected $eventsList = null;
 
     /**
+     *
      * @var null|\Yasumi\Provider\AbstractProvider
      */
     protected $holidays = null;
 
     /**
+     *
      * @var null
      */
     protected $eventRepository = null;

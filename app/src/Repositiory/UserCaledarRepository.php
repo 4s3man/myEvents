@@ -39,6 +39,7 @@ class UserCaledarRepository extends AbstractRepository
     /**
      * Gets paginated users and roles for calendar
      * form modified witch searchData query
+     *
      * @param array $queryParams
      * @param null  $searchData
      *
@@ -61,6 +62,7 @@ class UserCaledarRepository extends AbstractRepository
     /**
      * Gets paginated users and roles for calendar
      * form modified witch searchData query
+     *
      * @param array $queryParams
      * @param null  $searchData
      *
@@ -120,6 +122,7 @@ class UserCaledarRepository extends AbstractRepository
 
     /**
      * Find one record in user_calendars table by id
+     *
      * @param int $userCalendarId
      *
      * @return array|mixed
@@ -149,6 +152,7 @@ class UserCaledarRepository extends AbstractRepository
 
     /**
      * Delete one record from user_calendars
+     *
      * @param int $userCalendarId
      */
     public function deleteLink($userCalendarId)
@@ -179,6 +183,7 @@ class UserCaledarRepository extends AbstractRepository
 
     /**
      * Check wheather user and calendar are linked, if so true else false
+     *
      * @param int $userId
      * @param int $calendarId
      *
@@ -218,6 +223,7 @@ class UserCaledarRepository extends AbstractRepository
 
     /**
      * Query one user and it's links to calendar by calendarId
+     *
      * @param int $calendarId
      *
      * @return mixed
@@ -236,6 +242,7 @@ class UserCaledarRepository extends AbstractRepository
 
     /**
      * Find user and its links by users_calendar table id
+     *
      * @param int $userCalendarId
      *
      * @return array

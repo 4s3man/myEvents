@@ -42,16 +42,13 @@ class EventSearchType extends SearchType
                 'required' => false,
                 'constraints' => [
                     new Assert\Regex(
-                      [
+                        [
                           'groups' => ['search_default'],
                           'pattern' => '/[1-3]{1}[0-9]{3}-(0[1-9]|1[0-2])/',
-                      ]
+                        ]
                     ),
-                ]
+                ],
             ]
-
-
-
         );
     }
 

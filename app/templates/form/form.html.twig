@@ -1,5 +1,5 @@
 {% if form is defined %}
-    {% form_theme form with ['bootstrap_3_layout.html.twig', 'form/form_errors.html.twig'] %}
+    {% form_theme form with ['form/mediaCheckbox.html.twig','bootstrap_3_layout.html.twig', 'form/form_errors.html.twig'] %}
     {{ form_start(form, { method: 'post', action: global.request.uri }) }}
     {{ form_widget(form) }}
     <div class="form-group">

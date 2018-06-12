@@ -55,6 +55,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
 
     /**
      * Gets paginated results form modified witch searchData query
+     *
      * @param array $queryParams
      * @param null  $searchData
      *
@@ -73,30 +74,6 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
         );
 
         return $paginator->pagerfanta;
-    }
-
-    private function dateToDatetimeObject($results)
-    {
-        $results = $this->columnToDataTime($results, 'start');
-        $results = $this->columnToDataTime($results, 'end');
-
-        return $results;
-    }
-
-    private function columnToDataTime(array $array, $column)
-    {
-        $result = $array;
-        $arrayColumn = array_column($array,$column);
-
-        foreach ($arrayColumn as $key=>$value) {
-            $arrayColumn[$key] = new \DateTime($value);
-        }
-
-        foreach ($result as $key => &$val) {
-            $val[$column] = $arrayColumn[$key];
-        }
-
-        return $result;
     }
 
     /**
@@ -124,6 +101,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
 
     /**
      * Query all events with specific calendarId
+     *
      * @param int $calendarId
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder
@@ -131,7 +109,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     public function queryAllForCalendarId($calendarId)
     {
         $qb = $this->queryAll()->where('calendar_id = :calendarId')
-                ->setParameter(':calendarId', $this->calendarId, \PDO::PARAM_INT);
+            ->setParameter(':calendarId', $this->calendarId, \PDO::PARAM_INT);
 
         return $qb;
     }
@@ -277,5 +255,44 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     protected function removeLinkedTags(int $eventId)
     {
         return $this->db->delete('event_tags', ['event_id' => $eventId]);
+    }
+
+    /**
+     * Converts string date start, end to \DateTimeObject
+     * @param array $data
+     *
+     * @return array
+     */
+    private function dateToDatetimeObject(array $data)
+    {
+        $results = $this->columnToDataTime($data, 'start');
+        $results = $this->columnToDataTime($data, 'end');
+
+        return $results;
+    }
+
+    /**
+     * Convert column of arrays to \DateTime Object
+     *
+     * @param array  $array
+     *
+     * @param string $column
+     *
+     * @return array
+     */
+    private function columnToDataTime(array $array, $column)
+    {
+        $result = $array;
+        $arrayColumn = array_column($array, $column);
+
+        foreach ($arrayColumn as $key => $value) {
+            $arrayColumn[$key] = new \DateTime($value);
+        }
+
+        foreach ($result as $key => &$val) {
+            $val[$column] = $arrayColumn[$key];
+        }
+
+        return $result;
     }
 }

@@ -23,6 +23,11 @@
                 <i class="fa fa-calendar" aria-hidden="true"></i>
             </a>
         </div>
+        <div class="sidebar-menu-item">
+            <a href="{{ url('calendarMediaIndex', { 'calendarId':calendarId, 'page':1}) }}">
+                <i class="fa fa-file-image-o" aria-hidden="true"></i>
+            </a>
+        </div>
         {#{% if is_granted('IS_AUTHENTICATED_FULLY') %}#}
         <div class="sidebar-menu-item mt-5">
             <a class="" href="{{ url('auth_logout') }}" title="{{ 'auth.logout.label'|trans }}">
