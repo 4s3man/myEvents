@@ -63,15 +63,23 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      */
     public function getSearchedAndPaginatedRecords($queryParams, $searchData = null)
     {
-        $query = $this->queryAllForCalendarId($this->calendarId);
-        $searchDataManager = new SearchDataManager($query);
+        //todo nowe query z obrazkami
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('e.id','e.calendar_id','e.title','e.start','e.end','e.seats','e.cost','e.content', 'e.main_img','m.photo')
+            ->from('event','e')
+            ->leftJoin('e','media','m', 'e.main_img = m.id')
+            ->where('e.calendar_id = :calendarId')
+            ->setParameter(':calendarId', $queryParams['calendarId'], \PDO::PARAM_INT);
+
+        $searchDataManager = new SearchDataManager($qb, 'e');
         $searchDataManager->addFilters($searchData);
         $paginator = new MyPaginatorShort(
-            $query,
+            $qb,
             '5',
             'e.id',
             $queryParams['page']
         );
+
 
         return $paginator->pagerfanta;
     }
@@ -93,7 +101,8 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
             'e.seats',
             'e.cost',
             'e.calendar_id',
-            'e.sign_up'
+            'e.sign_up',
+            'e.main_img'
         )->from('event', 'e');
 
         return $qb;

@@ -1,4 +1,7 @@
 .logged > .admin-sidebar {
+  width: 100px;
+  height: 100%;
+  position: fixed;
   grid-area: sidebar;
   background-color: #122b1e;
   border-right: #ebebeb 2px dotted;

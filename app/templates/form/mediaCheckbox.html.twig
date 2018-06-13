@@ -2,12 +2,16 @@
     {% spaceless %}
             <div {{ block('widget_container_attributes') }} class="media_wrapper">
                 {% for child in form %}
-                    <div>
+                    <div class="media_paginator">
                         {{ form_widget(child) }}
-                        <div class="img-wrapper">
-                            <img src="/uploads/photos/{{ form.vars.media[loop.index-1].photo }}" alt="{{ form.vars.media[loop.index-1].title}}">
-                        </div>
-                        {{ form_label(child ) }}
+                        {% if form.vars.media[loop.index-1].photo is defined %}
+                            {{ form_label(child ) }}
+                            <div class="media_photo">
+                                    <img src="/uploads/photos/{{ form.vars.media[loop.index-1].photo }}" alt="{{ form.vars.media[loop.index-1].title}}">
+                            </div>
+                        {% else %}
+                            <div class="media_photo media_placeholder"></div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>

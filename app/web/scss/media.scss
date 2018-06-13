@@ -9,3 +9,11 @@
     height: auto;
   }
 }
+.media_wrapper{
+  overflow: scroll;
+  max-height: 300px;
+  .media_paginator{
+    padding: 15px;
+    display: inline-block;
+  }
+}

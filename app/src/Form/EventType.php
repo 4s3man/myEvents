@@ -8,6 +8,7 @@
 
 namespace Form;
 
+use Form\DataTransformer\BooleanDataTransformer;
 use Form\DataTransformer\DateDataTransformer;
 use Form\DataTransformer\MainImgDataTransformer;
 use Form\DataTransformer\MediaToChoicesDataTransformer;
@@ -138,7 +139,7 @@ class EventType extends AbstractType
                     new CustomAssert\DateRange(
                         [
                             'groups' => ['event_default'],
-                            'min' => isset($options['start']) ? $options['start'] : date('Y', strtotime('- 1 day')),
+                            'min' => isset($options['start']) ? $options['start'] : date('Y-m-d G:i'),
                         ]
                     ),
                 ],
@@ -201,7 +202,6 @@ class EventType extends AbstractType
             ]
         );
 
-        //todo wybierz obrazek wyróżniający
         $media = $this->getMedia($options['media_repository'], $options['calendarId'], $options['userId']);
         $choices = $this->mediaToChoices($media);
         $builder->add(
@@ -218,6 +218,10 @@ class EventType extends AbstractType
                   ),
               ],
             ]
+        );
+
+        $builder->get('sign_up')->addModelTransformer(
+            new BooleanDataTransformer()
         );
 
         $builder->get('start')->addModelTransformer(

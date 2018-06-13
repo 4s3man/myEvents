@@ -8,6 +8,9 @@ FUN COLORS
 #a88044
  */
 .logged > .admin-sidebar {
+  width: 100px;
+  height: 100%;
+  position: fixed;
   grid-area: sidebar;
   background-color: #122b1e;
   border-right: #ebebeb 2px dotted;
@@ -342,6 +345,15 @@ FUN COLORS
   height: auto;
 }
 
+.media_wrapper {
+  overflow: scroll;
+  max-height: 300px;
+}
+.media_wrapper .media_paginator {
+  padding: 15px;
+  display: inline-block;
+}
+
 @media screen and (max-width: 500px) {
   .event-list {
     padding: 60px 40px;
@@ -366,7 +378,7 @@ body {
 .logged {
   display: grid;
   grid-template-columns: 100px auto;
-  grid-template-areas: "sidebar content";
+  grid-template-areas: "placeholder content";
   grid-auto-rows: auto;
 }
 

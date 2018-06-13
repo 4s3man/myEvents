@@ -56,7 +56,8 @@ class EventController implements ControllerProviderInterface
             ->assert('eventId', '[1-9]\d*')
             ->bind('eventShow');
 
-        $controller->get('/{calendarId}/{eventId}/edit', [$this, 'eventEditAction'])
+        $controller->match('/{calendarId}/{eventId}/edit', [$this, 'eventEditAction'])
+            ->method('POST|GET')
             ->assert('calendarId', '[1-9]\d*')
             ->assert('eventId', '[1-9]\d*')
             ->bind('eventEdit');
@@ -149,7 +150,7 @@ class EventController implements ControllerProviderInterface
         //TODO ostlować search form, ewentualnie potem bardziej doprany search
         //robić w końcu wgląd tych eventów czy edit i delete eventów najpierw?
 
-        $queryParams = ['page' => $page];
+        $queryParams = ['calendarId' => $calendarId, 'page' => $page];
 
         $form = $app['form.factory']
             ->createBuilder(EventSearchType::class)
@@ -211,6 +212,8 @@ class EventController implements ControllerProviderInterface
 
                 $participantRepository->save($form->getData(), $eventDataManager->getEvent());
                 $sessionMessagesMenager->signedUp();
+                //todo przekierowanie email został wysłany
+//                $app->redirect($app['url_generator']->generate(''))
             }
 
             $signUpFormView = $form->createView();
@@ -243,14 +246,66 @@ class EventController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function eventEditAction(Application $app, $calendarId, $eventId)
+    public function eventEditAction(Application $app, $calendarId, $eventId, Request $request)
     {
-        //TODO edit event
-        return $app['twig']->render(
-            'event/ev-edit.html.twig',
+        //todo teraz tutaj
+        $eventRepository = new EventRepository($app['db']);
+        $tagRepository = new TagRepository($app['db']);
+        $mediaRepository = new MediaRepository($app['db']);
+        $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+
+        //Todo get id from logged user
+        $userId = 1;
+
+        $event = $eventRepository->findOneById($eventId);
+
+        if (!$event) {
+            $sessionMessagesManager->recordNotFound();
+
+            return $app
+                ->redirect(
+                    $app['url_generator']
+                        ->generate(
+                            'eventIndex',
+                            ['calendarId' => $calendarId, 'page' => 1]
+                        ),
+                    301
+                );
+        }
+
+        $form = $app['form.factory']->CreateBuilder(
+            EventType::class,
+            $event,
             [
+                'event_repository' => $eventRepository,
+                'tag_repository' => $tagRepository,
+                'media_repository' => $mediaRepository,
                 'calendarId' => $calendarId,
-                'eventId' => $eventId,
+                'userId' => $userId,
+            ]
+        )->getForm();
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $eventRepository->save($form->getData(), $calendarId);
+            $sessionMessagesManager->changed();
+
+            return $app
+                ->redirect(
+                    $app['url_generator']
+                        ->generate(
+                            'eventIndex',
+                            ['calendarId' => $calendarId, 'page' => 1]
+                        ),
+                    301
+                );
+        }
+
+        return $app['twig']->render(
+            'event/ev-add.html.twig',
+            [
+                'form' => $form->createView(),
+                'calendarId' => $calendarId,
             ]
         );
     }

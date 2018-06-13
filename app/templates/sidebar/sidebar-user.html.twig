@@ -1,9 +1,11 @@
 <div class="admin-sidebar">
     <nav class="sidebar-menu">
-        <div class="sidebar-menu-item">
-            {#<a href="{{ url('userCalendarIndex',{'userId':loggedUserId, 'page':1}) }}">#}
-                <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
-            {#</a>#}
+        <div class="sidebar-menu-item_collection">
+            <a class="collection" href="{{ url('userCalendarIndex',{'userId':1, 'page':1}) }}">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+            </a>
         </div>
         <div class="sidebar-menu-item">
             {#<a href="{{ url('settingsIndex',{'calendarId':calendarId, 'page':1}) }}">#}
@@ -16,14 +18,16 @@
             {#</a>#}
         </div>
         <div class="sidebar-menu-item">
-            {#<a href="{{ url('eventIndex', {'calendarId':calendarId, 'page':1} ) }}">#}
-                <i class="fa fa-list-ul" aria-hidden="true"></i>
-            {#</a>#}
-        </div>
-        <div class="sidebar-menu-item">
             <a href="{{ url('userMediaIndex', { 'page':1}) }}">
                 <i class="fa fa-file-image-o" aria-hidden="true"></i>
             </a>
         </div>
+        {#{% if is_granted('IS_AUTHENTICATED_FULLY') %}#}
+        <div class="sidebar-menu-item mt-5">
+            <a class="" href="{{ url('auth_logout') }}" title="{{ 'auth.logout.label'|trans }}">
+                <i class="fa fa-power-off " aria-hidden="true"></i>
+            </a>
+        </div>
+        {#{% endif %}#}
     </nav>
 </div>

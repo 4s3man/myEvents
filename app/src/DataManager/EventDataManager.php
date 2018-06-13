@@ -46,11 +46,7 @@ class EventDataManager
     {
         $formData = $this->event;
 
-        if (isset($formData['sign_up'])) {
-            $formData['sign_up'] = (int) $formData['sign_up'];
-        }
         $formData['calendar_id'] = $this->calendarId;
-        $formData['sign_up'] = isset($formData['sign_up']) ? (int) $formData['sign_up'] : 0;
         $formData['start'] = isset($formData['start']) ? $formData['start']->format('Y-m-d H:i:s') : null;
         $formData['end'] = isset($formData['end']) ? $formData['end']->format('Y-m-d H:i:s') : null;
 

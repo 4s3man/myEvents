@@ -27,6 +27,7 @@ class MainImgType extends AbstractType
             array(
             'multiple' => false,
             'expanded' => true,
+            'required' => false,
             'media' => null,
             )
         );
@@ -42,6 +43,10 @@ class MainImgType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         parent::buildView($view, $form, $options);
+        if (!$options['required']) {
+            array_unshift($options['media'], []);
+        }
+
         $view->vars = array_merge(
             $view->vars,
             [

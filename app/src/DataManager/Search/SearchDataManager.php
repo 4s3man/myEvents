@@ -21,6 +21,8 @@ class SearchDataManager
      */
     private $query = null;
 
+    private $alias = null;
+
     /**
      *
      * @var array $allowedKeys
@@ -32,9 +34,10 @@ class SearchDataManager
      *
      * @param QueryBuilder $query
      */
-    public function __construct(QueryBuilder $query)
+    public function __construct(QueryBuilder $query, $searchAlias)
     {
         $this->query = $query;
+        $this->alias = $searchAlias;
     }
 
     /**
@@ -70,6 +73,7 @@ class SearchDataManager
     {
         foreach ($searchData as $key => $val) {
             if ($val) {
+                $key = $this->alias.'.'.$key;
                 $this->query->andWhere($key.' like :value')
                     ->setParameter(':value', $val.'%', \PDO::PARAM_STR);
             }
