@@ -84,7 +84,6 @@ class CalendarUserController implements ControllerProviderInterface
         $userCalendarRepository = new UserCaledarRepository($app['db']);
 
         $queryParams = ['calendarId' => $calendarId, 'page' => $page];
-        $paginator = $userCalendarRepository->getSearchPaginatedUsersByCalendarId($queryParams);
 
         $form = $app['form.factory']
             ->createBuilder(UserSearchType::class)
@@ -93,6 +92,9 @@ class CalendarUserController implements ControllerProviderInterface
 
         if ($form->isSubmitted() && $form->isValid()) {
             $paginator = $userCalendarRepository->getSearchPaginatedUsersByCalendarId($queryParams, $form->getData());
+        }
+        else{
+            $paginator = $userCalendarRepository->getSearchPaginatedUsersByCalendarId($queryParams);
         }
 
 

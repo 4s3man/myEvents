@@ -172,6 +172,7 @@ class MediaController implements ControllerProviderInterface
         $userId = 1;
 
         $mediaRepository = new MediaRepository($app['db']);
+
         $queryParams = ['userId' => $userId, 'page' => $page];
         $paginator = $mediaRepository->getSearchedAndPaginatedRecordsForUser($queryParams);
 

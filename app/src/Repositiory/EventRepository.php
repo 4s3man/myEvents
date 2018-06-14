@@ -65,9 +65,9 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     {
         //todo nowe query z obrazkami
         $qb = $this->db->createQueryBuilder();
-        $qb->select('e.id','e.calendar_id','e.title','e.start','e.end','e.seats','e.cost','e.content', 'e.main_img','m.photo')
-            ->from('event','e')
-            ->leftJoin('e','media','m', 'e.main_img = m.id')
+        $qb->select('e.id', 'e.calendar_id', 'e.title', 'e.start', 'e.end', 'e.seats', 'e.cost', 'e.content', 'e.main_img', 'm.photo')
+            ->from('event', 'e')
+            ->leftJoin('e', 'media', 'm', 'e.main_img = m.id')
             ->where('e.calendar_id = :calendarId')
             ->setParameter(':calendarId', $queryParams['calendarId'], \PDO::PARAM_INT);
 
@@ -187,6 +187,35 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
             $this->db->rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * Delete event and its links
+     * @param int $eventId
+     *
+     * @return int
+     *
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     */
+    public function delete($eventId)
+    {
+        $this->removeLinkedTags($eventId);
+        $this->removeLinkedParticipants($eventId);
+
+        return $this->db->delete('event', ['id' => $eventId]);
+    }
+
+    /**
+     * Delete participants linked to event
+     * @param int $eventId
+     *
+     * @return int
+     *
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     */
+    public function removeLinkedParticipants($eventId)
+    {
+        return $this->db->delete('participant', ['event_id' => $eventId]);
     }
 
     /**

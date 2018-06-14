@@ -1,9 +1,36 @@
-{% extends 'layout.html.twig' %}
+{% extends 'default/_baseDelete.html.twig' %}
+
 {% block title %}
 {% endblock %}
+
 {% block sidebar %}
     {% include 'sidebar/sidebar-calendar.html.twig' %}
 {% endblock %}
-{% block content %}
-    usuwanie wydarzenia
+
+{% block dataToDeleteDisplay %}
+    {% if dataToDelete is defined %}
+        <a href="{{ url('eventShow', {'calendarId':dataToDelete.calendar_id, 'eventId':dataToDelete.id}) }}" class="paginator-item ">
+            <div class="paginator-item">
+                <i class="fa fa-flag fa-3x"></i>
+            </div>
+            <div class="title-desc-wrap">
+                <div class="paginator-item event-title">
+                    <h2>{{ dataToDelete.title}}</h2>
+                </div>
+                <div class="paginator-item event-email">
+                    <h6>{{ dataToDelete.content[:50] }}</h6>
+                </div>
+                <div class="paginator-item event-start">
+                    {% set start = dataToDelete.start|split(' ') %}
+                    <h6>{{ 'event.start'|trans }}  {{ start.0 }}</h6>
+                    <h6> {{ start.1 }}</h6>
+                </div>
+                <div class="paginator-item event-start">
+                    {% set end = dataToDelete.end|split(' ') %}
+                    <h6>{{ 'event.end'|trans }}  {{ end.0 }}</h6>
+                    <h6> {{ end.1 }}</h6>
+                </div>
+            </div>
+        </a>
+    {% endif %}
 {% endblock %}

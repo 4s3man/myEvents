@@ -21,6 +21,8 @@ use Search\Criteria\TypeCriteria;
 use Search\CriteriaBuilder\TypeCriteriaBuilder;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -62,7 +64,8 @@ class EventController implements ControllerProviderInterface
             ->assert('eventId', '[1-9]\d*')
             ->bind('eventEdit');
 
-        $controller->get('/{calendarId}/{eventId}/delete', [$this, 'eventDeleteAction'])
+        $controller->match('/{calendarId}/{eventId}/delete', [$this, 'eventDeleteAction'])
+            ->method('POST|GET')
             ->assert('calendarId', '[1-9]\d*')
             ->assert('eventId', '[1-9]\d*')
             ->bind('eventDelete');
@@ -147,9 +150,7 @@ class EventController implements ControllerProviderInterface
     public function eventIndexAction(Application $app, $calendarId, $page, Request $request)
     {
         $eventRepository = new EventRepository($app['db'], $calendarId);
-        //TODO ostlować search form, ewentualnie potem bardziej doprany search
-        //robić w końcu wgląd tych eventów czy edit i delete eventów najpierw?
-
+        //todo sprawdzić wszystkie search formy
         $queryParams = ['calendarId' => $calendarId, 'page' => $page];
 
         $form = $app['form.factory']
@@ -194,7 +195,7 @@ class EventController implements ControllerProviderInterface
         //TODO spytać się jak by to lepiej
         //TODO na koniec sign up przez potwierdzenie email
         $eventRepository = new EventRepository($app['db']);
-        $participantRepository = new ParticipantRepository($app['db']);
+        $participantRepository = new ParticipantRepository($app['db'], $eventId);
         $eventDataManager = new EventDataManager(
             $eventRepository->findOneById($eventId),
             $calendarId
@@ -238,13 +239,17 @@ class EventController implements ControllerProviderInterface
 
     /**
      * Edit event site
-     *
      * @param Application $app
      *
-     * @param String      $calendarId
-     * @param String      $eventId
+     * @param int         $calendarId
+     * @param int         $eventId
      *
-     * @return mixed
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function eventEditAction(Application $app, $calendarId, $eventId, Request $request)
     {
@@ -312,20 +317,61 @@ class EventController implements ControllerProviderInterface
 
     /**
      * Delete event
-     *
      * @param Application $app
      *
-     * @param String      $calendarId
-     * @param String      $eventId
+     * @param int         $calendarId
+     * @param int         $eventId
      *
-     * @return mixed
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
-    public function eventDeleteAction(Application $app, $calendarId, $eventId)
+    public function eventDeleteAction(Application $app, $calendarId, $eventId, Request $request)
     {
-        //TODO edit event
+        $eventRepository = new EventRepository($app['db']);
+        $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+
+        $event = $eventRepository->findOneById($eventId);
+        if (!$event) {
+            $sessionMessagesManager->recordNotFound();
+
+            return $app
+                ->redirect(
+                    $app['url_generator']
+                        ->generate(
+                            'eventIndex',
+                            ['calendarId' => $calendarId, 'page' => 1]
+                        ),
+                    301
+                );
+        }
+
+        $form = $app['form.factory']->createBuilder(FormType::class, $event)->add('id', HiddenType::class)->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sessionMessagesManager->deleted();
+            $eventRepository->delete($eventId);
+
+            return $app
+                ->redirect(
+                    $app['url_generator']
+                        ->generate(
+                            'eventIndex',
+                            ['calendarId' => $calendarId, 'page' => 1]
+                        ),
+                    301
+                );
+        }
+
         return $app['twig']->render(
             'event/ev-delete.html.twig',
             [
+                'form' => $form->createView(),
+                'dataToDelete' => $event,
                 'calendarId' => $calendarId,
                 'eventId' => $eventId,
             ]

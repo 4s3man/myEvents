@@ -12,6 +12,7 @@ use DataManager\Search\SearchDataManager;
 use DataManager\UserCalendarDataManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Utils\MyPaginatorShort;
 
 /**
@@ -48,7 +49,17 @@ class UserCaledarRepository extends AbstractRepository
     public function getSearchPaginatedUsersByCalendarId($queryParams, $searchData = null)
     {
         $query = $this->queryLinkedUserByCalendarId($queryParams['calendarId']);
-        $searchDataManager = new SearchDataManager($query, $searchData);
+        $searchDataManager = new SearchDataManager($query);
+        if (isset($searchData['user_role']) && !empty($searchData['user_role'])) {
+            dump('role');
+            $query->andWhere('uC.user_role like :role')
+                ->setParameter(':role', $searchData['user_role'], \PDO::PARAM_STR);
+        }
+        if (isset($searchData['email']) && !empty($searchData['email'])) {
+            dump('email');
+            $query->andWhere('u.email like :email')
+                ->setParameter(':email', $searchData['email'].'%', \PDO::PARAM_STR);
+        }
         $paginator = new MyPaginatorShort(
             $query,
             '5',
@@ -71,7 +82,8 @@ class UserCaledarRepository extends AbstractRepository
     public function getSearchPaginatedCalendarsByUserId($queryParams, $searchData = null)
     {
         $query = $this->getLinkedCalendarsByUserId($queryParams['userId']);
-        $searchDataManager = new SearchDataManager($query, $searchData);
+        $searchDataManager = new SearchDataManager($query, 'c');
+        $searchDataManager->addFilters($searchData);
         $paginator = new MyPaginatorShort(
             $query,
             '5',
@@ -226,7 +238,7 @@ class UserCaledarRepository extends AbstractRepository
      *
      * @param int $calendarId
      *
-     * @return mixed
+     * @return QueryBuilder $qb
      */
     public function queryLinkedUserByCalendarId($calendarId)
     {

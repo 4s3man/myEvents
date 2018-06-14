@@ -89,7 +89,8 @@ class MediaRepository extends AbstractRepository
     public function getSearchedAndPaginatedRecordsForUser($queryParams, $searchData = null)
     {
         $query = $this->queryUserMedia($queryParams['userId']);
-        $searchDataManager = new SearchDataManager($query, $searchData);
+        $searchDataManager = new SearchDataManager($query, 'm');
+        $searchDataManager->addFilters($searchData);
         $paginator = new MyPaginatorShort(
             $query,
             '5',
@@ -111,7 +112,8 @@ class MediaRepository extends AbstractRepository
     public function getSearchedAndPaginatedRecordsForCalendar($queryParams, $searchData = null)
     {
         $query = $this->queryCalendarMedia($queryParams['calendarId']);
-        $searchDataManager = new SearchDataManager($query, $searchData);
+        $searchDataManager = new SearchDataManager($query, 'm');
+        $searchDataManager->addFilters($searchData);
         $paginator = new MyPaginatorShort(
             $query,
             '5',

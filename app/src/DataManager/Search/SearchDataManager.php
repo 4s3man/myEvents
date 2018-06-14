@@ -21,6 +21,9 @@ class SearchDataManager
      */
     private $query = null;
 
+    /**
+     * @var string|null
+     */
     private $alias = null;
 
     /**
@@ -31,10 +34,11 @@ class SearchDataManager
 
     /**
      * SearchDataManager constructor.
-     *
      * @param QueryBuilder $query
+     *
+     * @param string       $searchAlias
      */
-    public function __construct(QueryBuilder $query, $searchAlias)
+    public function __construct(QueryBuilder $query, $searchAlias = null)
     {
         $this->query = $query;
         $this->alias = $searchAlias;
@@ -57,7 +61,7 @@ class SearchDataManager
     public function addFilters($searchData)
     {
         if (is_array($searchData)) {
-            $this->checkKeys($searchData);
+//            $this->checkKeys($searchData);
             $this->query = $this->filter($searchData);
         } elseif (null !== $searchData) {
             throw new \InvalidArgumentException(sprintf('2 argument of %s construct needs to be array or null', __CLASS__));
@@ -73,7 +77,9 @@ class SearchDataManager
     {
         foreach ($searchData as $key => $val) {
             if ($val) {
-                $key = $this->alias.'.'.$key;
+                if ($this->alias) {
+                    $key = $this->alias.'.'.$key;
+                }
                 $this->query->andWhere($key.' like :value')
                     ->setParameter(':value', $val.'%', \PDO::PARAM_STR);
             }

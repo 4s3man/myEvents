@@ -23,15 +23,20 @@ class ParticipantRepository extends AbstractRepository implements UniquenessInte
      */
     protected $eventRepository = null;
 
+    protected $eventId = null;
+
     /**
      * ParticipantRepository constructor.
      *
      * @param Connection $db
+     *
+     * @param int        $eventId
      */
-    public function __construct(Connection $db)
+    public function __construct(Connection $db, $eventId)
     {
         parent::__construct($db);
         $this->eventRepository = new EventRepository($db);
+        $this->eventId = $eventId;
     }
 
     //TODO z rejestracją i partycypowaniem zrobić tak żeby user wysyłał email i wtedy następowało potwierdzenie
@@ -84,7 +89,9 @@ class ParticipantRepository extends AbstractRepository implements UniquenessInte
     public function findForUniqueness($value, $column)
     {
         $qb = $this->queryAll()->where($column.' = :value')
-            ->setParameter(':value', $value);
+            ->andWhere('event_id = :eventId')
+            ->setParameter(':value', $value, \PDO::PARAM_STR)
+            ->setParameter(':eventId', $this->eventId, \PDO::PARAM_INT);
 
         return $qb->execute()->fetchAll();
     }

@@ -211,11 +211,7 @@ class EventType extends AbstractType
               'choices' => $choices,
               'media' => $media,
               'constraints' => [
-                  new Assert\Choice(
-                      [
-                        'choices' => array_column($choices, 'id'),
-                      ]
-                  ),
+                  new Assert\Choice(['choices' => array_column($choices, 'id')]),
               ],
             ]
         );
