@@ -9,6 +9,8 @@
 namespace Controller;
 
 use DataManager\SessionMessagesDataManager;
+use Form\DeleteUserType;
+use Form\EditUserType;
 use Form\RegisterType;
 use Repositiory\UserRepository;
 use Silex\Api\ControllerProviderInterface;
@@ -36,6 +38,14 @@ class UserController implements ControllerProviderInterface
         $controller->match('/register', [$this, 'registerAction'])
             ->method('POST|GET')
             ->bind('register');
+
+        $controller->match('/edit', [$this, 'editAction'])
+            ->method('POST|GET')
+            ->bind('editUser');
+
+        $controller->match('/delete', [$this, 'deleteAction'])
+            ->method('POST|GET')
+            ->bind('deleteUser');
 
         return $controller;
     }
@@ -68,7 +78,7 @@ class UserController implements ControllerProviderInterface
             $manager->setUser('NORMAL_USER');
             $user = $manager->getUser();
 
-            $repository->save($user);
+            $repository->save($user, $app['security.encoder.bcrypt']);
             $sessionMessages->registered();
 
             return $app->redirect($app['url_generator']->generate('auth_login'), 301);
@@ -77,6 +87,80 @@ class UserController implements ControllerProviderInterface
 
         return $app['twig']->render(
             'user/register.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    public function editAction(Application $app, Request $request)
+    {
+        //TODO get id from logged user
+        $userId = 4;
+        //TODO get user_role of logged user
+        $userRole = 'NORMAL_USER';
+
+        $userRepository = new UserRepository($app['db']);
+        $sessionMessages = new SessionMessagesDataManager($app['session']);
+
+        $user = $userRepository->findOneById($userId);
+        $form = $app['form.factory']
+            ->createBuilder(
+                EditUserType::class,
+                $user,
+                [
+                'repository' => new UserRepository($app['db']),
+                'bcrypt' => $app['security.encoder.bcrypt'],
+                ]
+            )->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $userRepository->save($form->getData(), $app['security.encoder.bcrypt']);
+            $sessionMessages->changed();
+
+//            return $app->redirect($app['url_generator']->generate('auth_login'), 301);
+        }
+
+        return $app['twig']->render(
+            'user/register.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    public function deleteAction(Application $app, Request $request)
+    {
+        //todo get id from logged user
+        $userId = 4;
+
+        $userRepository = new UserRepository($app['db']);
+        $sessionMessages = new SessionMessagesDataManager($app['session']);
+
+        $user = $userRepository->findOneById($userId);
+        $form = $app['form.factory']
+            ->createBuilder(
+                DeleteUserType::class,
+                $user,
+                [
+                    'repository' => new UserRepository($app['db']),
+                    'bcrypt' => $app['security.encoder.bcrypt'],
+                ]
+            )->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $userRepository->delete($user['id']);
+            $sessionMessages->deleted();
+
+            return $app->redirect($app['url_generator']->generate('register'), 301);
+        }
+
+        return $app['twig']->render(
+            'user/user-delete.html.twig',
             [
                 'form' => $form->createView(),
             ]

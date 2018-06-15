@@ -11,13 +11,19 @@ namespace Repositiory;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Validator\Constraints\Interfaces\NotItselfUniquenessInterface;
 use Validator\Constraints\Interfaces\UniquenessInterface;
 
 /**
  * Class UserRepository
  */
-class UserRepository extends AbstractRepository implements UniquenessInterface
+class UserRepository extends AbstractRepository implements UniquenessInterface, NotItselfUniquenessInterface
 {
+    /**
+     * @var null|MediaRepository
+     */
+    private $mediaReposioty = null;
+
     /**
      * UserRepository constructor.
      *
@@ -26,6 +32,7 @@ class UserRepository extends AbstractRepository implements UniquenessInterface
     public function __construct(Connection $db)
     {
         parent::__construct($db);
+        $this->mediaReposioty = new MediaRepository($db);
     }
 
 
@@ -41,6 +48,15 @@ class UserRepository extends AbstractRepository implements UniquenessInterface
             ->from('user', 'u');
     }
 
+    public function findOneById($userId)
+    {
+        $qb = $this->queryAll()->where('id = :userId')
+            ->setParameter(':userId', $userId, \PDO::PARAM_INT);
+        $result = $qb->execute()->fetch();
+
+        return $result ? $result : [];
+    }
+
     /**
      * Saves or updates values into DB
      *
@@ -49,24 +65,30 @@ class UserRepository extends AbstractRepository implements UniquenessInterface
      * @throws DBALException
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function save($user)
+    public function save($user, $encoder)
     {
+        //todo posprzątać to i user data managera
         $this->db->beginTransaction();
         try {
-            //            if (isset($user['id']) && ctype_digit((string) $user['id'])) {
-            //                $id = $user['id'];
-            //                unset($user['id']);
-            //
-            //                //TODO superUser
-            //                $this->db->update('role', $user['role'], ['id' => $user['role_id']]);
-            //                $this->db->update('user', $user, ['id' => $id]);
-            //            } else {
-            //
-            //            }
+            if (isset($user['id']) && ctype_digit((string) $user['id'])) {
+                $id = $user['id'];
+                unset($user['id']);
+
+                if (null !== $user['new_password']) {
+                    $user['password'] = $encoder->encodePassword($user['new_password'], '');
+                }
+
+                unset($user['role']);
+                unset($user['new_password']);
+                unset($user['old_password']);
+
+                $this->db->update('user', $user, ['id' => $id]);
+            } else {
                 $this->db->insert('role', ['role' => $user['role']]);
                 unset($user['role']);
                 $user['role_id'] = $this->db->lastInsertId();
                 $this->db->insert('user', $user);
+            }
             $this->db->commit();
         } catch (DBALException $e) {
             $this->db->rollBack();
@@ -188,5 +210,63 @@ class UserRepository extends AbstractRepository implements UniquenessInterface
             ->setParameter(':value', $value);
 
         return $qb->execute()->fetchAll();
+    }
+
+    /**
+     * Finds for uniqueness if value is not passed value
+     *
+     * @param string $value
+     * @param string $column
+     * @param string $itself
+     *
+     * @return array
+     */
+    public function findForNotItselfUniqueness($value, $column, $itself)
+    {
+        $qb = $this->queryAll()->where($column.' = :value')
+            ->andWhere($column.' != :itself')
+            ->setParameter(':value', $value)
+            ->setParameter(':itself', $itself);
+
+        return $qb->execute()->fetchAll();
+    }
+
+    public function delete($userId)
+    {
+        $this->db->beginTransaction();
+
+        try {
+            $mediaIds = $this->getLinkedMediaIds($userId);
+            $this->db->delete('user_media', ['user_id' => $userId]);
+            $this->deleteLinkedMedia($mediaIds);
+
+            $this->db->delete('user_calendars', ['user_id' => $userId]);
+            $this->db->delete('user', ['id' => $userId]);
+
+            $this->db->commit();
+        } catch (DBALException $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    private function deleteLinkedMedia($mediaIds)
+    {
+        $qb = $this->db->createQueryBuilder()
+            ->delete('media')
+            ->where('id in (:ids)')
+            ->setParameter(':ids', $mediaIds, Connection::PARAM_INT_ARRAY);
+
+        return $qb->execute();
+    }
+
+    private function getLinkedMediaIds($userId)
+    {
+        $qb = $this->mediaReposioty->queryUserMedia($userId)
+            ->select('uM.id');
+        $result = $qb->execute()->fetchAll();
+        $result = array_column($result, 'id');
+
+        return $result ? $result : [];
     }
 }

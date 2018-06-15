@@ -7,6 +7,7 @@ use Controller\SettingsControler;
 use Controller\UserController;
 use Controller\CalendarUserController;
 use Controller\CalendarController;
+use Controller\MailTokenController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -44,3 +45,4 @@ $app->mount('/event', new EventController());
 $app->mount('/calendarUser', new CalendarUserController());
 $app->mount('/auth', new AuthController());
 $app->mount('/media', new MediaController());
+$app->mount('/token', new MailTokenController());

@@ -10,38 +10,38 @@ namespace Validator\Constraints;
 
 use Repositiory\AbstractRepository;
 
+use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
 use Symfony\Component\Validator\Exception\InvalidOptionsException;
-use Validator\Constraints\Interfaces\NotItselfUniquenessInterface;
 use Validator\Constraints\Interfaces\UniquenessInterface;
 
 /**
  * Class Uniqueness
  * Constraint to use in Uniqueness Validation
  */
-class NotUniqueness extends Constraint
+class PasswordMatch extends Constraint
 {
     /**
      * Message
      *
      * @var string
      */
-    public $message = 'validator.value_not_found';
+    public $message = 'validator.password_not_match';
 
     /**
      * Repository
      *
      * @var null|AbstractRepository
      */
-    public $repository = null;
+    public $password = null;
 
     /**
      * Column name witch values has to be unique
      *
      * @var null|String
      */
-    public $uniqueColumn = null;
+    public $bcrypt = null;
 
     /**
      * Uniqueness constructor.
@@ -52,18 +52,18 @@ class NotUniqueness extends Constraint
     {
         if (null !== $options && !is_array($options)) {
             $options = array(
-                'repository' => $options,
-                'uniqueColumn' => $options,
+                'password' => $options,
+                'bcrypt' => $options,
             );
         }
 
         parent::__construct($options);
 
-        if (null === $this->repository || null === $this->uniqueColumn) {
-            throw new MissingOptionsException(sprintf('Options uniqueColumn and repository are obligatory for constraint %s', __CLASS__), array('repository', 'uniqueColumn'));
+        if (null === $this->password || null === $this->bcrypt) {
+            throw new MissingOptionsException(sprintf('Options password and bcrypt are obligatory for constraint %s', __CLASS__), array('bcrypt', 'password'));
         }
-        if (!($this->repository instanceof NotUniqueness)) {
-            throw new InvalidOptionsException(sprintf('Passed repository must implements %s', NotItselfUniquenessInterface::class), array('repository'));
+        if (!($this->bcrypt instanceof BCryptPasswordEncoder)) {
+            throw new InvalidOptionsException(sprintf('Bcrypt must be instance of %s', BCryptPasswordEncoder::class), array('bcrypt'));
         }
     }
 }

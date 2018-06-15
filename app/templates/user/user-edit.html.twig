@@ -1,0 +1,10 @@
+{% extends 'layout.html.twig' %}
+{% block title %}
+    {{ 'title.user_edit'|trans }}
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h3 class="text-center">{{ 'title.user_register'|trans }}</h3>
+        {% include 'form/form.html.twig' %}
+    </div>
+{% endblock %}

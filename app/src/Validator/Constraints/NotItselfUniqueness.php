@@ -20,14 +20,14 @@ use Validator\Constraints\Interfaces\UniquenessInterface;
  * Class Uniqueness
  * Constraint to use in Uniqueness Validation
  */
-class NotUniqueness extends Constraint
+class NotItselfUniqueness extends Constraint
 {
     /**
      * Message
      *
      * @var string
      */
-    public $message = 'validator.value_not_found';
+    public $message = "editUser.value_in_use";
 
     /**
      * Repository
@@ -44,6 +44,11 @@ class NotUniqueness extends Constraint
     public $uniqueColumn = null;
 
     /**
+     * @var null | String
+     */
+    public $itself = null;
+
+    /**
      * Uniqueness constructor.
      *
      * @param null $options
@@ -54,15 +59,16 @@ class NotUniqueness extends Constraint
             $options = array(
                 'repository' => $options,
                 'uniqueColumn' => $options,
+                'itself' => $options,
             );
         }
 
         parent::__construct($options);
 
-        if (null === $this->repository || null === $this->uniqueColumn) {
+        if (null === $this->repository || null === $this->uniqueColumn || null === $this->itself) {
             throw new MissingOptionsException(sprintf('Options uniqueColumn and repository are obligatory for constraint %s', __CLASS__), array('repository', 'uniqueColumn'));
         }
-        if (!($this->repository instanceof NotUniqueness)) {
+        if (!($this->repository instanceof NotItselfUniquenessInterface)) {
             throw new InvalidOptionsException(sprintf('Passed repository must implements %s', NotItselfUniquenessInterface::class), array('repository'));
         }
     }

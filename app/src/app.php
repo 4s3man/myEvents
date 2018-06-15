@@ -104,5 +104,14 @@ $app->register(
         ],
     ]
 );
+$app['swiftmailer.options'] = array(
+    'host' => 'host',
+    'port' => '25',
+    'username' => 'username',
+    'password' => 'password',
+    'encryption' => null,
+    'auth_mode' => null
+);
+$app->register(new \Silex\Provider\SwiftmailerServiceProvider());
 
 return $app;

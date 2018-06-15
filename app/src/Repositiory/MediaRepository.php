@@ -260,7 +260,7 @@ class MediaRepository extends AbstractRepository
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder
      */
-    private function queryUserMedia($userId)
+    public function queryUserMedia($userId)
     {
         $qb = $this->db->createQueryBuilder();
         $qb->select('uM.user_id', 'm.id', 'm.photo', 'm.title')->from('media', 'm')

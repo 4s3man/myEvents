@@ -22,6 +22,8 @@ class UserDataManager
      */
     private $user = null;
 
+    private $encoder = null;
+
     /**
      *
      * @var array $options
@@ -37,8 +39,14 @@ class UserDataManager
      */
     public function __construct($user, BCryptPasswordEncoder $encoder)
     {
-        $user['password'] = $encoder->encodePassword($user['password'], '');
+        //todo ogarnąć ten bajzel
+        if (isset($user['id']) && !empty($user['new_password'])) {
+
+        } else {
+            $user['password'] = $encoder->encodePassword($user['password'], '');
+        }
         $this->user = $user;
+        $this->encoder = $encoder;
     }
 
     /**
