@@ -8,6 +8,7 @@
 
 namespace Controller;
 
+use DataManager\SessionMessagesDataManager;
 use Form\LoginType;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
@@ -48,8 +49,14 @@ class AuthController implements ControllerProviderInterface
      */
     public function loginAction(Application $app, Request $request)
     {
+        //todo jak zmienić żeby dostać id usera?
+        $sessionMessagesDataManager = new SessionMessagesDataManager($app['session']);
         $user = ['login' => $app['session']->get('_security.last_username')];
         $form = $app['form.factory']->createBuilder(LoginType::class, $user)->getForm();
+        $token = $app['security.token_storage']->getToken();
+        if (null !== $token) {
+            $user = $token->getUser();
+        }
 
         return $app['twig']->render(
             'auth/login.html.twig',

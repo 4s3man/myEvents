@@ -9,6 +9,7 @@ namespace Provider;
 
 use Doctrine\DBAL\Connection;
 use Repositiory\UserRepository;
+use Security\Core\MyEventsUser;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Core\User\UserInterface;

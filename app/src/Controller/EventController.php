@@ -52,7 +52,7 @@ class EventController implements ControllerProviderInterface
             ->assert('calendarId', '[1-9]\d*')
             ->bind('eventIndex');
 
-        $controller->match('/{calendarId}/{eventId}', [$this, 'eventShowAction'])
+        $controller->match('/{calendarId}/{eventId}/show', [$this, 'eventShowAction'])
             ->method('POST|GET')
             ->assert('calendarId', '[1-9]\d*')
             ->assert('eventId', '[1-9]\d*')
@@ -261,14 +261,14 @@ class EventController implements ControllerProviderInterface
      */
     public function eventEditAction(Application $app, $calendarId, $eventId, Request $request)
     {
+        //todo GET USER ID FROM LOGGED USER
+        $userId = 4;
+
         //todo teraz tutaj
         $eventRepository = new EventRepository($app['db']);
         $tagRepository = new TagRepository($app['db']);
         $mediaRepository = new MediaRepository($app['db']);
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-
-        //Todo get id from logged user
-        $userId = 1;
 
         $event = $eventRepository->findOneById($eventId);
 
@@ -315,10 +315,11 @@ class EventController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'event/ev-add.html.twig',
+            'event/ev-edit.html.twig',
             [
                 'form' => $form->createView(),
                 'calendarId' => $calendarId,
+                'userId' => $userId,
             ]
         );
     }

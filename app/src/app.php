@@ -83,14 +83,14 @@ $app->register(
                 'form' => [
                     'login_path' => 'auth_login',
                     'check_path' => 'auth_login_check',
-                    'default_target_path' => 'tag_index',
+                    'default_target_path' => 'auth_login',
                     'username_parameter' => 'login_type[login]',
                     'password_parameter' => 'login_type[password]',
                 ],
                 'anonymous' => true,
                 'logout' => [
                     'logout_path' => 'auth_logout',
-                    'target_url' => 'tag_index',
+                    'target_url' => 'register',
                 ],
                 'users' => function () use ($app) {
                     return new Provider\UserProvider($app['db']);
@@ -98,9 +98,8 @@ $app->register(
             ],
         ],
         'security.access_rules' => [
-        //['^/(auth|user).+$', 'IS_AUTHENTICATED_ANONYMOUSLY'],
-        //['^/.+$', 'NORMAL_USER'],
-            ['^/.+$', 'IS_AUTHENTICATED_ANONYMOUSLY'],
+            ['^/(auth|calendar/[1-9]\d*/\d.*|event/[1-9]\d*/([1-9]\d*/sho|index/)).+$', 'IS_AUTHENTICATED_ANONYMOUSLY'],
+            ['^/.+$', 'IS_AUTHENTICATED_FULLY'],
         ],
     ]
 );

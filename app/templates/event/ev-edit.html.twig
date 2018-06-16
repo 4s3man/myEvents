@@ -1,9 +1,14 @@
 {% extends 'layout.html.twig' %}
+
 {% block title %}
+    {{ 'title.event_edit'|trans}}
 {% endblock %}
+
 {% block sidebar %}
     {% include 'sidebar/sidebar-calendar.html.twig' %}
 {% endblock %}
+
 {% block content %}
-    edycja wydarzenia
+    {{ 'title.event_edit'|trans}}
+    {% include 'form/form.html.twig' %}
 {% endblock %}
