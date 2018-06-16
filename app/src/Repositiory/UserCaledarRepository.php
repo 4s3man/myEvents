@@ -51,12 +51,10 @@ class UserCaledarRepository extends AbstractRepository
         $query = $this->queryLinkedUserByCalendarId($queryParams['calendarId']);
         $searchDataManager = new SearchDataManager($query);
         if (isset($searchData['user_role']) && !empty($searchData['user_role'])) {
-            dump('role');
             $query->andWhere('uC.user_role like :role')
                 ->setParameter(':role', $searchData['user_role'], \PDO::PARAM_STR);
         }
         if (isset($searchData['email']) && !empty($searchData['email'])) {
-            dump('email');
             $query->andWhere('u.email like :email')
                 ->setParameter(':email', $searchData['email'].'%', \PDO::PARAM_STR);
         }

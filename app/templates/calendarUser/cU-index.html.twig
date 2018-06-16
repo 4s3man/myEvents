@@ -24,8 +24,10 @@
             <div class="paginator-item user_role">{{ datum.user_role }}</div>
             <div class="paginator-item first_name">{{ datum.first_name }}</div>
             <div class="paginator-item last_name">{{ datum.last_name }}</div>
-            <div class="paginator-item edit"><a href="{{ url('userEdit', {'calendarId':calendarId, 'userCalendarId':datum.id}) }}">{{ 'link.edit'|trans }}</a></div>
-            <div class="paginator-item delete"><a href="{{ url('userDelete', {'calendarId':calendarId, 'userCalendarId':datum.id}) }}">{{ 'link.delete'|trans }}</a></div>
+            {% if datum.user_role != 'ADMIN' %}
+                <div class="paginator-item edit"><a href="{{ url('userEdit', {'calendarId':calendarId, 'userCalendarId':datum.id}) }}">{{ 'link.edit'|trans }}</a></div>
+                <div class="paginator-item delete"><a href="{{ url('userDelete', {'calendarId':calendarId, 'userCalendarId':datum.id}) }}">{{ 'link.delete'|trans }}</a></div>
+            {% endif %}
         </div>
         {% endfor %}
     {% endblock %}

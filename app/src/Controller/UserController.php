@@ -36,16 +36,24 @@ class UserController implements ControllerProviderInterface
         $controller = $app['controllers_factory'];
 
         $controller->match('/register', [$this, 'registerAction'])
+            ->assert('userId','[1-9]\d*')
             ->method('POST|GET')
             ->bind('register');
 
-        $controller->match('/edit', [$this, 'editAction'])
+        $controller->match('/{userId}/edit', [$this, 'editAction'])
+            ->assert('userId','[1-9]\d*')
             ->method('POST|GET')
             ->bind('editUser');
 
-        $controller->match('/delete', [$this, 'deleteAction'])
+        $controller->match('/{userId}/delete', [$this, 'deleteAction'])
+            ->assert('userId','[1-9]\d*')
             ->method('POST|GET')
             ->bind('deleteUser');
+
+        $controller->match('/{userId}/settings', [$this, 'settingsAction'])
+            ->assert('userId','[1-9]\d*')
+            ->method('POST|GET')
+            ->bind('settingsUser');
 
         return $controller;
     }
@@ -93,10 +101,9 @@ class UserController implements ControllerProviderInterface
         );
     }
 
-    public function editAction(Application $app, Request $request)
+    public function editAction(Application $app, $userId, Request $request)
     {
         //TODO get id from logged user
-        $userId = 4;
         //TODO get user_role of logged user
         $userRole = 'NORMAL_USER';
 
@@ -104,6 +111,12 @@ class UserController implements ControllerProviderInterface
         $sessionMessages = new SessionMessagesDataManager($app['session']);
 
         $user = $userRepository->findOneById($userId);
+        if (!$user) {
+            $sessionMessages->recordNotFound();
+
+            return $app->redirect($app['url_generator']->generate('settingsUser', ['userId' => $userId]), 301);
+        }
+
         $form = $app['form.factory']
             ->createBuilder(
                 EditUserType::class,
@@ -120,26 +133,33 @@ class UserController implements ControllerProviderInterface
             $userRepository->save($form->getData(), $app['security.encoder.bcrypt']);
             $sessionMessages->changed();
 
-//            return $app->redirect($app['url_generator']->generate('auth_login'), 301);
+            return $app->redirect($app['url_generator']->generate('settingsUser', ['userId' => $userId]), 301);
         }
 
         return $app['twig']->render(
-            'user/register.html.twig',
+            'user/user-edit.html.twig',
             [
                 'form' => $form->createView(),
+                'userId'=> $userId,
             ]
         );
     }
 
-    public function deleteAction(Application $app, Request $request)
+    public function deleteAction(Application $app, $userId, Request $request)
     {
         //todo get id from logged user
-        $userId = 4;
 
         $userRepository = new UserRepository($app['db']);
         $sessionMessages = new SessionMessagesDataManager($app['session']);
 
         $user = $userRepository->findOneById($userId);
+
+        if (!$user) {
+            $sessionMessages->recordNotFound();
+
+            return $app->redirect($app['url_generator']->generate('settingsUser', ['userId' => $userId]), 301);
+        }
+
         $form = $app['form.factory']
             ->createBuilder(
                 DeleteUserType::class,
@@ -163,6 +183,17 @@ class UserController implements ControllerProviderInterface
             'user/user-delete.html.twig',
             [
                 'form' => $form->createView(),
+                'userId' => $userId,
+            ]
+        );
+    }
+
+    public function settingsAction(Application $app, $userId)
+    {
+        return $app['twig']->render(
+            'user/user-settings.html.twig',
+            [
+                'userId' => $userId,
             ]
         );
     }

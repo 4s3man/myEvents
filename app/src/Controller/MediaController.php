@@ -11,10 +11,13 @@ namespace Controller;
 use DataManager\SessionMessagesDataManager;
 use Form\MediaType;
 use Form\Search\SearchType;
+use Form\TitleType;
 use Repositiory\MediaRepository;
 use Service\FileUploader;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
 use Utils\MyPaginatorShort;
 
@@ -35,39 +38,59 @@ class MediaController implements ControllerProviderInterface
         $controller = $app['controllers_factory'];
 
         //TODO change for get token from logged user || set in firewall
-        $controller->match('/add', [$this, 'addMediaAction'])
+        $controller->match('/{userId}/add', [$this, 'addMediaAction'])
             ->method('POST|GET')
             ->assert('userId', '[1-9]\d*')
             ->assert('page', '[1-9]\d*')
             ->bind('userAddMedia');
 
-        $controller->match('calendar/{calendarId}/add', [$this, 'calendarAddMediaAction'])
+        $controller->match('/calendar/{calendarId}/add', [$this, 'calendarAddMediaAction'])
             ->method('POST|GET')
             ->assert('calendarId', '[1-9]\d*')
             ->assert('page', '[1-9]\d*')
             ->bind('calendarAddMedia');
 
-        $controller->match('/{mediaId}/edit', [$this, 'editMediaAction'])
+        $controller->match('/user/{userId}/{mediaId}/edit', [$this, 'editMediaAction'])
+            ->assert('userId', '[1-9]\d*')
+            ->assert('mediaId', '[1-9]\d*')
             ->method('POST|GET')
             ->bind('editMedia');
 
-        $controller->match('/{mediaId}/delete', [$this, 'deleteMediaAction'])
+        $controller->match('/user/{userId}/{mediaId}/delete', [$this, 'deleteMediaAction'])
+            ->assert('userId', '[1-9]\d*')
+            ->assert('mediaId', '[1-9]\d*')
             ->method('POST|GET')
             ->bind('deleteMedia');
 
-        $controller->match('/index/page/{page}', [$this, 'userMediaIndexAction'])
+        $controller->match('/user/{userId}/index/page/{page}', [$this, 'userMediaIndexAction'])
+            ->assert('userId', '[1-9]\d*')
             ->assert('page', '[1-9]\d*')
             ->bind('userMediaIndex');
 
-        $controller->match('event/{calendarId}/index/page/{page}', [$this, 'eventMediaIndexAction'])
+
+        $controller->match('/event/{calendarId}/index/page/{page}', [$this, 'eventMediaIndexAction'])
             ->method('POST|GET')
             ->assert('page', '[1-9]\d*')
             ->bind('eventMediaIndex');
 
-        $controller->match('calendar/{calendarId}/index/page/{page}', [$this, 'calendarMediaIndexAction'])
+        $controller->match('/calendar/{calendarId}/index/page/{page}', [$this, 'calendarMediaIndexAction'])
             ->method('POST|GET')
             ->assert('page', '[1-9]\d*')
             ->bind('calendarMediaIndex');
+
+        $controller->match('/calendar/{calendarId}/{mediaId}/edit', [$this, 'editCalendarMediaAction'])
+            ->assert('calendarId', '[1-9]\d*')
+            ->assert('mediaId', '[1-9]\d*')
+            ->method('POST|GET')
+            ->bind('editCalendarMedia');
+
+        $controller->match('/calendar/{calendarId}/{mediaId}/delete', [$this, 'deleteCalendarMediaAction'])
+            ->assert('calendarId', '[1-9]\d*')
+            ->assert('mediaId', '[1-9]\d*')
+            ->method('POST|GET')
+            ->bind('deleteCalendarMedia');
+
+
 
         return $controller;
     }
@@ -82,22 +105,30 @@ class MediaController implements ControllerProviderInterface
      *
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function addMediaAction(Application $app, Request $request)
+    public function addMediaAction(Application $app, $userId, Request $request)
     {
         //TODO get id from logged user
-        $userId = 1;
 
         $media = [];
         $form = $app['form.factory']->createBuilder(MediaType::class, $media)->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $photo  = $form->getData();
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
             $fileUploader = new FileUploader($app['config.photos_directory']);
-            $fileName = $fileUploader->upload($photo['photo']);
-            $photo['photo'] = $fileName;
             $mediaRepository = new MediaRepository($app['db']);
-            $mediaRepository->save($photo, $userId);
+
+            $photo  = $form->getData();
+
+            $fileName = $fileUploader->upload($photo['photo']);
+
+            $photo['photo'] = $fileName;
+
+            $mediaRepository->saveToUser($photo, $userId);
+
+            $sessionMessagesManager->added();
+
+            return $app->redirect($app['url_generator']->generate('userMediaIndex', ['userId' => $userId, 'page' => 1]));
         }
 
         return $app['twig']->render(
@@ -123,8 +154,8 @@ class MediaController implements ControllerProviderInterface
      */
     public function calendarAddMediaAction(Application $app, $calendarId, Request $request)
     {
-        //TODO get id from logged user
-        $userId = 1;
+        //TODO GET ID FROM LOGGED USER
+        $userId = 4;
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
 
         $media = [];
@@ -137,7 +168,7 @@ class MediaController implements ControllerProviderInterface
             $fileName = $fileUploader->upload($photo['photo']);
             $photo['photo'] = $fileName;
             $mediaRepository = new MediaRepository($app['db']);
-            $mediaRepository->saveToCalendar($photo, $userId);
+            $mediaRepository->saveToCalendar($photo, $calendarId);
 
             $sessionMessagesManager->added();
 
@@ -156,6 +187,153 @@ class MediaController implements ControllerProviderInterface
         );
     }
 
+    public function editMediaAction(Application $app, $userId, $mediaId, Request $request)
+    {
+        //todo zeminić nazwę na editUserMedia, i zrobić inny kontroler dla mediów kalendarza
+        //tak usuwanie jedynie linków media muszą być usuwane osobno
+        $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+        $mediaRepository = new MediaRepository($app['db']);
+
+        $media = $mediaRepository->findOneById($mediaId);
+
+        if (!$media) {
+            $sessionMessagesManager->recordNotFound();
+
+            return $app->redirect($app['url_generator']->generate('userMediaIndex', ['userId' => $userId, 'page' => 1]));
+        }
+
+        $form = $app['form.factory']->createBuilder(TitleType::class, $media)->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $mediaRepository->saveToUser($form->getData(), $userId);
+            $sessionMessagesManager->changed();
+
+            return $app->redirect($app['url_generator']->generate('userMediaIndex', ['userId' => $userId, 'page' => 1]));
+        }
+
+        return $app['twig']->render(
+            'media/md-edit.html.twig',
+            [
+                'form' => $form->createView(),
+                'userId' => $userId,
+            ]
+        );
+    }
+
+    public function editCalendarMediaAction(Application $app, $calendarId, $mediaId, Request $request)
+    {
+        //todo GET LOGGED USER ID
+        $userId = 4;
+
+        $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+        $mediaRepository = new MediaRepository($app['db']);
+
+        $media = $mediaRepository->findOneById($mediaId);
+
+        if (!$media) {
+            $sessionMessagesManager->recordNotFound();
+
+            return $app->redirect($app['url_generator']->generate('calendarMediaIndex', ['calendarId' => $calendarId, 'page' => 1]));
+        }
+
+        $form = $app['form.factory']->createBuilder(TitleType::class, $media)->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $mediaRepository->saveToCalendar($form->getData(), $calendarId);
+            $sessionMessagesManager->changed();
+
+            return $app->redirect($app['url_generator']->generate('calendarMediaIndex', ['calendarId' => $calendarId, 'page' => 1]));
+        }
+
+        return $app['twig']->render(
+            'media/md-edit.html.twig',
+            [
+                'form' => $form->createView(),
+                'userId' => $userId,
+                'calendarId' => $calendarId,
+            ]
+        );
+    }
+
+    public function deleteCalendarMediaAction(Application $app, $calendarId, $mediaId, Request $request)
+    {
+        //TODO GET ID FROM LOGGED USER
+        $userId = 4;
+
+        $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+        $mediaRepository = new MediaRepository($app['db']);
+
+        $media = $mediaRepository->findOneById($mediaId);
+
+        if (!$media) {
+            $sessionMessagesManager->recordNotFound();
+
+            return $app->redirect($app['url_generator']->generate('calendarMediaIndex', ['calendarId' => $calendarId, 'page' => 1]));
+        }
+
+        $form = $app['form.factory']->createBuilder(FormType::class, $media)
+            ->add('id', HiddenType::class)
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $mediaRepository->deleteCalendarMediaLink($calendarId, $mediaId);
+            $sessionMessagesManager->deleted();
+
+            return $app->redirect($app['url_generator']->generate('calendarMediaIndex', ['calendarId' => $calendarId, 'page' => 1]));
+        }
+
+        return $app['twig']->render(
+            'media/md-delete.html.twig',
+            [
+                'dataToDelete' => $media,
+                'form' => $form->createView(),
+                'userId' => $userId,
+            ]
+        );
+    }
+
+    public function deleteMediaAction(Application $app, $userId, $mediaId, Request $request)
+    {
+        $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+        $mediaRepository = new MediaRepository($app['db']);
+
+        $media = $mediaRepository->findOneById($mediaId);
+
+        if (!$media) {
+            $sessionMessagesManager->recordNotFound();
+
+            return $app->redirect($app['url_generator']->generate('userMediaIndex', ['userId' => $userId, 'page' => 1]));
+        }
+
+        $form = $app['form.factory']->createBuilder(FormType::class, $media)
+            ->add('id', HiddenType::class)
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $mediaRepository->deleteUserMediaLink($userId, $mediaId);
+            $sessionMessagesManager->deleted();
+
+            return $app->redirect($app['url_generator']->generate('userMediaIndex', ['userId' => $userId, 'page' => 1]));
+        }
+
+        return $app['twig']->render(
+            'media/md-delete.html.twig',
+            [
+                'dataToDelete' => $media,
+                'form' => $form->createView(),
+                'userId' => $userId,
+            ]
+        );
+    }
+
     /**
      *
      * @param Application $app
@@ -166,10 +344,9 @@ class MediaController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function userMediaIndexAction(Application $app, Request $request, $page = 1)
+    public function userMediaIndexAction(Application $app, Request $request, $userId, $page = 1)
     {
         //TODO get id from logged user
-        $userId = 1;
 
         $mediaRepository = new MediaRepository($app['db']);
 
@@ -280,6 +457,7 @@ class MediaController implements ControllerProviderInterface
             [
                 'form' => $form->createView(),
                 'pagerfanta' => $paginator,
+                'routeName' => 'calendarMediaIndex',
                 'userId' => $userId,
                 'calendarId' => $calendarId,
             ]

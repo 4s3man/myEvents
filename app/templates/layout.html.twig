@@ -28,15 +28,13 @@
         })();
     </script>
 </head>
-{#//TODO delete#}
-{% set userId = 1 %}
 <body class="{#TODO if user is logged: class logged #}{% if userId is defined %}logged{% endif %}">
     {% include 'default/_flash_messages.html.twig' %}
-    {#TODO If user is logged#}
-    {% if userId is defined %}
+    {#TODO If user is logged to pod spodem źle kiedy jest zalogowany a nie kiedy jest Id#}
+    {#{% if userId is defined %}#}
         {% block sidebar %}
         {% endblock %}
-    {% endif %}
+    {#{% endif %}#}
     <div class="content">
         {% block content %}
         {% endblock %}

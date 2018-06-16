@@ -205,8 +205,10 @@ class CalendarDataManager
     private function getHolidaysForDate(\DateTime $date)
     {
         $holidays = [];
+        $dayString = $date->format('Y-m-d');
         foreach ($this->holidays as $name => $holidayDate) {
-            if ($holidayDate == $date) {
+            $holiday = $holidayDate->format('Y-m-d');
+            if ($holiday === $dayString) {
                 $holidays[$name] = $holidayDate;
             }
         }
@@ -223,7 +225,10 @@ class CalendarDataManager
      */
     private function dateInEventRange(Event $event, \DateTime $date)
     {
-        return $date >= $event->getStartDate() && $date <= $event->getEndDate();
+        $dateStart = new \DateTime($date->format('Y-m-d').' 00:00:00');
+        $dateEnd = new \DateTime($date->format('Y-m-d').' 23:59:59');
+
+        return $dateEnd >= $event->getStartDate() && $dateStart <= $event->getEndDate();
     }
 
     /**

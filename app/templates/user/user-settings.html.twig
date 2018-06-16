@@ -1,0 +1,14 @@
+{#//todo dodać sidebar to wszystkich usera#}
+{% extends 'layout.html.twig' %}
+{% block title %}
+    {{ 'title.user_edit'|trans }}
+{% endblock %}
+{% block sidebar %}
+    {% include 'sidebar/sidebar-user.html.twig' %}
+{% endblock %}
+{% block content%}
+    <div class="container">
+        <h3><a href="{{ url('editUser', {'userId':userId}) }}">{{ 'content.user-edit-link'|trans }}</a></h3>
+        <h3><a href="{{ url('deleteUser', {'userId':userId}) }}">{{ 'content.user-delete-link'|trans }}</a></h3>
+    </div>
+{% endblock %}

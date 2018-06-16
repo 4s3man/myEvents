@@ -1,13 +1,19 @@
 {% extends 'layout.html.twig' %}
 {% block title %}
-    {{ 'title.user_edit'|trans }}
+    {{ 'title.edit_media'|trans }}
 {% endblock %}
+
 {% block sidebar %}
     {% include 'sidebar/sidebar-user.html.twig' %}
 {% endblock %}
+
 {% block content %}
-    <div class="container">
-        <h3 class="text-center">{{ 'title.user_register'|trans }}</h3>
+    <div class="article">
+        <div class="header">
+            <h2>
+                {{ 'header.edit_media'|trans }}
+            </h2>
+        </div>
         {% include 'form/form.html.twig' %}
     </div>
 {% endblock %}

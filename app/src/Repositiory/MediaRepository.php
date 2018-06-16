@@ -78,6 +78,15 @@ class MediaRepository extends AbstractRepository
         return $result;
     }
 
+    public function findOneById($id)
+    {
+        $qb = $this->queryAll()->where('id = :id')
+            ->setParameter(':id', $id, \PDO::PARAM_INT);
+        $result = $qb->execute()->fetch();
+
+        return $result ? $result : [];
+    }
+
     /**
      * Gets paginated results form modified witch searchData query
      *
@@ -111,12 +120,13 @@ class MediaRepository extends AbstractRepository
      */
     public function getSearchedAndPaginatedRecordsForCalendar($queryParams, $searchData = null)
     {
+        //todo skończyć to
         $query = $this->queryCalendarMedia($queryParams['calendarId']);
         $searchDataManager = new SearchDataManager($query, 'm');
         $searchDataManager->addFilters($searchData);
         $paginator = new MyPaginatorShort(
             $query,
-            '5',
+            '2',
             'm.id',
             $queryParams['page']
         );
@@ -147,7 +157,7 @@ class MediaRepository extends AbstractRepository
      * @throws DBALException
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function save($photo, $userId, $calnedarId = null)
+    public function saveToUser($photo, $userId)
     {
         $this->db->beginTransaction();
         try {
@@ -168,6 +178,30 @@ class MediaRepository extends AbstractRepository
         }
     }
 
+    public function deleteUserMediaLink($userId, $mediaId)
+    {
+        $qb = $this->db->createQueryBuilder();
+        $qb = $qb->delete('user_media')
+            ->where('user_id = :userId')
+            ->andWhere('media_id = :mediaId')
+            ->setParameter(':userId', $userId, \PDO::PARAM_INT)
+            ->setParameter(':mediaId', $mediaId, \PDO::PARAM_INT);
+
+        return $qb->execute();
+    }
+
+    public function deleteCalendarMediaLink($calendarId, $mediaId)
+    {
+        $qb = $this->db->createQueryBuilder();
+        $qb = $qb->delete('calendar_media')
+            ->where('calendar_id = :calendarId')
+            ->andWhere('media_id = :mediaId')
+            ->setParameter(':calendarId', $calendarId, \PDO::PARAM_INT)
+            ->setParameter(':mediaId', $mediaId, \PDO::PARAM_INT);
+
+        return $qb->execute();
+    }
+
     /**
      *
      * @param array    $photo
@@ -178,7 +212,7 @@ class MediaRepository extends AbstractRepository
      * @throws DBALException
      * @throws \Doctrine\DBAL\ConnectionException
      */
-    public function saveToCalendar($photo, $userId, $calnedarId = null)
+    public function saveToCalendar($photo, $calnedarId)
     {
         $this->db->beginTransaction();
         try {
@@ -190,7 +224,7 @@ class MediaRepository extends AbstractRepository
             } else {
                 $this->db->insert('media', $photo);
                 $mediaId = $this->db->lastInsertId();
-                $this->linkMediaToCalendar($userId, $mediaId);
+                $this->linkMediaToCalendar($calnedarId, $mediaId);
             }
             $this->db->commit();
         } catch (DBALException $e) {

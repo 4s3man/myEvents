@@ -1,24 +1,19 @@
 <div class="admin-sidebar">
     <nav class="sidebar-menu">
         <div class="sidebar-menu-item_collection">
-            <a class="collection" href="{{ url('userCalendarIndex',{'userId':1, 'page':1}) }}">
+            <a class="collection" href="{{ url('userCalendarIndex',{'userId':userId, 'page':1}) }}">
                 <i class="fa fa-calendar" aria-hidden="true"></i>
                 <i class="fa fa-calendar" aria-hidden="true"></i>
                 <i class="fa fa-calendar" aria-hidden="true"></i>
             </a>
         </div>
         <div class="sidebar-menu-item">
-            {#<a href="{{ url('settingsIndex',{'calendarId':calendarId, 'page':1}) }}">#}
-            <i class="fa fa-cogs" aria-hidden="true"></i>
-            {#</a>#}
+            <a href="{{ url('settingsUser',{'userId':userId}) }}">
+                <i class="fa fa-cogs" aria-hidden="true"></i>
+            </a>
         </div>
         <div class="sidebar-menu-item">
-            {#<a href="{{ url('userIndex',{'calendarId':calendarId, 'page':1}) }}">#}
-                <i class="fa fa-address-book" aria-hidden="true"></i>
-            {#</a>#}
-        </div>
-        <div class="sidebar-menu-item">
-            <a href="{{ url('userMediaIndex', { 'page':1}) }}">
+            <a href="{{ url('userMediaIndex', { 'userId':userId, 'page':1}) }}">
                 <i class="fa fa-file-image-o" aria-hidden="true"></i>
             </a>
         </div>

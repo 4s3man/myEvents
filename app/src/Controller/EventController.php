@@ -95,7 +95,7 @@ class EventController implements ControllerProviderInterface
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
 
         //Todo get id from logged user
-        $userId = 1;
+        $userId = 4;
 
         $event = [];
         $form = $app['form.factory']->CreateBuilder(
@@ -131,6 +131,7 @@ class EventController implements ControllerProviderInterface
             [
                 'form' => $form->createView(),
                 'calendarId' => $calendarId,
+                'userId' => $userId,
             ]
         );
     }
@@ -149,6 +150,9 @@ class EventController implements ControllerProviderInterface
      */
     public function eventIndexAction(Application $app, $calendarId, $page, Request $request)
     {
+        //TODO get id from logged user
+        $userId = 4;
+
         $eventRepository = new EventRepository($app['db'], $calendarId);
         //todo sprawdzić wszystkie search formy
         $queryParams = ['calendarId' => $calendarId, 'page' => $page];
@@ -159,7 +163,6 @@ class EventController implements ControllerProviderInterface
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            //TODO pytanie tutaj nie mam żadnych walidatorów a robie if is valid jakie asserty do search form?
             $paginator = $eventRepository->getSearchedAndPaginatedRecords($queryParams, $form->getData());
         } else {
             $paginator = $eventRepository->getSearchedAndPaginatedRecords($queryParams);
@@ -172,6 +175,7 @@ class EventController implements ControllerProviderInterface
                 'routeName' => 'eventIndex',
                 'calendarId' => $calendarId,
                 'form' => $form->createView(),
+                'userId' => $userId,
             ]
         );
     }
@@ -192,6 +196,9 @@ class EventController implements ControllerProviderInterface
      */
     public function eventShowAction(Application $app, $calendarId, $eventId, Request $request)
     {
+        //TODO GET ID FROM LOGGED USER
+        $userId = 4;
+
         //TODO spytać się jak by to lepiej
         //TODO na koniec sign up przez potwierdzenie email
         $eventRepository = new EventRepository($app['db']);
@@ -233,6 +240,7 @@ class EventController implements ControllerProviderInterface
                 'info' => $info,
                 'calendarId' => $calendarId,
                 'eventId' => $eventId,
+                'userId' => $userId,
             ]
         );
     }

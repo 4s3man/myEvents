@@ -62,8 +62,8 @@ class NotUniqueness extends Constraint
         if (null === $this->repository || null === $this->uniqueColumn) {
             throw new MissingOptionsException(sprintf('Options uniqueColumn and repository are obligatory for constraint %s', __CLASS__), array('repository', 'uniqueColumn'));
         }
-        if (!($this->repository instanceof NotUniqueness)) {
-            throw new InvalidOptionsException(sprintf('Passed repository must implements %s', NotItselfUniquenessInterface::class), array('repository'));
+        if (!($this->repository instanceof UniquenessInterface)) {
+            throw new InvalidOptionsException(sprintf('Passed repository must implements %s', UniquenessInterface::class), array('repository'));
         }
     }
 }

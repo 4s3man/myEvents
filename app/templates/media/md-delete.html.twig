@@ -1,0 +1,22 @@
+{% extends 'default/_baseDelete.html.twig' %}
+
+{% block title %}
+    {{ 'title.media_delete'|trans }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'sidebar/sidebar-user.html.twig' %}
+{% endblock %}
+
+{% block dataToDeleteDisplay %}
+    {% if dataToDelete is defined %}
+        <div class="paginator-items media">
+            <div class="paginator-item media_title">
+                {{ dataToDelete.title }}
+            </div>
+            <div class="paginator-item media_photo">
+                <img src="{{  asset(download_photos_directory ~ '/' ~ dataToDelete.photo) }}" alt="{{ dataToDelete.title }}">
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

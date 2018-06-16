@@ -2,15 +2,22 @@
 {% block title %}
     {{ 'title.delete_my_account'|trans }}
 {% endblock %}
+{% block sidebar %}
+    {% include 'sidebar/sidebar-user.html.twig' %}
+{% endblock %}
 {% block content %}
     <div class="container">
-        <h3 class="text-center">{{ 'title.delete_my_account'|trans }}</h3>
-        {% form_theme form with ['form/mediaCheckbox.html.twig','bootstrap_3_layout.html.twig', 'form/form_errors.html.twig'] %}
-        {{ form_start(form, { method: 'post', action: global.request.uri }) }}
-        {{ form_widget(form) }}
-        <div class="form-group">
-            <input type="submit" value="{{ 'label.delete'|trans }}">
-        </div>
-        {{ form_end(form) }}
+        {% if form is defined %}
+            <h3 class="text-center">{{ 'title.delete_my_account'|trans }}</h3>
+            {% form_theme form with ['form/mediaCheckbox.html.twig','bootstrap_3_layout.html.twig', 'form/form_errors.html.twig'] %}
+            {{ form_start(form, { method: 'post', action: global.request.uri }) }}
+            {{ form_widget(form) }}
+            <div class="form-group">
+                <input type="submit" value="{{ 'label.delete'|trans }}">
+            </div>
+            {{ form_end(form) }}
+        {% else %}
+            <h3>user not found</h3>
+        {% endif %}
     </div>
 {% endblock %}

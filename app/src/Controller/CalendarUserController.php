@@ -81,6 +81,9 @@ class CalendarUserController implements ControllerProviderInterface
      */
     public function calendarUserIndexAction(Application $app, $calendarId, Request $request, $page = 1)
     {
+        //todo get id from logged user
+        $userId = 4;
+
         $userCalendarRepository = new UserCaledarRepository($app['db']);
 
         $queryParams = ['calendarId' => $calendarId, 'page' => $page];
@@ -105,6 +108,7 @@ class CalendarUserController implements ControllerProviderInterface
                 'calendarId' => $calendarId,
                 'pagerfanta' => $paginator,
                 'routeName' => 'userIndex',
+                'userId' => $userId,
             ]
         );
     }
@@ -122,6 +126,9 @@ class CalendarUserController implements ControllerProviderInterface
      */
     public function userAddAction(Application $app, $calendarId, Request $request)
     {
+        //todo get id from logged user
+        $userId = 4;
+
         $sessionMessagesDataManager = new SessionMessagesDataManager($app['session']);
         $userRepository = new UserRepository($app['db']);
         $userCalendar = [];
@@ -163,6 +170,7 @@ class CalendarUserController implements ControllerProviderInterface
             [
                 'form' => $form->createView(),
                 'calendarId' => $calendarId,
+                'userId' => $userId,
             ]
         );
     }
@@ -208,7 +216,7 @@ class CalendarUserController implements ControllerProviderInterface
         }
 
         return $app['twig']->render(
-            'calendarUser/uC-edit.html.twig',
+            'calendarUser/cU-edit.html.twig',
             [
                 'form' => $form->createView(),
                 'userCalendarId' => $userCalendarId,

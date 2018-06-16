@@ -50,7 +50,7 @@ class CalendarController implements ControllerProviderInterface
             ->assert('date', '[1-3]{1}[0-9]{3}-(0[1-9]|1[0-2])')
             ->bind('calendarShow');
 
-        $controller->match('/add', [$this, 'addCalendarAction'])
+        $controller->match('/user/{userId}/add', [$this, 'addCalendarAction'])
             ->method('POST|GET')
             ->assert('userId', '[1-9]\d*')
             ->bind('calendarAdd');
@@ -65,8 +65,9 @@ class CalendarController implements ControllerProviderInterface
             ->assert('calendarId', '[1-9]\d*')
             ->bind('calendarDelete');
 
-        $controller->match('/index/page/{page}', [$this, 'userCalendarIndexAction'])
+        $controller->match('/user/{userId}/index/page/{page}', [$this, 'userCalendarIndexAction'])
             ->method('POST|GET')
+            ->assert('userId', '[1-9]\d*')
             ->assert('page', '[1-9]\d*')
             ->bind('userCalendarIndex');
 
@@ -88,6 +89,9 @@ class CalendarController implements ControllerProviderInterface
      */
     public function calendarShowAction(Application $app, $calendarId, $date)
     {
+        //todo get id from logged user
+        $userId = 4;
+
         //TODO dodać styl dla świąt
         $eventRepository = new EventRepository($app['db'], (int) $calendarId);
         $calendarDataManager = new CalendarDataManager($eventRepository, $date);
@@ -100,6 +104,7 @@ class CalendarController implements ControllerProviderInterface
                 'prevDate' => $calendarDataManager->getPrevMonth()->format('Y-m'),
                 'calendarId' => $calendarId,
                 'calendar' => $calendarMonthPage,
+                'userId' => 4,
             ]
         );
     }
@@ -115,10 +120,10 @@ class CalendarController implements ControllerProviderInterface
      *
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function addCalendarAction(Application $app, Request $request)
+    public function addCalendarAction(Application $app, $userId, Request $request)
     {
         //TODO get id from logged user
-        $userId = 1;
+
         $sessionMessages = new SessionMessagesDataManager($app['session']);
         $userCalendarRepository = new UserCaledarRepository($app['db']);
         $calendar = [];
@@ -132,7 +137,7 @@ class CalendarController implements ControllerProviderInterface
             $userCalendarRepository->save($calendar, $userId);
             $sessionMessages->added();
 
-            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['page' => 1]), 301);
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $userId, 'page' => 1]), 301);
         }
 
         return $app['twig']->render(
@@ -155,7 +160,7 @@ class CalendarController implements ControllerProviderInterface
     public function editCalendarAction(Application $app, $calendarId, Request $request)
     {
         //TODO get token from logged user
-        $loggedUserId = 1;
+        $userId = 4;
 
         $sessionMessages = new SessionMessagesDataManager($app['session']);
         $calendarRepository = new CalendarRepository($app['db']);
@@ -182,6 +187,7 @@ class CalendarController implements ControllerProviderInterface
         return $app['twig']->render(
             'calendar/calendar-edit.html.twig',
             [
+                'userId' => $userId,
                 'calendarId' => $calendarId,
                 'calendar' => $calendar,
                 'form' => $form->createView(),
@@ -203,7 +209,7 @@ class CalendarController implements ControllerProviderInterface
     public function deleteCalendarAction(Application $app, $calendarId, Request $request)
     {
         //TODO get userId from logged user
-        $loggedUserId = 1;
+        $userId = 4;
 
         $sessionMessages = new SessionMessagesDataManager($app['session']);
         $calendarRepository = new CalendarRepository($app['db']);
@@ -229,6 +235,7 @@ class CalendarController implements ControllerProviderInterface
         return $app['twig']->render(
             'calendar/calendar-delete.html.twig',
             [
+                'userId' => $userId,
                 'calendarId' => $calendarId,
                 'dataToDelete' => $calendar,
                 'form' => $form->createView(),
@@ -244,10 +251,10 @@ class CalendarController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function userCalendarIndexAction(Application $app, $page, Request $request)
+    public function userCalendarIndexAction(Application $app, $userId, $page, Request $request)
     {
-        //TODO get id from logged user
-        $userId = 1;
+        //TODO id from logged user
+
         $userCalendarRepository = new UserCaledarRepository($app['db']);
         $queryParams = ['userId' => $userId, 'page' => $page];
         $paginator = $userCalendarRepository->getSearchPaginatedCalendarsByUserId($queryParams);
