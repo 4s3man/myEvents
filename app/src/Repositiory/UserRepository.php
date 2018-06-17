@@ -120,6 +120,7 @@ class UserRepository extends AbstractRepository implements UniquenessInterface, 
             }
 
             return [
+                'id' => $user['id'],
                 'login' => $user['login'],
                 'password' => $user['password'],
                 'roles' => $roles,

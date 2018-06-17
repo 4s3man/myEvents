@@ -83,7 +83,7 @@ class UserController implements ControllerProviderInterface
         if ($form->isSubmitted() && $form->isValid()) {
             $repository = new UserRepository($app['db']);
             $manager = new UserDataManager($form->getData(), $app['security.encoder.bcrypt']);
-            $manager->setUser('NORMAL_USER');
+            $manager->setUser('ROLE_USER');
             $user = $manager->getUser();
 
             $repository->save($user, $app['security.encoder.bcrypt']);
@@ -105,7 +105,7 @@ class UserController implements ControllerProviderInterface
     {
         //TODO get id from logged user
         //TODO get user_role of logged user
-        $userRole = 'NORMAL_USER';
+        $userRole = 'ROLE_USER';
 
         $userRepository = new UserRepository($app['db']);
         $sessionMessages = new SessionMessagesDataManager($app['session']);

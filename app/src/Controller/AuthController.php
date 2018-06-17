@@ -54,10 +54,12 @@ class AuthController implements ControllerProviderInterface
         $user = ['login' => $app['session']->get('_security.last_username')];
         $form = $app['form.factory']->createBuilder(LoginType::class, $user)->getForm();
 
-        $post = [];
-        $this->denyAccessUnlessGranted('view', $post);
+        $token = $app['security.token_storage']->getToken();
+        if ($app['security.authorization_checker']->isGranted('ROLE_USER') && null !== $token) {
+            $user = $token->getUser();
 
-
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $user->getId(), 'page' => 1]), 301);
+        }
 
         return $app['twig']->render(
             'auth/login.html.twig',

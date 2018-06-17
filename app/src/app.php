@@ -93,13 +93,16 @@ $app->register(
                     'target_url' => 'register',
                 ],
                 'users' => function () use ($app) {
-                    return new Provider\UserProvider($app['db']);
+                    return new \Provider\MyEventsUserProvider($app['db']);
                 },
             ],
         ],
         'security.access_rules' => [
             ['^/(auth|calendar/[1-9]\d*/\d.*|event/[1-9]\d*/([1-9]\d*/sho|index/)).+$', 'IS_AUTHENTICATED_ANONYMOUSLY'],
             ['^/.+$', 'IS_AUTHENTICATED_FULLY'],
+        ],
+        'security.role_hierarchy' => [
+            'ROLE_ADMIN' => ['ROLE_USER'],
         ],
     ]
 );

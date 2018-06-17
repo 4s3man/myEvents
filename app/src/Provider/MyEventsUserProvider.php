@@ -9,15 +9,15 @@ namespace Provider;
 
 use Doctrine\DBAL\Connection;
 use Repositiory\UserRepository;
+use Security\Core\User\MyEventsUser;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
- * Class UserProvider
+ * Class MyEventsUser
  */
-class UserProvider implements UserProviderInterface
+class MyEventsUserProvider implements UserProviderInterface
 {
     /**
      *
@@ -26,7 +26,7 @@ class UserProvider implements UserProviderInterface
     protected $db = null;
 
     /**
-     * UserProvider constructor.
+     * MyEventsUser constructor.
      *
      * @param Connection $db
      */
@@ -47,7 +47,8 @@ class UserProvider implements UserProviderInterface
         $userRepository = new UserRepository($this->db);
         $user = $userRepository->loadUserByLogin($login);
 
-        return new User(
+        return new MyEventsUser(
+            $user['id'],
             $user['login'],
             $user['password'],
             $user['roles'],
@@ -67,7 +68,7 @@ class UserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof UserInterface) {
             throw new UnsupportedUserException(
                 sprintf(
                     'Instances of %s are not supported',
@@ -88,6 +89,6 @@ class UserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        return $class === 'Symfony\Component\Security\Core\User\User';
+        return $class === 'Security\Core\MyEventsUser';
     }
 }

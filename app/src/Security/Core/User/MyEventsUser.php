@@ -5,7 +5,7 @@
  * Date: 16.06.18
  * Time: 23:57
  */
-namespace Security\Core;
+namespace Security\Core\User;
 //todo usuń albo zmień tak jak stary search
 
 use \Symfony\Component\Security\Core\User\AdvancedUserInterface;

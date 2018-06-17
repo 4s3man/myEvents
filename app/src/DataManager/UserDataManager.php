@@ -28,7 +28,7 @@ class UserDataManager
      *
      * @var array $options
      */
-    private $options = ['NORMAL_USER', 'SUPER_USER'];
+    private $options = ['ROLE_USER', 'ROLE_ADMIN'];
 
 
     /**
@@ -70,11 +70,11 @@ class UserDataManager
         }
 
         switch ($user) {
-            case 'NORMAL_USER':
-                $this->user['role'] = 'NORMAL_USER';
+            case 'ROLE_USER':
+                $this->user['role'] = 'ROLE_USER';
                 break;
-            case 'SUPER_USER':
-                $this->user['role'] = 'SUPER_USER';
+            case 'ROLE_ADMIN':
+                $this->user['role'] = 'ROLE_ADMIN';
                 break;
         }
     }
