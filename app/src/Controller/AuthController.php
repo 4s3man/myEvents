@@ -53,10 +53,11 @@ class AuthController implements ControllerProviderInterface
         $sessionMessagesDataManager = new SessionMessagesDataManager($app['session']);
         $user = ['login' => $app['session']->get('_security.last_username')];
         $form = $app['form.factory']->createBuilder(LoginType::class, $user)->getForm();
-        $token = $app['security.token_storage']->getToken();
-        if (null !== $token) {
-            $user = $token->getUser();
-        }
+
+        $post = [];
+        $this->denyAccessUnlessGranted('view', $post);
+
+
 
         return $app['twig']->render(
             'auth/login.html.twig',
