@@ -10,6 +10,7 @@ namespace Controller;
 
 use DataManager\CalendarDataManager;
 use DataManager\SessionMessagesDataManager;
+use Doctrine\DBAL\Types\IntegerType;
 use Form\CalendarType;
 use Form\LinkUserCalendarType;
 use Form\Search\UserSearchType;
@@ -65,11 +66,11 @@ class CalendarController implements ControllerProviderInterface
             ->assert('calendarId', '[1-9]\d*')
             ->bind('calendarDelete');
 
-        $controller->match('/user/{userId}/index/page/{page}', [$this, 'userCalendarIndexAction'])
-            ->method('POST|GET')
-            ->assert('userId', '[1-9]\d*')
-            ->assert('page', '[1-9]\d*')
-            ->bind('userCalendarIndex');
+//        $controller->match('/user/{userId}/index/page/{page}', [$this, 'userCalendarIndexAction'])
+//            ->method('POST|GET')
+//            ->assert('userId', '[1-9]\d*')
+//            ->assert('page', '[1-9]\d*')
+//            ->bind('userCalendarIndex');
 
         return $controller;
     }
@@ -113,6 +114,8 @@ class CalendarController implements ControllerProviderInterface
     /**
      *
      * @param Application $app
+     *
+     * @param Int         $userId
      *
      * @param Request     $request
      *
@@ -239,42 +242,6 @@ class CalendarController implements ControllerProviderInterface
                 'calendarId' => $calendarId,
                 'dataToDelete' => $calendar,
                 'form' => $form->createView(),
-            ]
-        );
-    }
-
-    /**
-     *
-     * @param Application $app
-     * @param Int         $page
-     * @param Request     $request
-     *
-     * @return mixed
-     */
-    public function userCalendarIndexAction(Application $app, $userId, $page, Request $request)
-    {
-        //TODO id from logged user
-
-        $userCalendarRepository = new UserCaledarRepository($app['db']);
-        $queryParams = ['userId' => $userId, 'page' => $page];
-        $paginator = $userCalendarRepository->getSearchPaginatedCalendarsByUserId($queryParams);
-
-        $form = $app['form.factory']
-            ->createBuilder(SearchType::class)
-            ->getForm();
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $paginator = $userCalendarRepository->getSearchPaginatedCalendarsByUserId($queryParams, $form->getData());
-        }
-
-        return $app['twig']->render(
-            'calendar/calendar-index.html.twig',
-            [
-                'form' => $form->createView(),
-                'pagerfanta' => $paginator,
-                'routeName' => 'userCalendarIndex',
-                'userId' => $userId,
             ]
         );
     }

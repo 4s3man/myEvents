@@ -262,6 +262,7 @@ class EventType extends AbstractType
 
     //todo gdzie to powinno być?
     /**
+     *
      * @param mixed $media gotten from database
      *
      * @return array
@@ -278,6 +279,7 @@ class EventType extends AbstractType
 
     /**
      * TODO gdzie to ma być?
+     *
      * @param MediaRepository $repository
      *
      * @param int             $calendarId

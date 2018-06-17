@@ -191,6 +191,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
 
     /**
      * Delete event and its links
+     *
      * @param int $eventId
      *
      * @return int
@@ -207,6 +208,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
 
     /**
      * Delete participants linked to event
+     *
      * @param int $eventId
      *
      * @return int
@@ -297,6 +299,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
 
     /**
      * Converts string date start, end to \DateTimeObject
+     *
      * @param array $data
      *
      * @return array

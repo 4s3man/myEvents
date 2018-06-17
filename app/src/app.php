@@ -106,14 +106,26 @@ $app->register(
         ],
     ]
 );
+
+$app['security.voters'] = $app->extend(
+    'security.voters',
+    function ($voters) use ($app) {
+        $voters[] = new \Security\CalendarVoter();
+        $voters[] = new \Security\UserVoter();
+
+        return $voters;
+    }
+);
+
+$app->register(new \Silex\Provider\SwiftmailerServiceProvider());
 $app['swiftmailer.options'] = array(
     'host' => 'host',
     'port' => '25',
     'username' => 'username',
     'password' => 'password',
     'encryption' => null,
-    'auth_mode' => null
+    'auth_mode' => null,
 );
-$app->register(new \Silex\Provider\SwiftmailerServiceProvider());
+
 
 return $app;

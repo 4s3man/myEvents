@@ -65,6 +65,7 @@ class MediaRepository extends AbstractRepository
 
     /**
      * Find all records for specified user and calendar
+     *
      * @param int $userId
      * @param int $calendarId
      *
@@ -78,6 +79,13 @@ class MediaRepository extends AbstractRepository
         return $result;
     }
 
+    /**
+     * Get one record by id
+     *
+     * @param int $id
+     *
+     * @return array|mixed
+     */
     public function findOneById($id)
     {
         $qb = $this->queryAll()->where('id = :id')
@@ -148,11 +156,10 @@ class MediaRepository extends AbstractRepository
     }
 
     /**
+     * Add/update media and media_user links
+     * @param array $photo
      *
-     * @param array    $photo
-     *
-     * @param int      $userId
-     * @param int|null $calnedarId
+     * @param int   $userId
      *
      * @throws DBALException
      * @throws \Doctrine\DBAL\ConnectionException
@@ -178,6 +185,13 @@ class MediaRepository extends AbstractRepository
         }
     }
 
+    /**
+     * Delete record from user_media table
+     * @param int $userId
+     * @param int $mediaId
+     *
+     * @return \Doctrine\DBAL\Driver\Statement|int
+     */
     public function deleteUserMediaLink($userId, $mediaId)
     {
         $qb = $this->db->createQueryBuilder();
@@ -190,6 +204,13 @@ class MediaRepository extends AbstractRepository
         return $qb->execute();
     }
 
+    /**
+     * Delete record from calendar_media table
+     * @param int $calendarId
+     * @param int $mediaId
+     *
+     * @return \Doctrine\DBAL\Driver\Statement|int
+     */
     public function deleteCalendarMediaLink($calendarId, $mediaId)
     {
         $qb = $this->db->createQueryBuilder();
@@ -204,10 +225,9 @@ class MediaRepository extends AbstractRepository
 
     /**
      *
-     * @param array    $photo
+     * @param array $photo
      *
-     * @param int      $userId
-     * @param int|null $calnedarId
+     * @param int   $calnedarId
      *
      * @throws DBALException
      * @throws \Doctrine\DBAL\ConnectionException
@@ -253,6 +273,7 @@ class MediaRepository extends AbstractRepository
 
     /**
      * Link media to calendar in calendar_media table
+     *
      * @param int $calendarId
      * @param int $mediaId
      */
@@ -269,6 +290,7 @@ class MediaRepository extends AbstractRepository
 
     /**
      * Query media linked to specified calendar and user
+     *
      * @param int $calendarId
      * @param int $userId
      *
@@ -290,6 +312,7 @@ class MediaRepository extends AbstractRepository
 
     /**
      * Query user and media linked to him
+     *
      * @param int $userId
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder
@@ -307,6 +330,7 @@ class MediaRepository extends AbstractRepository
 
     /**
      * Query calendar_id and media liked to it
+     *
      * @param int $calendarId
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder

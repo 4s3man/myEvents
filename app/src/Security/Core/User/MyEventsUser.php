@@ -6,7 +6,6 @@
  * Time: 23:57
  */
 namespace Security\Core\User;
-//todo usuń albo zmień tak jak stary search
 
 use \Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
@@ -28,6 +27,20 @@ final class MyEventsUser implements AdvancedUserInterface
     private $accountNonLocked;
     private $roles;
 
+    /**
+     * MyEventsUser constructor.
+     * @param int    $id
+     *
+     * @param string $username
+     * @param string $password
+     *
+     * @param array  $roles
+     *
+     * @param bool   $enabled
+     * @param bool   $userNonExpired
+     * @param bool   $credentialsNonExpired
+     * @param bool   $userNonLocked
+     */
     public function __construct($id, $username, $password, array $roles = array(), $enabled = true, $userNonExpired = true, $credentialsNonExpired = true, $userNonLocked = true)
     {
         if ('' === $username || null === $username) {
@@ -44,6 +57,9 @@ final class MyEventsUser implements AdvancedUserInterface
         $this->roles = $roles;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getUsername();
@@ -81,6 +97,7 @@ final class MyEventsUser implements AdvancedUserInterface
     }
 
     /**
+     *
      * @return mixed
      */
     public function getId()

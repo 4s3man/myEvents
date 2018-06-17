@@ -95,8 +95,7 @@ class CalendarUserController implements ControllerProviderInterface
 
         if ($form->isSubmitted() && $form->isValid()) {
             $paginator = $userCalendarRepository->getSearchPaginatedUsersByCalendarId($queryParams, $form->getData());
-        }
-        else{
+        } else {
             $paginator = $userCalendarRepository->getSearchPaginatedUsersByCalendarId($queryParams);
         }
 

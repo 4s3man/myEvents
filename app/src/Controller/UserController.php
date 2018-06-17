@@ -12,6 +12,8 @@ use DataManager\SessionMessagesDataManager;
 use Form\DeleteUserType;
 use Form\EditUserType;
 use Form\RegisterType;
+use Form\Search\SearchType;
+use Repositiory\UserCaledarRepository;
 use Repositiory\UserRepository;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
@@ -36,22 +38,28 @@ class UserController implements ControllerProviderInterface
         $controller = $app['controllers_factory'];
 
         $controller->match('/register', [$this, 'registerAction'])
-            ->assert('userId','[1-9]\d*')
+            ->assert('userId', '[1-9]\d*')
             ->method('POST|GET')
             ->bind('register');
 
         $controller->match('/{userId}/edit', [$this, 'editAction'])
-            ->assert('userId','[1-9]\d*')
+            ->assert('userId', '[1-9]\d*')
             ->method('POST|GET')
             ->bind('editUser');
 
         $controller->match('/{userId}/delete', [$this, 'deleteAction'])
-            ->assert('userId','[1-9]\d*')
+            ->assert('userId', '[1-9]\d*')
             ->method('POST|GET')
             ->bind('deleteUser');
 
+        $controller->match('/{userId}/index/page/{page}', [$this, 'userCalendarIndexAction'])
+            ->method('POST|GET')
+            ->assert('userId', '[1-9]\d*')
+            ->assert('page', '[1-9]\d*')
+            ->bind('userCalendarIndex');
+
         $controller->match('/{userId}/settings', [$this, 'settingsAction'])
-            ->assert('userId','[1-9]\d*')
+            ->assert('userId', '[1-9]\d*')
             ->method('POST|GET')
             ->bind('settingsUser');
 
@@ -101,6 +109,17 @@ class UserController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * Edit user
+     * @param Application $app
+     * @param int         $userId
+     *
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function editAction(Application $app, $userId, Request $request)
     {
         //TODO get id from logged user
@@ -129,7 +148,6 @@ class UserController implements ControllerProviderInterface
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $userRepository->save($form->getData(), $app['security.encoder.bcrypt']);
             $sessionMessages->changed();
 
@@ -140,11 +158,21 @@ class UserController implements ControllerProviderInterface
             'user/user-edit.html.twig',
             [
                 'form' => $form->createView(),
-                'userId'=> $userId,
+                'userId' => $userId,
             ]
         );
     }
 
+    /**
+     * Delete account and its links, NOT REMOVE CALENDARS AND MEDIA
+     * @param Application $app
+     * @param int         $userId
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function deleteAction(Application $app, $userId, Request $request)
     {
         //todo get id from logged user
@@ -172,7 +200,6 @@ class UserController implements ControllerProviderInterface
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $userRepository->delete($user['id']);
             $sessionMessages->deleted();
 
@@ -188,6 +215,64 @@ class UserController implements ControllerProviderInterface
         );
     }
 
+    /**
+     *
+     * @param Application $app
+     *
+     * @param Int         $userId
+     * @param Int         $page
+     *
+     * @param Request     $request
+     *
+     * @return mixed
+     */
+    public function userCalendarIndexAction(Application $app, $userId, $page, Request $request)
+    {
+        //TODO pierwszy checker
+        if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $token = $app['security.token_storage']->getToken();
+            $loggedUserId = $token->getUser()->getId();
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
+
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+
+        $userCalendarRepository = new UserCaledarRepository($app['db']);
+        $queryParams = ['userId' => $userId, 'page' => $page];
+        $paginator = $userCalendarRepository->getSearchPaginatedCalendarsByUserId($queryParams);
+
+        $form = $app['form.factory']
+            ->createBuilder(SearchType::class)
+            ->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $paginator = $userCalendarRepository->getSearchPaginatedCalendarsByUserId($queryParams, $form->getData());
+        }
+
+        return $app['twig']->render(
+            'calendar/calendar-index.html.twig',
+            [
+                'form' => $form->createView(),
+                'pagerfanta' => $paginator,
+                'routeName' => 'userCalendarIndex',
+                'userId' => $loggedUserId,
+            ]
+        );
+    }
+
+    /**
+     * User setting options
+     * @param Application $app
+     *
+     * @param int         $userId
+     *
+     * @return mixed
+     */
     public function settingsAction(Application $app, $userId)
     {
         return $app['twig']->render(

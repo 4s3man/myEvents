@@ -8,7 +8,6 @@
 
 namespace Form;
 
-use Form\DataTransformer\PasswordDataTransformer;
 use Form\Helpers\PopularAssertGroups;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\AbstractType;

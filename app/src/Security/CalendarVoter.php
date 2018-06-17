@@ -11,6 +11,9 @@ namespace Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
+/**
+ * Class CalendarVoter
+ */
 class CalendarVoter extends Voter
 {
     const CALENDAR_ADMIN = 'calendar_admin';
@@ -18,7 +21,7 @@ class CalendarVoter extends Voter
 
     protected function supports($attribute, $subject)
     {
-        if (!in_array($attribute, array(self::VIEW, self::EDIT))) {
+        if (!in_array($attribute, array(self::CALENDAR_ADMIN, self::CALENDAR_USER))) {
             return false;
         }
 
@@ -29,6 +32,7 @@ class CalendarVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
+        dump($subject);
 
         return true;
 

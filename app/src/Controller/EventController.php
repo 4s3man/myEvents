@@ -221,7 +221,7 @@ class EventController implements ControllerProviderInterface
                 $participantRepository->save($form->getData(), $eventDataManager->getEvent());
                 $sessionMessagesMenager->signedUp();
                 //todo przekierowanie email został wysłany
-//                $app->redirect($app['url_generator']->generate(''))
+                //                $app->redirect($app['url_generator']->generate(''))
             }
 
             $signUpFormView = $form->createView();
@@ -247,6 +247,7 @@ class EventController implements ControllerProviderInterface
 
     /**
      * Edit event site
+     *
      * @param Application $app
      *
      * @param int         $calendarId
@@ -326,6 +327,7 @@ class EventController implements ControllerProviderInterface
 
     /**
      * Delete event
+     *
      * @param Application $app
      *
      * @param int         $calendarId

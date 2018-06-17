@@ -17,6 +17,7 @@ class BooleanDataTransformer implements DataTransformerInterface
 {
     /**
      * Transform passed data to boolean
+     *
      * @param mixed $signUpInt
      *
      * @return bool|mixed
@@ -28,6 +29,7 @@ class BooleanDataTransformer implements DataTransformerInterface
 
     /**
      * Transform gathered to int
+     *
      * @param mixed $signUpBool
      *
      * @return int|mixed

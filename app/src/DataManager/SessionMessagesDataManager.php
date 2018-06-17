@@ -104,6 +104,15 @@ class SessionMessagesDataManager
     }
 
     /**
+     * Add flash message message.acces_denied_error
+     */
+    public function accesDenied()
+    {
+        $this->error('acces_denied');
+    }
+
+
+    /**
      * Set success message
      *
      * @param string $action message name part

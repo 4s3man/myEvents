@@ -44,6 +44,7 @@ class NotItselfUniqueness extends Constraint
     public $uniqueColumn = null;
 
     /**
+     *
      * @var null | String
      */
     public $itself = null;

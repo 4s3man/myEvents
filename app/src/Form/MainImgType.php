@@ -19,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 class MainImgType extends AbstractType
 {
     /**
+     *
      * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -34,6 +35,7 @@ class MainImgType extends AbstractType
     }
 
     /**
+     *
      * @param FormView      $view
      *
      * @param FormInterface $form
@@ -56,6 +58,7 @@ class MainImgType extends AbstractType
     }
 
     /**
+     *
      * @return null|string
      */
     public function getBlockPrefix()
@@ -64,6 +67,7 @@ class MainImgType extends AbstractType
     }
 
     /**
+     *
      * @return null|string
      */
     public function getParent()

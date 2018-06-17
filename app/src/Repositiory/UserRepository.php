@@ -10,6 +10,7 @@ namespace Repositiory;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Validator\Constraints\Interfaces\NotItselfUniquenessInterface;
 use Validator\Constraints\Interfaces\UniquenessInterface;
@@ -20,6 +21,7 @@ use Validator\Constraints\Interfaces\UniquenessInterface;
 class UserRepository extends AbstractRepository implements UniquenessInterface, NotItselfUniquenessInterface
 {
     /**
+     *
      * @var null|MediaRepository
      */
     private $mediaReposioty = null;
@@ -48,6 +50,12 @@ class UserRepository extends AbstractRepository implements UniquenessInterface, 
             ->from('user', 'u');
     }
 
+    /**
+     * Find one record by id
+     * @param int $userId
+     *
+     * @return array|mixed
+     */
     public function findOneById($userId)
     {
         $qb = $this->queryAll()->where('id = :userId')
@@ -60,10 +68,11 @@ class UserRepository extends AbstractRepository implements UniquenessInterface, 
     /**
      * Saves or updates values into DB
      *
-     * @param array $user
+     * @param array                 $user
+     *
+     * @param BCryptPasswordEncoder $encoder
      *
      * @throws DBALException
-     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function save($user, $encoder)
     {
@@ -232,6 +241,13 @@ class UserRepository extends AbstractRepository implements UniquenessInterface, 
         return $qb->execute()->fetchAll();
     }
 
+    //todo add delete user role
+    /**
+     * Delete user and its links
+     * @param int $userId
+     *
+     * @throws DBALException
+     */
     public function delete($userId)
     {
         $this->db->beginTransaction();
@@ -251,6 +267,12 @@ class UserRepository extends AbstractRepository implements UniquenessInterface, 
         }
     }
 
+    /**
+     * Delete media links for user
+     * @param array $mediaIds
+     *
+     * @return mixed
+     */
     private function deleteLinkedMedia($mediaIds)
     {
         $qb = $this->db->createQueryBuilder()
@@ -261,6 +283,13 @@ class UserRepository extends AbstractRepository implements UniquenessInterface, 
         return $qb->execute();
     }
 
+    /**
+     * Get linked media ids from user
+     *
+     * @param int $userId
+     *
+     * @return array
+     */
     private function getLinkedMediaIds($userId)
     {
         $qb = $this->mediaReposioty->queryUserMedia($userId)

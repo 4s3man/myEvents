@@ -15,10 +15,11 @@ namespace Validator\Constraints\Interfaces;
 interface NotItselfUniquenessInterface
 {
     /**
-     * Find all values where $column = $value
+     * Find all values where $column = $value andWhere $value != $itself
      *
      * @param String $value  to be find for uniqueness
      * @param String $column name to be searched
+     * @param String $itself to check if it's not it
      *
      * @return array
      */

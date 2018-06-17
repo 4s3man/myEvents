@@ -8,14 +8,23 @@
 
 namespace Controller;
 
-
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class MailTokenController
+ */
 class MailTokenController implements ControllerProviderInterface
 {
+    /**
+     * Set routing
+     *
+     * @param Application $app
+     *
+     * @return mixed|ControllerCollection
+     */
     public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
@@ -27,6 +36,16 @@ class MailTokenController implements ControllerProviderInterface
         return $controller;
     }
 
+    /**
+     * TODO zrobić maile
+     * @param Application $app
+     *
+     * @param int         $token
+     *
+     * @param Request     $request
+     *
+     * @return mixed
+     */
     public function signUpTokenAction(Application $app, $token, Request $request)
     {
         $s = new \Swift_Message();
@@ -36,6 +55,7 @@ class MailTokenController implements ControllerProviderInterface
             ->setBody('okok');
 
         $app['mailer']->send($s);
+
         return $app['twig']->render(
             'mailToken/mT-signUp.html.twig',
             [
@@ -43,6 +63,4 @@ class MailTokenController implements ControllerProviderInterface
             ]
         );
     }
-
-
 }

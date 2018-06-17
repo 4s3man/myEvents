@@ -22,6 +22,7 @@ class SearchDataManager
     private $query = null;
 
     /**
+     *
      * @var string|null
      */
     private $alias = null;
@@ -34,6 +35,7 @@ class SearchDataManager
 
     /**
      * SearchDataManager constructor.
+     *
      * @param QueryBuilder $query
      *
      * @param string       $searchAlias
@@ -61,7 +63,7 @@ class SearchDataManager
     public function addFilters($searchData)
     {
         if (is_array($searchData)) {
-//            $this->checkKeys($searchData);
+            //            $this->checkKeys($searchData);
             $this->query = $this->filter($searchData);
         } elseif (null !== $searchData) {
             throw new \InvalidArgumentException(sprintf('2 argument of %s construct needs to be array or null', __CLASS__));

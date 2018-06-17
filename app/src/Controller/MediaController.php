@@ -27,6 +27,53 @@ use Utils\MyPaginatorShort;
 class MediaController implements ControllerProviderInterface
 {
     /**
+     *
+     * @param Application $app
+     *
+     * @param int         $userId
+     *
+     * @param Request     $request
+     *
+     * @return mixed
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function addMediaAction(Application $app, $userId, Request $request)
+    {
+        //TODO get id from logged user
+
+        $media = [];
+        $form = $app['form.factory']->createBuilder(MediaType::class, $media)->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $fileUploader = new FileUploader($app['config.photos_directory']);
+            $mediaRepository = new MediaRepository($app['db']);
+
+            $photo  = $form->getData();
+
+            $fileName = $fileUploader->upload($photo['photo']);
+
+            $photo['photo'] = $fileName;
+
+            $mediaRepository->saveToUser($photo, $userId);
+
+            $sessionMessagesManager->added();
+
+            return $app->redirect($app['url_generator']->generate('userMediaIndex', ['userId' => $userId, 'page' => 1]));
+        }
+
+        return $app['twig']->render(
+            'media/md-add_toUser.html.twig',
+            [
+                'form' => $form->createView(),
+                'userId' => $userId,
+            ]
+        );
+    }
+
+    /**
      * Sets routing
      *
      * @param Application $app
@@ -99,51 +146,6 @@ class MediaController implements ControllerProviderInterface
      *
      * @param Application $app
      *
-     * @param Request     $request
-     *
-     * @return mixed
-     *
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    public function addMediaAction(Application $app, $userId, Request $request)
-    {
-        //TODO get id from logged user
-
-        $media = [];
-        $form = $app['form.factory']->createBuilder(MediaType::class, $media)->getForm();
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $fileUploader = new FileUploader($app['config.photos_directory']);
-            $mediaRepository = new MediaRepository($app['db']);
-
-            $photo  = $form->getData();
-
-            $fileName = $fileUploader->upload($photo['photo']);
-
-            $photo['photo'] = $fileName;
-
-            $mediaRepository->saveToUser($photo, $userId);
-
-            $sessionMessagesManager->added();
-
-            return $app->redirect($app['url_generator']->generate('userMediaIndex', ['userId' => $userId, 'page' => 1]));
-        }
-
-        return $app['twig']->render(
-            'media/md-add_toUser.html.twig',
-            [
-                'form' => $form->createView(),
-                'userId' => $userId,
-            ]
-        );
-    }
-
-    /**
-     *
-     * @param Application $app
-     *
      * @param int         $calendarId
      *
      * @param Request     $request
@@ -187,6 +189,20 @@ class MediaController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * Edit user media
+     * @param Application $app
+     *
+     * @param int         $userId
+     * @param int         $mediaId
+     *
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function editMediaAction(Application $app, $userId, $mediaId, Request $request)
     {
         //todo zeminić nazwę na editUserMedia, i zrobić inny kontroler dla mediów kalendarza
@@ -222,6 +238,20 @@ class MediaController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * Edit calendar media
+     * @param Application $app
+     *
+     * @param int         $calendarId
+     * @param int         $mediaId
+     *
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function editCalendarMediaAction(Application $app, $calendarId, $mediaId, Request $request)
     {
         //todo GET LOGGED USER ID
@@ -259,6 +289,17 @@ class MediaController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * Delete calendar media
+     * @param Application $app
+     *
+     * @param int         $calendarId
+     * @param int         $mediaId
+     *
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function deleteCalendarMediaAction(Application $app, $calendarId, $mediaId, Request $request)
     {
         //TODO GET ID FROM LOGGED USER
@@ -298,6 +339,17 @@ class MediaController implements ControllerProviderInterface
         );
     }
 
+    /**
+     * Delete user media
+     * @param Application $app
+     *
+     * @param int         $userId
+     * @param int         $mediaId
+     *
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function deleteMediaAction(Application $app, $userId, $mediaId, Request $request)
     {
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
@@ -340,6 +392,7 @@ class MediaController implements ControllerProviderInterface
      *
      * @param Request     $request
      *
+     * @param int         $userId
      * @param int         $page
      *
      * @return mixed
