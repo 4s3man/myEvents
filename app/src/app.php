@@ -98,7 +98,7 @@ $app->register(
             ],
         ],
         'security.access_rules' => [
-            ['^/(auth|calendar/[1-9]\d*/\d.*|event/[1-9]\d*/([1-9]\d*/sho|index/)).+$', 'IS_AUTHENTICATED_ANONYMOUSLY'],
+            ['^/(auth|calendar/[1-9]\d*/\d.*|event/[1-9]\d*/([1-9]\d*/sho|index/)|token/).+$', 'IS_AUTHENTICATED_ANONYMOUSLY'],
             ['^/.+$', 'IS_AUTHENTICATED_FULLY'],
         ],
         'security.role_hierarchy' => [
@@ -119,11 +119,11 @@ $app['security.voters'] = $app->extend(
 
 $app->register(new \Silex\Provider\SwiftmailerServiceProvider());
 $app['swiftmailer.options'] = array(
-    'host' => 'host',
-    'port' => '25',
-    'username' => 'username',
-    'password' => 'password',
-    'encryption' => null,
+    'host' => 'smtp.gmail.com',
+    'port' => 465,
+    'username' => 'testQbainy@gmail.com',
+    'password' => 'nakurwiamy_735tin',
+    'encryption' => 'ssl',
     'auth_mode' => null,
 );
 

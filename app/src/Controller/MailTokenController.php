@@ -49,11 +49,10 @@ class MailTokenController implements ControllerProviderInterface
     public function signUpTokenAction(Application $app, $token, Request $request)
     {
         $s = new \Swift_Message();
-        $s->setSubject('i dono')
+        $s->setSubject('dawaj')
             ->setFrom('myEvents@mysite.com')
             ->setTo(array('kuba.kulaga.sv7@gmail.com'))
             ->setBody('okok');
-
         $app['mailer']->send($s);
 
         return $app['twig']->render(
