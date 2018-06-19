@@ -26,6 +26,8 @@ class UserRepository extends AbstractRepository implements UniquenessInterface, 
      */
     private $mediaReposioty = null;
 
+    private $userCalendarRepository = null;
+
     /**
      * UserRepository constructor.
      *
@@ -35,6 +37,7 @@ class UserRepository extends AbstractRepository implements UniquenessInterface, 
     {
         parent::__construct($db);
         $this->mediaReposioty = new MediaRepository($db);
+        $this->userCalendarRepository = new UserCaledarRepository($db);
     }
 
 
@@ -127,12 +130,14 @@ class UserRepository extends AbstractRepository implements UniquenessInterface, 
                     sprintf('Username "%s" does not exist.', $login)
                 );
             }
+            $rawCalendarRoles = $this->getUserCalendarsByUserId($user['id']);
 
             return [
                 'id' => $user['id'],
                 'login' => $user['login'],
                 'password' => $user['password'],
                 'roles' => $roles,
+                'userCalendars' => $this->makeCalendarIdRoleArray($rawCalendarRoles),
             ];
         } catch (DBALException $exception) {
             throw new UsernameNotFoundException(
@@ -298,5 +303,37 @@ class UserRepository extends AbstractRepository implements UniquenessInterface, 
         $result = array_column($result, 'id');
 
         return $result ? $result : [];
+    }
+
+    /**
+     * Get user calendars by user id
+     * @param int $userId
+     *
+     * @return array
+     */
+    private function getUserCalendarsByUserId($userId)
+    {
+        $qb = $this->userCalendarRepository->queryAll()
+            ->where('user_id = :userId')
+            ->setParameter(':userId', $userId, \PDO::PARAM_INT);
+        $result = $qb->execute()->fetchAll();
+
+        return $result? $result : [];
+    }
+
+    /**
+     * Makes Array key => calendar_id val => user_role
+     * @param array $rawUserCalendars
+     *
+     * @return array
+     */
+    private function makeCalendarIdRoleArray(array $rawUserCalendars)
+    {
+        $userCalendars = [];
+        foreach ($rawUserCalendars as $link) {
+            $userCalendars[$link['calendar_id']] = $link['user_role'];
+        }
+
+        return $userCalendars;
     }
 }

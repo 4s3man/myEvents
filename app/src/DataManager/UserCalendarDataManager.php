@@ -49,7 +49,7 @@ class UserCalendarDataManager
      */
     public function setAdmin()
     {
-        $this->userCalendarData['user_role'] = 'ADMIN';
+        $this->userCalendarData['user_role'] = 'calendar_admin';
     }
 
     /**

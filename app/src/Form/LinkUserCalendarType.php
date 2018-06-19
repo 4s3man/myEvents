@@ -92,8 +92,8 @@ class LinkUserCalendarType extends AbstractType
             [
                 'label' => 'label.user_choice_type',
                 'choices' => [
-                    'editor' => 'EDITOR',
-                    'admin' => 'ADMIN',
+                    'calendar editor' => 'calendar_editor',
+                    'calendar admin' => 'calendar_admin',
                 ],
             ]
         );

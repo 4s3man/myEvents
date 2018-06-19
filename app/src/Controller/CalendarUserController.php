@@ -81,8 +81,15 @@ class CalendarUserController implements ControllerProviderInterface
      */
     public function calendarUserIndexAction(Application $app, $calendarId, Request $request, $page = 1)
     {
-        //todo get id from logged user
-        $userId = 4;
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+
+        if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
 
         $userCalendarRepository = new UserCaledarRepository($app['db']);
 
@@ -107,7 +114,7 @@ class CalendarUserController implements ControllerProviderInterface
                 'calendarId' => $calendarId,
                 'pagerfanta' => $paginator,
                 'routeName' => 'userIndex',
-                'userId' => $userId,
+                'userId' => $loggedUserId,
             ]
         );
     }
@@ -125,8 +132,15 @@ class CalendarUserController implements ControllerProviderInterface
      */
     public function userAddAction(Application $app, $calendarId, Request $request)
     {
-        //todo get id from logged user
-        $userId = 4;
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+
+        if (!$app['security.authorization_checker']->isGranted('calendar_admin', $calendarId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
 
         $sessionMessagesDataManager = new SessionMessagesDataManager($app['session']);
         $userRepository = new UserRepository($app['db']);
@@ -169,7 +183,7 @@ class CalendarUserController implements ControllerProviderInterface
             [
                 'form' => $form->createView(),
                 'calendarId' => $calendarId,
-                'userId' => $userId,
+                'userId' => $loggedUserId,
             ]
         );
     }
@@ -188,6 +202,16 @@ class CalendarUserController implements ControllerProviderInterface
      */
     public function userEditAction(Application $app, $calendarId, $userCalendarId, Request $request)
     {
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+
+        if (!$app['security.authorization_checker']->isGranted('calendar_admin', $calendarId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
+
         $userCalendarRepository = new UserCaledarRepository($app['db']);
         $sessionDataManager = new SessionMessagesDataManager($app['session']);
 
@@ -220,6 +244,7 @@ class CalendarUserController implements ControllerProviderInterface
                 'form' => $form->createView(),
                 'userCalendarId' => $userCalendarId,
                 'calendarId' => $calendarId,
+                'userId' => $loggedUserId,
             ]
         );
     }
@@ -238,6 +263,16 @@ class CalendarUserController implements ControllerProviderInterface
      */
     public function userDeleteAction(Application $app, $calendarId, $userCalendarId, Request $request)
     {
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+
+        if (!$app['security.authorization_checker']->isGranted('calendar_admin', $calendarId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
+
         $userCalendarRepository = new UserCaledarRepository($app['db']);
         $userCalendar = $userCalendarRepository->findLinkedUserById($userCalendarId);
         $sessionDataManager = new SessionMessagesDataManager($app['session']);
@@ -286,6 +321,7 @@ class CalendarUserController implements ControllerProviderInterface
                 'userCalendarId' => $userCalendarId,
                 'dataToDelete' => $userCalendar,
                 'calendarId' => $calendarId,
+                'userId' => $loggedUserId,
             ]
         );
     }

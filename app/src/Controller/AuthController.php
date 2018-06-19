@@ -49,7 +49,6 @@ class AuthController implements ControllerProviderInterface
      */
     public function loginAction(Application $app, Request $request)
     {
-        //todo jak zmienić żeby dostać id usera?
         $sessionMessagesDataManager = new SessionMessagesDataManager($app['session']);
         $user = ['login' => $app['session']->get('_security.last_username')];
         $form = $app['form.factory']->createBuilder(LoginType::class, $user)->getForm();

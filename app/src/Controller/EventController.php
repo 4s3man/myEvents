@@ -89,13 +89,20 @@ class EventController implements ControllerProviderInterface
      */
     public function eventAddAction(Application $app, $calendarId, Request $request)
     {
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+
+        if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
+
         $eventRepository = new EventRepository($app['db']);
         $tagRepository = new TagRepository($app['db']);
         $mediaRepository = new MediaRepository($app['db']);
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-
-        //Todo get id from logged user
-        $userId = 4;
 
         $event = [];
         $form = $app['form.factory']->CreateBuilder(
@@ -106,7 +113,7 @@ class EventController implements ControllerProviderInterface
                 'tag_repository' => $tagRepository,
                 'media_repository' => $mediaRepository,
                 'calendarId' => $calendarId,
-                'userId' => $userId,
+                'userId' => $loggedUserId,
             ]
         )->getForm();
 
@@ -131,7 +138,7 @@ class EventController implements ControllerProviderInterface
             [
                 'form' => $form->createView(),
                 'calendarId' => $calendarId,
-                'userId' => $userId,
+                'userId' => $loggedUserId,
             ]
         );
     }
@@ -150,11 +157,17 @@ class EventController implements ControllerProviderInterface
      */
     public function eventIndexAction(Application $app, $calendarId, $page, Request $request)
     {
-        //TODO get id from logged user
-        $userId = 4;
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+
+        if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
 
         $eventRepository = new EventRepository($app['db'], $calendarId);
-        //todo sprawdzić wszystkie search formy
         $queryParams = ['calendarId' => $calendarId, 'page' => $page];
 
         $form = $app['form.factory']
@@ -175,7 +188,7 @@ class EventController implements ControllerProviderInterface
                 'routeName' => 'eventIndex',
                 'calendarId' => $calendarId,
                 'form' => $form->createView(),
-                'userId' => $userId,
+                'userId' => $loggedUserId,
             ]
         );
     }

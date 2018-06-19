@@ -17,11 +17,12 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class CalendarVoter extends Voter
 {
     const CALENDAR_ADMIN = 'calendar_admin';
-    const CALENDAR_USER = 'calendar_user';
+    const CALENDAR_EDITOR = 'calendar_editor';
+    const CALENDAR_ANY_USER = 'calendar_any_user';
 
     protected function supports($attribute, $subject)
     {
-        if (!in_array($attribute, array(self::CALENDAR_ADMIN, self::CALENDAR_USER))) {
+        if (!in_array($attribute, array(self::CALENDAR_ADMIN, self::CALENDAR_EDITOR, self::CALENDAR_ANY_USER))) {
             return false;
         }
 
@@ -32,10 +33,26 @@ class CalendarVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        dump($subject);
+        if (!ctype_digit((string) $subject)) {
+            throw new InvalidArgumentException('2nd argument for is_Granted(\'this_user\', 2ndArg.. needs to be valid integer');
+        }
 
-        return true;
+        if (in_array('ROLE_SUPER_USER', $token->getRoles())) {
+            return true;
+        }
 
-        throw new \LogicException('This code should not be reached!');
+        foreach ($token->getUser()->getUserCalendars() as $calendarId => $role) {
+            if ((int) $subject === $calendarId) {
+                if ($attribute === self::CALENDAR_ANY_USER) {
+
+                    return true;
+                } elseif($attribute === $role) {
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

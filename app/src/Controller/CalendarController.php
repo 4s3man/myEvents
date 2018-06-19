@@ -66,12 +66,6 @@ class CalendarController implements ControllerProviderInterface
             ->assert('calendarId', '[1-9]\d*')
             ->bind('calendarDelete');
 
-//        $controller->match('/user/{userId}/index/page/{page}', [$this, 'userCalendarIndexAction'])
-//            ->method('POST|GET')
-//            ->assert('userId', '[1-9]\d*')
-//            ->assert('page', '[1-9]\d*')
-//            ->bind('userCalendarIndex');
-
         return $controller;
     }
 
@@ -90,8 +84,8 @@ class CalendarController implements ControllerProviderInterface
      */
     public function calendarShowAction(Application $app, $calendarId, $date)
     {
-        //todo get id from logged user
-        $userId = 4;
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
 
         //TODO dodać styl dla świąt
         $eventRepository = new EventRepository($app['db'], (int) $calendarId);
@@ -105,7 +99,7 @@ class CalendarController implements ControllerProviderInterface
                 'prevDate' => $calendarDataManager->getPrevMonth()->format('Y-m'),
                 'calendarId' => $calendarId,
                 'calendar' => $calendarMonthPage,
-                'userId' => 4,
+                'userId' => $loggedUserId,
             ]
         );
     }
@@ -125,7 +119,15 @@ class CalendarController implements ControllerProviderInterface
      */
     public function addCalendarAction(Application $app, $userId, Request $request)
     {
-        //TODO get id from logged user
+        //todo checker
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+        if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
 
         $sessionMessages = new SessionMessagesDataManager($app['session']);
         $userCalendarRepository = new UserCaledarRepository($app['db']);
@@ -162,8 +164,8 @@ class CalendarController implements ControllerProviderInterface
      */
     public function editCalendarAction(Application $app, $calendarId, Request $request)
     {
-        //TODO get token from logged user
-        $userId = 4;
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
 
         $sessionMessages = new SessionMessagesDataManager($app['session']);
         $calendarRepository = new CalendarRepository($app['db']);
@@ -190,7 +192,7 @@ class CalendarController implements ControllerProviderInterface
         return $app['twig']->render(
             'calendar/calendar-edit.html.twig',
             [
-                'userId' => $userId,
+                'userId' => $loggedUserId,
                 'calendarId' => $calendarId,
                 'calendar' => $calendar,
                 'form' => $form->createView(),

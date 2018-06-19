@@ -24,7 +24,7 @@
             <div class="paginator-item media_photo">
                 <img src="{{  asset(download_photos_directory ~ '/' ~ datum.photo) }}" alt="{{ datum.title }}">
             </div>
-        <div class="paginator-item edit"><a href="{{ url('editMedia', {'mediaId':datum.id, 'userId':userId}) }}">{{ 'link.edit'|trans }}</a></div>
+        <div class="paginator-item edit"><a href="{{ url('editUserMedia', {'mediaId':datum.id, 'userId':userId}) }}">{{ 'link.edit'|trans }}</a></div>
         <div class="paginator-item delete"><a href="{{ url('deleteMedia', {'mediaId':datum.id, 'userId':userId}) }}">{{ 'link.delete'|trans }}</a></div>
     </div>
     <hr>

@@ -124,7 +124,14 @@ class UserController implements ControllerProviderInterface
     {
         //TODO get id from logged user
         //TODO get user_role of logged user
-        $userRole = 'ROLE_USER';
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+        if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
 
         $userRepository = new UserRepository($app['db']);
         $sessionMessages = new SessionMessagesDataManager($app['session']);
@@ -175,7 +182,16 @@ class UserController implements ControllerProviderInterface
      */
     public function deleteAction(Application $app, $userId, Request $request)
     {
-        //todo get id from logged user
+        //todo checker
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+        if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
+
 
         $userRepository = new UserRepository($app['db']);
         $sessionMessages = new SessionMessagesDataManager($app['session']);
@@ -210,7 +226,7 @@ class UserController implements ControllerProviderInterface
             'user/user-delete.html.twig',
             [
                 'form' => $form->createView(),
-                'userId' => $userId,
+                'userId' => $loggedUserId,
             ]
         );
     }
@@ -229,17 +245,14 @@ class UserController implements ControllerProviderInterface
     public function userCalendarIndexAction(Application $app, $userId, $page, Request $request)
     {
         //TODO pierwszy checker
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
             $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $token = $app['security.token_storage']->getToken();
-            $loggedUserId = $token->getUser()->getId();
             $sessionMessagesManager->accesDenied();
 
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
-
-        $token = $app['security.token_storage']->getToken();
-        $loggedUserId = $token->getUser()->getId();
 
         $userCalendarRepository = new UserCaledarRepository($app['db']);
         $queryParams = ['userId' => $userId, 'page' => $page];
@@ -275,10 +288,21 @@ class UserController implements ControllerProviderInterface
      */
     public function settingsAction(Application $app, $userId)
     {
+        //TODO checker
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+
+        if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
+
         return $app['twig']->render(
             'user/user-settings.html.twig',
             [
-                'userId' => $userId,
+                'userId' => $loggedUserId,
             ]
         );
     }

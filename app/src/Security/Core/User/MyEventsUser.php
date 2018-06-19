@@ -26,6 +26,7 @@ final class MyEventsUser implements AdvancedUserInterface
     private $credentialsNonExpired;
     private $accountNonLocked;
     private $roles;
+    private $userCalendars;
 
     /**
      * MyEventsUser constructor.
@@ -41,7 +42,7 @@ final class MyEventsUser implements AdvancedUserInterface
      * @param bool   $credentialsNonExpired
      * @param bool   $userNonLocked
      */
-    public function __construct($id, $username, $password, array $roles = array(), $enabled = true, $userNonExpired = true, $credentialsNonExpired = true, $userNonLocked = true)
+    public function __construct($id, $username, $password, array $roles = array(), $userCalendars = array(), $enabled = true, $userNonExpired = true, $credentialsNonExpired = true, $userNonLocked = true)
     {
         if ('' === $username || null === $username) {
             throw new \InvalidArgumentException('The username cannot be empty.');
@@ -55,6 +56,7 @@ final class MyEventsUser implements AdvancedUserInterface
         $this->credentialsNonExpired = $credentialsNonExpired;
         $this->accountNonLocked = $userNonLocked;
         $this->roles = $roles;
+        $this->userCalendars = $userCalendars;
     }
 
     /**
@@ -71,6 +73,14 @@ final class MyEventsUser implements AdvancedUserInterface
     public function getRoles()
     {
         return $this->roles;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserCalendars()
+    {
+        return $this->userCalendars;
     }
 
     /**

@@ -52,6 +52,7 @@ class MyEventsUserProvider implements UserProviderInterface
             $user['login'],
             $user['password'],
             $user['roles'],
+            $user['userCalendars'],
             true,
             true,
             true,
