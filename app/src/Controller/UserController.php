@@ -288,7 +288,6 @@ class UserController implements ControllerProviderInterface
      */
     public function settingsAction(Application $app, $userId)
     {
-        //TODO checker
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
 

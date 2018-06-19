@@ -209,8 +209,8 @@ class EventController implements ControllerProviderInterface
      */
     public function eventShowAction(Application $app, $calendarId, $eventId, Request $request)
     {
-        //TODO GET ID FROM LOGGED USER
-        $userId = 4;
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
 
         //TODO spytać się jak by to lepiej
         //TODO na koniec sign up przez potwierdzenie email
@@ -253,7 +253,7 @@ class EventController implements ControllerProviderInterface
                 'info' => $info,
                 'calendarId' => $calendarId,
                 'eventId' => $eventId,
-                'userId' => $userId,
+                'userId' => $loggedUserId,
             ]
         );
     }
@@ -275,14 +275,18 @@ class EventController implements ControllerProviderInterface
      */
     public function eventEditAction(Application $app, $calendarId, $eventId, Request $request)
     {
-        //todo GET USER ID FROM LOGGED USER
-        $userId = 4;
+        $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+        if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
+            $sessionMessagesManager->accesDenied();
 
-        //todo teraz tutaj
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
+
         $eventRepository = new EventRepository($app['db']);
         $tagRepository = new TagRepository($app['db']);
         $mediaRepository = new MediaRepository($app['db']);
-        $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
 
         $event = $eventRepository->findOneById($eventId);
 
@@ -308,7 +312,7 @@ class EventController implements ControllerProviderInterface
                 'tag_repository' => $tagRepository,
                 'media_repository' => $mediaRepository,
                 'calendarId' => $calendarId,
-                'userId' => $userId,
+                'userId' => $loggedUserId,
             ]
         )->getForm();
 
@@ -333,7 +337,7 @@ class EventController implements ControllerProviderInterface
             [
                 'form' => $form->createView(),
                 'calendarId' => $calendarId,
-                'userId' => $userId,
+                'userId' => $loggedUserId,
             ]
         );
     }
@@ -354,8 +358,16 @@ class EventController implements ControllerProviderInterface
      */
     public function eventDeleteAction(Application $app, $calendarId, $eventId, Request $request)
     {
-        $eventRepository = new EventRepository($app['db']);
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+
+        if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
+        $eventRepository = new EventRepository($app['db']);
 
         $event = $eventRepository->findOneById($eventId);
         if (!$event) {

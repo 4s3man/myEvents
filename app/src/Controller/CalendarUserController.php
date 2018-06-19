@@ -39,7 +39,6 @@ class CalendarUserController implements ControllerProviderInterface
      */
     public function connect(Application $app)
     {
-        //TODO change for get token from logged user || set in firewall
         $controller = $app['controllers_factory'];
 
         $controller->match('{calendarId}/index/page/{page}', [$this, 'calendarUserIndexAction'])

@@ -167,6 +167,16 @@ class CalendarController implements ControllerProviderInterface
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
 
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+
+        if (!$app['security.authorization_checker']->isGranted('calendar_admin', $calendarId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
+
         $sessionMessages = new SessionMessagesDataManager($app['session']);
         $calendarRepository = new CalendarRepository($app['db']);
         $calendar = $calendarRepository->findOneById($calendarId);
@@ -213,10 +223,17 @@ class CalendarController implements ControllerProviderInterface
      */
     public function deleteCalendarAction(Application $app, $calendarId, Request $request)
     {
-        //TODO get userId from logged user
-        $userId = 4;
-
         $sessionMessages = new SessionMessagesDataManager($app['session']);
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+
+        if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
+
         $calendarRepository = new CalendarRepository($app['db']);
         $userCalendarRepository = new UserCaledarRepository($app['db']);
 
@@ -240,7 +257,7 @@ class CalendarController implements ControllerProviderInterface
         return $app['twig']->render(
             'calendar/calendar-delete.html.twig',
             [
-                'userId' => $userId,
+                'userId' => $loggedUserId,
                 'calendarId' => $calendarId,
                 'dataToDelete' => $calendar,
                 'form' => $form->createView(),

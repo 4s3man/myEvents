@@ -27,61 +27,6 @@ use Utils\MyPaginatorShort;
 class MediaController implements ControllerProviderInterface
 {
     /**
-     * Adds media to specified user
-     * @param Application $app
-     *
-     * @param int         $userId
-     *
-     * @param Request     $request
-     *
-     * @return mixed
-     *
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    public function addUserMedia(Application $app, $userId, Request $request)
-    {
-        //todo checker
-        $token = $app['security.token_storage']->getToken();
-        $loggedUserId = $token->getUser()->getId();
-        if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
-            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
-        }
-
-        $media = [];
-        $form = $app['form.factory']->createBuilder(MediaType::class, $media)->getForm();
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $fileUploader = new FileUploader($app['config.photos_directory']);
-            $mediaRepository = new MediaRepository($app['db']);
-
-            $photo  = $form->getData();
-
-            $fileName = $fileUploader->upload($photo['photo']);
-
-            $photo['photo'] = $fileName;
-
-            $mediaRepository->saveToUser($photo, $userId);
-
-            $sessionMessagesManager->added();
-
-            return $app->redirect($app['url_generator']->generate('userMediaIndex', ['userId' => $userId, 'page' => 1]));
-        }
-
-        return $app['twig']->render(
-            'media/md-add_toUser.html.twig',
-            [
-                'form' => $form->createView(),
-                'userId' => $userId,
-            ]
-        );
-    }
-
-    /**
      * Sets routing
      *
      * @param Application $app
@@ -92,7 +37,6 @@ class MediaController implements ControllerProviderInterface
     {
         $controller = $app['controllers_factory'];
 
-        //TODO change for get token from logged user || set in firewall
         $controller->match('/{userId}/add', [$this, 'addUserMedia'])
             ->method('POST|GET')
             ->assert('userId', '[1-9]\d*')
@@ -148,6 +92,60 @@ class MediaController implements ControllerProviderInterface
 
 
         return $controller;
+    }
+
+    /**
+     * Adds media to specified user
+     * @param Application $app
+     *
+     * @param int         $userId
+     *
+     * @param Request     $request
+     *
+     * @return mixed
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function addUserMedia(Application $app, $userId, Request $request)
+    {
+        $token = $app['security.token_storage']->getToken();
+        $loggedUserId = $token->getUser()->getId();
+        if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $sessionMessagesManager->accesDenied();
+
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
+        }
+
+        $media = [];
+        $form = $app['form.factory']->createBuilder(MediaType::class, $media)->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
+            $fileUploader = new FileUploader($app['config.photos_directory']);
+            $mediaRepository = new MediaRepository($app['db']);
+
+            $photo  = $form->getData();
+
+            $fileName = $fileUploader->upload($photo['photo']);
+
+            $photo['photo'] = $fileName;
+
+            $mediaRepository->saveToUser($photo, $userId);
+
+            $sessionMessagesManager->added();
+
+            return $app->redirect($app['url_generator']->generate('userMediaIndex', ['userId' => $userId, 'page' => 1]));
+        }
+
+        return $app['twig']->render(
+            'media/md-add_toUser.html.twig',
+            [
+                'form' => $form->createView(),
+                'userId' => $userId,
+            ]
+        );
     }
 
     /**
@@ -385,7 +383,6 @@ class MediaController implements ControllerProviderInterface
      */
     public function deleteUserMediaAction(Application $app, $userId, $mediaId, Request $request)
     {
-        //todo checker
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
@@ -442,7 +439,6 @@ class MediaController implements ControllerProviderInterface
      */
     public function userMediaIndexAction(Application $app, Request $request, $userId, $page = 1)
     {
-        //todo checker
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
