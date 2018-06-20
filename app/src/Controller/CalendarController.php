@@ -21,6 +21,7 @@ use Repositiory\UserCaledarRepository;
 use Repositiory\UserRepository;
 use Search\Criteria\TypeCriteria;
 use Search\CriteriaBuilder\TypeCriteriaBuilder;
+use Security\Core\User\MyEventsUser;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -28,6 +29,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
 
 use Form\Search\SearchType;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Class CalendarController
@@ -85,7 +87,8 @@ class CalendarController implements ControllerProviderInterface
     public function calendarShowAction(Application $app, $calendarId, $date)
     {
         $token = $app['security.token_storage']->getToken();
-        $loggedUserId = $token->getUser()->getId();
+        $user = $token->getUser();
+        $loggedUserId = $user instanceof MyEventsUser ? $user->getId() : null;
 
         //TODO dodać styl dla świąt
         $eventRepository = new EventRepository($app['db'], (int) $calendarId);

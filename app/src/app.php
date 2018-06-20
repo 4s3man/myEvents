@@ -90,7 +90,7 @@ $app->register(
                 'anonymous' => true,
                 'logout' => [
                     'logout_path' => 'auth_logout',
-                    'target_url' => 'register',
+                    'target_url' => 'auth_login',
                 ],
                 'users' => function () use ($app) {
                     return new \Provider\MyEventsUserProvider($app['db']);
@@ -98,7 +98,7 @@ $app->register(
             ],
         ],
         'security.access_rules' => [
-            ['^/(auth|calendar/[1-9]\d*/\d.*|event/[1-9]\d*/([1-9]\d*/sho|index/)|token/).+$', 'IS_AUTHENTICATED_ANONYMOUSLY'],
+            ['^/(auth|user/registe|calendar/[1-9]\d*/\d.*|event/[1-9]\d*/([1-9]\d*/sho|index/)|token/).+$', 'IS_AUTHENTICATED_ANONYMOUSLY'],
             ['^/.+$', 'IS_AUTHENTICATED_FULLY'],
         ],
         'security.role_hierarchy' => [

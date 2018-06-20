@@ -1,55 +1,60 @@
 {% extends 'default/_baseIndex.html.twig' %}
-{# TODO wygląd tego szablony #}
-    {% block indexTitle %}
-        {{ 'title.user_calendar_index'|trans }}
-    {% endblock %}
+{% block indexTitle %}
+    {{ 'title.user_calendar_index'|trans }}
+{% endblock %}
 
-    {% block sidebar %}
+{% block sidebar %}
+    {% if is_granted('calendar_any_user', calendarId) %}
         {% include 'sidebar/sidebar-calendar.html.twig' %}
-    {% endblock %}
+    {% endif %}
+{% endblock %}
 
-    {% block navigation %}
+{% block navigation %}
+    {% if is_granted('calendar_any_user', calendarId) %}
         <div class="btn btn-light">
             <a href="{{ url('eventAdd', {'calendarId':calendarId} ) }}">{{ 'link.event_add'|trans }}</a>
         </div>
-        {% include 'form/searchForm.html.twig' %}
-    {% endblock %}
+    {% endif %}
+    {% include 'form/searchForm.html.twig' %}
+{% endblock %}
 
-    {% block paginatorData %}
-        {% for datum in pagerfanta.currentPageResults %}
-            <div class="paginator-items event-list">
-                <a href="{{ url('eventShow', {'calendarId':datum.calendar_id, 'eventId':datum.id}) }}" class="paginator-item ">
-                    <div class="paginator-item">
-                        {% if datum.main_img is null %}
-                            <i class="fa fa-flag fa-3x"></i>
-                        {% else %}
-                            <div class="media_photo">
-                                <img src="/uploads/photos/{{ datum.photo }}" alt="{{ datum.title}}">
-                            </div>
-                        {% endif %}
+{% block paginatorData %}
+    {% for datum in pagerfanta.currentPageResults %}
+        <div class="paginator-items event-list">
+            <a href="{{ url('eventShow', {'calendarId':datum.calendar_id, 'eventId':datum.id}) }}" class="paginator-item ">
+                <div class="paginator-item">
+                    {% if datum.main_img is null %}
+                        <i class="fa fa-flag fa-3x"></i>
+                    {% else %}
+                        <div class="media_photo">
+                            <img src="/uploads/photos/{{ datum.photo }}" alt="{{ datum.title}}">
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="title-desc-wrap">
+                    <div class="paginator-item event-title">
+                        <h2>{{ datum.title}}</h2>
                     </div>
-                    <div class="title-desc-wrap">
-                        <div class="paginator-item event-title">
-                            <h2>{{ datum.title}}</h2>
-                        </div>
-                        <div class="paginator-item event-email">
-                            <h6>{{ datum.content[:50] }}</h6>
-                        </div>
-                        <div class="paginator-item event-start">
-                            {% set start = datum.start|split(' ') %}
-                            <h6>{{ 'event.start'|trans }}  {{ start.0 }}</h6>
-                            <h6> {{ start.1 }}</h6>
-                        </div>
-                        <div class="paginator-item event-start">
-                            {% set end = datum.end|split(' ') %}
-                            <h6>{{ 'event.end'|trans }}  {{ end.0 }}</h6>
-                            <h6> {{ end.1 }}</h6>
-                        </div>
+                    <div class="paginator-item event-email">
+                        <h6>{{ datum.content[:50] }}</h6>
                     </div>
-                </a>
+                    <div class="paginator-item event-start">
+                        {% set start = datum.start|split(' ') %}
+                        <h6>{{ 'event.start'|trans }}  {{ start.0 }}</h6>
+                        <h6> {{ start.1 }}</h6>
+                    </div>
+                    <div class="paginator-item event-start">
+                        {% set end = datum.end|split(' ') %}
+                        <h6>{{ 'event.end'|trans }}  {{ end.0 }}</h6>
+                        <h6> {{ end.1 }}</h6>
+                    </div>
+                </div>
+            </a>
+            {% if is_granted('calendar_any_user', calendarId) %}
                 <div class="paginator-item edit"><a href="{{ url('eventEdit', {'calendarId':datum.calendar_id, 'eventId':datum.id}) }}">{{ 'link.edit'|trans }}</a></div>
                 <div class="paginator-item delete"><a href="{{ url('eventDelete', {'calendarId':datum.calendar_id, 'eventId':datum.id}) }}">{{ 'link.delete'|trans }}</a></div>
-            </div>
-            <hr>
-        {% endfor %}
-    {% endblock %}
+            {% endif %}
+        </div>
+        <hr>
+    {% endfor %}
+{% endblock %}

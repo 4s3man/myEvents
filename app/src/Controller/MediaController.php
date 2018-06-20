@@ -197,6 +197,7 @@ class MediaController implements ControllerProviderInterface
             [
                 'form' => $form->createView(),
                 'userId' => $loggedUserId,
+                'calendarId' => $calendarId,
             ]
         );
     }

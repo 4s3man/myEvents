@@ -8,6 +8,7 @@
 //todo usuń lub zmień
 namespace Security;
 
+use Security\Core\User\MyEventsUser;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -41,14 +42,17 @@ class CalendarVoter extends Voter
             return true;
         }
 
-        foreach ($token->getUser()->getUserCalendars() as $calendarId => $role) {
-            if ((int) $subject === $calendarId) {
-                if ($attribute === self::CALENDAR_ANY_USER) {
+        $user = $token->getUser();
+        if ($user instanceof MyEventsUser) {
+            foreach ($user->getUserCalendars() as $calendarId => $role) {
+                if ((int)$subject === $calendarId) {
+                    if ($attribute === self::CALENDAR_ANY_USER) {
 
-                    return true;
-                } elseif($attribute === $role) {
+                        return true;
+                    } elseif ($attribute === $role) {
 
-                    return true;
+                        return true;
+                    }
                 }
             }
         }

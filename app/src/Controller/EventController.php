@@ -19,6 +19,7 @@ use Repositiory\ParticipantRepository;
 use Repositiory\TagRepository;
 use Search\Criteria\TypeCriteria;
 use Search\CriteriaBuilder\TypeCriteriaBuilder;
+use Security\Core\User\MyEventsUser;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -158,14 +159,8 @@ class EventController implements ControllerProviderInterface
     public function eventIndexAction(Application $app, $calendarId, $page, Request $request)
     {
         $token = $app['security.token_storage']->getToken();
-        $loggedUserId = $token->getUser()->getId();
-
-        if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
-            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
-        }
+        $user = $token->getUser();
+        $loggedUserId = $user instanceof MyEventsUser ? $user->getId() : null;
 
         $eventRepository = new EventRepository($app['db'], $calendarId);
         $queryParams = ['calendarId' => $calendarId, 'page' => $page];
@@ -210,7 +205,8 @@ class EventController implements ControllerProviderInterface
     public function eventShowAction(Application $app, $calendarId, $eventId, Request $request)
     {
         $token = $app['security.token_storage']->getToken();
-        $loggedUserId = $token->getUser()->getId();
+        $user = $token->getUser();
+        $loggedUserId = $user instanceof MyEventsUser ? $user->getId() : null;
 
         //TODO spytać się jak by to lepiej
         //TODO na koniec sign up przez potwierdzenie email
@@ -410,6 +406,7 @@ class EventController implements ControllerProviderInterface
                 'dataToDelete' => $event,
                 'calendarId' => $calendarId,
                 'eventId' => $eventId,
+                'userId' => $loggedUserId,
             ]
         );
     }
