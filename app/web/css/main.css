@@ -75,6 +75,7 @@ FUN COLORS
   background-color: #0c5460;
   min-height: 100vh;
   padding: 5%;
+  padding-top: 8%;
 }
 
 .fullWidthHeight {
@@ -365,6 +366,11 @@ mail_send-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.x_content .bs-example-popovers {
+  position: absolute;
+  right: 0px;
 }
 
 html {

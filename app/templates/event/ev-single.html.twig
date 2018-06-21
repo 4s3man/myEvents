@@ -3,9 +3,7 @@
     {{ event.title }}
 {% endblock %}
 {% block sidebar %}
-    {% if is_granted('calendar_any_user', calendarId) %}
-        {% include 'sidebar/sidebar-calendar.html.twig' %}
-    {% endif %}
+    {% include 'sidebar/sidebar-calendar.html.twig' %}
 {% endblock %}
 {% block content %}
     <article class="container event-container">

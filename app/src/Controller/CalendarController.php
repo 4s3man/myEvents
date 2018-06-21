@@ -8,17 +8,13 @@
 
 namespace Controller;
 
+use Calendar\CalendarPage;
 use DataManager\CalendarDataManager;
 use DataManager\SessionMessagesDataManager;
-use Doctrine\DBAL\Types\IntegerType;
 use Form\CalendarType;
-use Form\LinkUserCalendarType;
-use Form\Search\UserSearchType;
-use Form\UserRoleType;
 use Repositiory\CalendarRepository;
 use Repositiory\EventRepository;
 use Repositiory\UserCaledarRepository;
-use Repositiory\UserRepository;
 use Search\Criteria\TypeCriteria;
 use Search\CriteriaBuilder\TypeCriteriaBuilder;
 use Security\Core\User\MyEventsUser;
@@ -27,9 +23,7 @@ use Silex\Application;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
-
-use Form\Search\SearchType;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class CalendarController
@@ -91,6 +85,11 @@ class CalendarController implements ControllerProviderInterface
         $loggedUserId = $user instanceof MyEventsUser ? $user->getId() : null;
 
         //TODO dodać styl dla świąt
+        //todo  error 404
+//        $calendarRepository = new CalendarRepository($app['db']);
+//        if (!$calendarRepository->findOneById($calendarId)) {
+//            throw new NotFoundHttpException('Resource not found');
+//        }
         $eventRepository = new EventRepository($app['db'], (int) $calendarId);
         $calendarDataManager = new CalendarDataManager($eventRepository, $date);
         $calendarMonthPage = $calendarDataManager->makeCalendarMonthPage();
@@ -122,13 +121,9 @@ class CalendarController implements ControllerProviderInterface
      */
     public function addCalendarAction(Application $app, $userId, Request $request)
     {
-        //todo checker
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -170,13 +165,7 @@ class CalendarController implements ControllerProviderInterface
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
 
-        $token = $app['security.token_storage']->getToken();
-        $loggedUserId = $token->getUser()->getId();
-
         if (!$app['security.authorization_checker']->isGranted('calendar_admin', $calendarId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -231,9 +220,6 @@ class CalendarController implements ControllerProviderInterface
         $loggedUserId = $token->getUser()->getId();
 
         if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -251,7 +237,7 @@ class CalendarController implements ControllerProviderInterface
 
         if ($form->isSubmitted() && $form->isValid()) {
             $calendar  = $form->getData();
-            $userCalendarRepository->delete($calendar, $loggedUserId);
+            $userCalendarRepository->delete($calendar);
             $sessionMessages->deleted();
 
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['page' => 1]), 301);

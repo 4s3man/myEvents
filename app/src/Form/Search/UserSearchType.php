@@ -45,7 +45,7 @@ class UserSearchType extends AbstractType
             'email',
             TextType::class,
             [
-                'label' => 'search',
+                'label' => 'label.search_email',
                 'required' => false,
                 'constraints' => $this->popularAsserts->slugOptional(['search_default']),
             ]

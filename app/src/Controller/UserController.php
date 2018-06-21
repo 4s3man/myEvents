@@ -68,14 +68,11 @@ class UserController implements ControllerProviderInterface
 
     /**
      * Register user
-     *
      * @param Application $app
      *
      * @param Request     $request
      *
-     * @return mixed
-     *
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -127,9 +124,6 @@ class UserController implements ControllerProviderInterface
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -186,9 +180,6 @@ class UserController implements ControllerProviderInterface
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -248,9 +239,6 @@ class UserController implements ControllerProviderInterface
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -292,9 +280,6 @@ class UserController implements ControllerProviderInterface
         $loggedUserId = $token->getUser()->getId();
 
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 

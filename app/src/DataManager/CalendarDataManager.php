@@ -77,9 +77,11 @@ class CalendarDataManager
 
     /**
      * CalendarDataManager constructor.
-     *
      * @param EventRepository $eventRepository
-     * @param string          $date
+     *
+     * @param null            $date
+     *
+     * @throws \ReflectionException
      */
     public function __construct(EventRepository $eventRepository, $date = null)
     {
@@ -93,7 +95,11 @@ class CalendarDataManager
 
             $this->range = $this->setRange();
 
-            $this->holidays = Yasumi::create('Poland', $this->date->format('Y'));
+            try {
+                $this->holidays = Yasumi::create('Poland', $this->date->format('Y'));
+            } catch (\ReflectionException $e) {
+                throw $e;
+            }
 
             $eventsRaw = $eventRepository
                 ->getEvents($this->formatDateArray($this->range, 'Y-m-d'));
@@ -125,7 +131,7 @@ class CalendarDataManager
     /**
      * Makes array filled witch Calendar\Days objects
      *
-     * @return array
+     * @return CalendarPage
      *
      * @throws \Exception
      */

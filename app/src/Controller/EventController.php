@@ -94,13 +94,10 @@ class EventController implements ControllerProviderInterface
         $loggedUserId = $token->getUser()->getId();
 
         if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
-        $eventRepository = new EventRepository($app['db']);
+        $eventRepository = new EventRepository($app['db'], $calendarId);
         $tagRepository = new TagRepository($app['db']);
         $mediaRepository = new MediaRepository($app['db']);
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
@@ -163,10 +160,11 @@ class EventController implements ControllerProviderInterface
         $loggedUserId = $user instanceof MyEventsUser ? $user->getId() : null;
 
         $eventRepository = new EventRepository($app['db'], $calendarId);
+        $tagRepository = new TagRepository($app['db']);
         $queryParams = ['calendarId' => $calendarId, 'page' => $page];
 
         $form = $app['form.factory']
-            ->createBuilder(EventSearchType::class)
+            ->createBuilder(EventSearchType::class, [], ['tag_repository' => $tagRepository])
             ->getForm();
         $form->handleRequest($request);
 
@@ -209,8 +207,7 @@ class EventController implements ControllerProviderInterface
         $loggedUserId = $user instanceof MyEventsUser ? $user->getId() : null;
 
         //TODO spytać się jak by to lepiej
-        //TODO na koniec sign up przez potwierdzenie email
-        $eventRepository = new EventRepository($app['db']);
+        $eventRepository = new EventRepository($app['db'], $calendarId);
         $participantRepository = new ParticipantRepository($app['db'], $eventId);
         $eventDataManager = new EventDataManager(
             $eventRepository->findOneById($eventId),
@@ -226,11 +223,10 @@ class EventController implements ControllerProviderInterface
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $sessionMessagesMenager = new SessionMessagesDataManager($app['session']);
-
                 $participantRepository->save($form->getData(), $eventDataManager->getEvent());
                 $sessionMessagesMenager->signedUp();
-                //todo przekierowanie email został wysłany
-                //                $app->redirect($app['url_generator']->generate(''))
+
+                return $app->redirect($app['url_generator']->generate('eventShow', ['eventId' => $eventId, 'calendarId' => $calendarId]));
             }
 
             $signUpFormView = $form->createView();
@@ -275,15 +271,14 @@ class EventController implements ControllerProviderInterface
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
-        $eventRepository = new EventRepository($app['db']);
+        $eventRepository = new EventRepository($app['db'], $calendarId);
         $tagRepository = new TagRepository($app['db']);
         $mediaRepository = new MediaRepository($app['db']);
 
+        $eventRepository->getLinkedTagsById($eventId);
         $event = $eventRepository->findOneById($eventId);
 
         if (!$event) {
@@ -359,11 +354,9 @@ class EventController implements ControllerProviderInterface
         $loggedUserId = $token->getUser()->getId();
 
         if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
-        $eventRepository = new EventRepository($app['db']);
+        $eventRepository = new EventRepository($app['db'], $calendarId);
 
         $event = $eventRepository->findOneById($eventId);
         if (!$event) {

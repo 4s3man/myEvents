@@ -14,7 +14,6 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\MissingOptionsException;
 use Symfony\Component\Validator\Exception\InvalidOptionsException;
 use Validator\Constraints\Interfaces\NotItselfUniquenessInterface;
-use Validator\Constraints\Interfaces\UniquenessInterface;
 
 /**
  * Class Uniqueness

@@ -19,7 +19,6 @@ use Silex\Application;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
-use Utils\MyPaginatorShort;
 
 /**
  * Class MediaController
@@ -66,12 +65,6 @@ class MediaController implements ControllerProviderInterface
             ->assert('page', '[1-9]\d*')
             ->bind('userMediaIndex');
 
-
-        $controller->match('/event/{calendarId}/index/page/{page}', [$this, 'eventMediaIndexAction'])
-            ->method('POST|GET')
-            ->assert('page', '[1-9]\d*')
-            ->bind('eventMediaIndex');
-
         $controller->match('/calendar/{calendarId}/index/page/{page}', [$this, 'calendarMediaIndexAction'])
             ->method('POST|GET')
             ->assert('page', '[1-9]\d*')
@@ -111,9 +104,6 @@ class MediaController implements ControllerProviderInterface
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -167,8 +157,6 @@ class MediaController implements ControllerProviderInterface
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
 
         if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -222,9 +210,6 @@ class MediaController implements ControllerProviderInterface
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -280,8 +265,6 @@ class MediaController implements ControllerProviderInterface
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
 
         if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -334,8 +317,6 @@ class MediaController implements ControllerProviderInterface
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
 
         if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -387,9 +368,6 @@ class MediaController implements ControllerProviderInterface
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -443,9 +421,6 @@ class MediaController implements ControllerProviderInterface
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -485,61 +460,12 @@ class MediaController implements ControllerProviderInterface
      *
      * @return mixed
      */
-    public function eventMediaIndexAction(Application $app, $calendarId, Request $request, $page = 1)
-    {
-        //TODO get id from logged user
-        //TODO search witch data transformer, nie zrobic wlasne
-        //TODO paginator do repozytorium i inne query do niego
-        //todo usun jeśli nieużywane
-        $userId = 1;
-
-        $mediaRepository = new MediaRepository($app['db']);
-
-        $queryParams = ['userId' => $userId, 'calendarId' => $calendarId, 'page' => $page];
-        $paginator = $mediaRepository->getSearchedAndPaginatedRecordsForUserAndCalendar($queryParams);
-
-        $form = $app['form.factory']
-            ->createBuilder(SearchType::class)
-            ->getForm();
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $paginator = $mediaRepository
-                ->getSearchedAndPaginatedRecordsForUserAndCalendar($queryParams, $form->getData());
-        }
-
-        return $app['twig']->render(
-            'media/md-calendar_index.html.twig',
-            [
-                'form' => $form->createView(),
-                'pagerfanta' => $paginator,
-                'userId' => $userId,
-                'calendarId' => $calendarId,
-            ]
-        );
-    }
-
-    /**
-     *
-     * @param Application $app
-     *
-     * @param int         $calendarId
-     *
-     * @param Request     $request
-     *
-     * @param int         $page
-     *
-     * @return mixed
-     */
     public function calendarMediaIndexAction(Application $app, $calendarId, Request $request, $page = 1)
     {
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
 
         if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 

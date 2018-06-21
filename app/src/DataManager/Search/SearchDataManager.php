@@ -28,12 +28,6 @@ class SearchDataManager
     private $alias = null;
 
     /**
-     *
-     * @var array $allowedKeys
-     */
-    private $allowedKeys = ['title', 'email', 'user_role', 'start', 'end'];
-
-    /**
      * SearchDataManager constructor.
      *
      * @param QueryBuilder $query
@@ -63,7 +57,6 @@ class SearchDataManager
     public function addFilters($searchData)
     {
         if (is_array($searchData)) {
-            //            $this->checkKeys($searchData);
             $this->query = $this->filter($searchData);
         } elseif (null !== $searchData) {
             throw new \InvalidArgumentException(sprintf('2 argument of %s construct needs to be array or null', __CLASS__));
@@ -84,27 +77,6 @@ class SearchDataManager
                 }
                 $this->query->andWhere($key.' like :value')
                     ->setParameter(':value', $val.'%', \PDO::PARAM_STR);
-            }
-        }
-    }
-
-    /**
-     * Check if keys queries are supported
-     *
-     * @param array $searchData
-     */
-    private function checkKeys(array $searchData)
-    {
-        $keys = array_keys($searchData);
-        foreach ($keys as $key) {
-            if (!in_array($key, $this->allowedKeys)) {
-                throw new \InvalidArgumentException(
-                    sprintf(
-                        'Unallowed argument! Arguments passed to class %s construct, have to be one of "%s"',
-                        __CLASS__,
-                        implode('","', $this->allowedKeys)
-                    )
-                );
             }
         }
     }

@@ -51,6 +51,10 @@ class ParticipantRepository extends AbstractRepository implements UniquenessInte
     public function save($participant, array $event)
     {
         $this->db->beginTransaction();
+        if (isset($event['media'])) {
+            unset($event['media']);
+        }
+        unset($event['tags']);
         $participant['event_id'] = $event['id'];
         try {
             $event['seats'] -= 1;

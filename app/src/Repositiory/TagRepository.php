@@ -13,14 +13,16 @@
 namespace Repositiory;
 
 use Doctrine\DBAL\Connection;
+use Validator\Constraints\Interfaces\UniquenessInterface;
 
 /**
  * Class CalendarRepository
  */
-class TagRepository extends AbstractRepository
+class TagRepository extends AbstractRepository implements UniquenessInterface
 {
     /**
      * TagRepository constructor.
+     * @param Connection $db
      */
     public function __construct(Connection $db)
     {
@@ -75,5 +77,21 @@ class TagRepository extends AbstractRepository
 
             return $tag;
         }
+    }
+
+    /**
+     * Find all values in column matching $value
+     *
+     * @param String $value  to be find for uniqueness
+     * @param String $column name witch $value in it
+     *
+     * @return array
+     */
+    public function findForUniqueness($value, $column)
+    {
+        $qb = $this->queryAll()->where($column.' = :value')
+            ->setParameter(':value', $value);
+
+        return $qb->execute()->fetchAll();
     }
 }

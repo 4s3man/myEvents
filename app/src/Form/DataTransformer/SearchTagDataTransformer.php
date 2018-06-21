@@ -14,7 +14,7 @@ use Symfony\Component\Form\DataTransformerInterface;
 /**
  * Class TagDataTransformer
  */
-class TagDataTransformer implements DataTransformerInterface
+class SearchTagDataTransformer implements DataTransformerInterface
 {
     protected $tagRepository = null;
 
@@ -59,15 +59,11 @@ class TagDataTransformer implements DataTransformerInterface
         foreach ($tagNames as $tagName) {
             if ('' !== trim($tagName)) {
                 $tag = $this->tagRepository->findOneByName($tagName);
-                if (null === $tag || !count($tag)) {
-                    $tag = [];
-                    $tag['name'] = $tagName;
-                    $tag = $this->tagRepository->save($tag);
-                }
                 $tags[] = $tag;
             }
         }
+        $tagsIds = array_column($tags, 'id');
 
-        return $tags;
+        return $tagsIds;
     }
 }

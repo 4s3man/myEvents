@@ -1,0 +1,7 @@
+.x_content .bs-example-popovers{
+  position: absolute;
+  right: 0px;
+}
+.has-error, .help-block{
+  @extend alert-danger;
+}

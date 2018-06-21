@@ -8,14 +8,10 @@
 
 namespace Controller;
 
-use DataManager\CalendarDataManager;
 use DataManager\SessionMessagesDataManager;
-use Form\CalendarType;
 use Form\LinkUserCalendarType;
 use Form\Search\UserSearchType;
 use Form\UserRoleType;
-use Repositiory\CalendarRepository;
-use Repositiory\EventRepository;
 use Repositiory\UserCaledarRepository;
 use Repositiory\UserRepository;
 use Search\Criteria\TypeCriteria;
@@ -84,9 +80,6 @@ class CalendarUserController implements ControllerProviderInterface
         $loggedUserId = $token->getUser()->getId();
 
         if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -135,9 +128,6 @@ class CalendarUserController implements ControllerProviderInterface
         $loggedUserId = $token->getUser()->getId();
 
         if (!$app['security.authorization_checker']->isGranted('calendar_admin', $calendarId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -205,9 +195,6 @@ class CalendarUserController implements ControllerProviderInterface
         $loggedUserId = $token->getUser()->getId();
 
         if (!$app['security.authorization_checker']->isGranted('calendar_admin', $calendarId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 
@@ -266,9 +253,6 @@ class CalendarUserController implements ControllerProviderInterface
         $loggedUserId = $token->getUser()->getId();
 
         if (!$app['security.authorization_checker']->isGranted('calendar_admin', $calendarId)) {
-            $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
-            $sessionMessagesManager->accesDenied();
-
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 

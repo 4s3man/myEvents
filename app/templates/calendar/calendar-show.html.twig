@@ -5,9 +5,7 @@
     {{ 'title.calendarTitle'|trans }}
 {% endblock %}
 {% block sidebar %}
-    {% if is_granted('calendar_any_user', calendarId) %}
-        {% include 'sidebar/sidebar-calendar.html.twig' %}
-    {% endif %}
+    {% include 'sidebar/sidebar-calendar.html.twig' %}
 {% endblock %}
 {% block content %}
     <div id="calendar" class="calendar">

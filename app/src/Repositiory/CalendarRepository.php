@@ -75,12 +75,10 @@ class CalendarRepository extends AbstractRepository
     }
 
     /**
+     * Delete calendar with specified id
+     * @param int $id
      *
-     * @param int $id of clendar to be deleted
-     *
-     * @return int
-     *
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @return mixed
      */
     public function deleteFoundById($id)
     {

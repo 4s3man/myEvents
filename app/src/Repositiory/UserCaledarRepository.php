@@ -49,7 +49,7 @@ class UserCaledarRepository extends AbstractRepository
     public function getSearchPaginatedUsersByCalendarId($queryParams, $searchData = null)
     {
         $query = $this->queryLinkedUserByCalendarId($queryParams['calendarId']);
-        $searchDataManager = new SearchDataManager($query);
+
         if (isset($searchData['user_role']) && !empty($searchData['user_role'])) {
             $query->andWhere('uC.user_role like :role')
                 ->setParameter(':role', $searchData['user_role'], \PDO::PARAM_STR);
@@ -58,6 +58,7 @@ class UserCaledarRepository extends AbstractRepository
             $query->andWhere('u.email like :email')
                 ->setParameter(':email', $searchData['email'].'%', \PDO::PARAM_STR);
         }
+
         $paginator = new MyPaginatorShort(
             $query,
             '5',
@@ -106,12 +107,11 @@ class UserCaledarRepository extends AbstractRepository
 
     /**
      * Saves saves to user_calendar and calendar tables
-     *
      * @param array $calendar
+     *
      * @param int   $userId
      *
      * @throws DBALException
-     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function save(array $calendar, $userId)
     {
@@ -212,11 +212,9 @@ class UserCaledarRepository extends AbstractRepository
 
     /**
      * Delete calendar and all users
-     *
      * @param array $calendar
      *
      * @throws DBALException
-     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function delete($calendar)
     {

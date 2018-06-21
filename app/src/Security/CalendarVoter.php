@@ -11,6 +11,7 @@ namespace Security;
 use Security\Core\User\MyEventsUser;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
 
 /**
  * Class CalendarVoter
@@ -21,17 +22,37 @@ class CalendarVoter extends Voter
     const CALENDAR_EDITOR = 'calendar_editor';
     const CALENDAR_ANY_USER = 'calendar_any_user';
 
+    /**
+     * Check if isGranted parameters are supported
+     * @param string $attribute
+     *
+     * @param mixed  $subject
+     *
+     * @return bool
+     */
     protected function supports($attribute, $subject)
     {
         if (!in_array($attribute, array(self::CALENDAR_ADMIN, self::CALENDAR_EDITOR, self::CALENDAR_ANY_USER))) {
             return false;
         }
 
-        //todo dodać return false if subject is not instance of what i want
+        if (!ctype_digit((string) $subject)) {
+            return false;
+        }
 
         return true;
     }
 
+    /**
+     * Vote for permission to attribute
+     * @param string         $attribute
+     *
+     * @param mixed          $subject
+     *
+     * @param TokenInterface $token
+     *
+     * @return bool
+     */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         if (!ctype_digit((string) $subject)) {
@@ -43,14 +64,14 @@ class CalendarVoter extends Voter
         }
 
         $user = $token->getUser();
+
         if ($user instanceof MyEventsUser) {
             foreach ($user->getUserCalendars() as $calendarId => $role) {
-                if ((int)$subject === $calendarId) {
-                    if ($attribute === self::CALENDAR_ANY_USER) {
-
+                if ((int) $subject === $calendarId) {
+                    if (self::CALENDAR_ANY_USER === $attribute) {
                         return true;
-                    } elseif ($attribute === $role) {
-
+                    }
+                    if ($attribute === $role) {
                         return true;
                     }
                 }

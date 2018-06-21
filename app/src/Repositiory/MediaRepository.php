@@ -42,28 +42,6 @@ class MediaRepository extends AbstractRepository
     }
 
     /**
-     * Gets paginated results form modified witch searchData query
-     *
-     * @param array $queryParams
-     * @param null  $searchData
-     *
-     * @return null|\Pagerfanta\Pagerfanta
-     */
-    public function getSearchedAndPaginatedRecordsForUserAndCalendar($queryParams, $searchData = null)
-    {
-        $query = $this->queryCalendarAndUserMedia($queryParams['calendarId'], $queryParams['userId']);
-        $searchDataManager = new SearchDataManager($query, $searchData);
-        $paginator = new MyPaginatorShort(
-            $query,
-            '5',
-            'm.id',
-            $queryParams['page']
-        );
-
-        return $paginator->pagerfanta;
-    }
-
-    /**
      * Find all records for specified user and calendar
      *
      * @param int $userId
@@ -128,7 +106,6 @@ class MediaRepository extends AbstractRepository
      */
     public function getSearchedAndPaginatedRecordsForCalendar($queryParams, $searchData = null)
     {
-        //todo skończyć to
         $query = $this->queryCalendarMedia($queryParams['calendarId']);
         $searchDataManager = new SearchDataManager($query, 'm');
         $searchDataManager->addFilters($searchData);

@@ -8,10 +8,12 @@
 
 namespace Form\Search;
 
+use Form\DataTransformer\SearchTagDataTransformer;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Validator\Constraints as CustomAssert;
 
 /**
  * Class SearchType
@@ -44,11 +46,26 @@ class EventSearchType extends SearchType
                     new Assert\Regex(
                         [
                           'groups' => ['search_default'],
-                          'pattern' => '/[1-3]{1}[0-9]{3}-(0[1-9]|1[0-2])/',
+                          'pattern' => '/^[1-3]{1}[0-9]{3}-(0[1-9]|1[0-2]){1}$/',
                         ]
                     ),
                 ],
             ]
+        );
+        $builder->add(
+            'tags',
+            TextType::class,
+            [
+                'label' => 'label.tags',
+                'required' => false,
+                'attr' => [
+                    'length' => 128,
+                ],
+            ]
+        );
+
+        $builder->get('tags')->addModelTransformer(
+            new SearchTagDataTransformer($options['tag_repository'])
         );
     }
 
@@ -61,6 +78,7 @@ class EventSearchType extends SearchType
         $resolver->setDefaults(
             [
                 'validation_groups' => ['search_default'],
+                'tag_repository' => null,
             ]
         );
     }

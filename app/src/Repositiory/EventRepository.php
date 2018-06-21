@@ -34,6 +34,11 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     private $tagRepository = null;
 
     /**
+     * @var null|MediaRepository
+     */
+    private $mediaRepository = null;
+
+    /**
      *
      * @var int|null
      */
@@ -50,6 +55,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     {
         parent::__construct($db);
         $this->tagRepository = new TagRepository($db);
+        $this->mediaRepository = new MediaRepository($db);
         $this->calendarId = $calendarId;
     }
 
@@ -63,13 +69,19 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      */
     public function getSearchedAndPaginatedRecords($queryParams, $searchData = null)
     {
-        //todo nowe query z obrazkami
         $qb = $this->db->createQueryBuilder();
         $qb->select('e.id', 'e.calendar_id', 'e.title', 'e.start', 'e.end', 'e.seats', 'e.cost', 'e.content', 'e.main_img', 'm.photo')
             ->from('event', 'e')
             ->leftJoin('e', 'media', 'm', 'e.main_img = m.id')
             ->where('e.calendar_id = :calendarId')
             ->setParameter(':calendarId', $queryParams['calendarId'], \PDO::PARAM_INT);
+
+        if (isset($searchData['tags']) && count($searchData['tags'])) {
+            $eventsIds = $this->getEventIdsWithTagsByTagIds($searchData['tags']);
+            $qb->andWhere('e.id IN (:tags)')
+                ->setParameter(':tags', $eventsIds, Connection::PARAM_INT_ARRAY);
+            unset($searchData['tags']);
+        }
 
         $searchDataManager = new SearchDataManager($qb, 'e');
         $searchDataManager->addFilters($searchData);
@@ -80,8 +92,24 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
             $queryParams['page']
         );
 
-
         return $paginator->pagerfanta;
+    }
+
+    /**
+     * Get array of ids of events witch tags specified by id
+     * @param array $tagIds
+     *
+     * @return array
+     */
+    public function getEventIdsWithTagsByTagIds(array $tagIds)
+    {
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('eT.event_id')->from('event_tags', 'eT')
+            ->where('tags_id IN (:tagIds)')
+            ->setParameter(':tagIds', $tagIds, Connection::PARAM_INT_ARRAY);
+        $result = $qb->execute()->fetchAll();
+
+        return $result ? array_column($result, 'event_id') : [];
     }
 
     /**
@@ -109,19 +137,19 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     }
 
     /**
-     * Query all events with specific calendarId
-     *
-     * @param int $calendarId
+     * Query all events with this object calendar id
      *
      * @return \Doctrine\DBAL\Query\QueryBuilder
      */
-    public function queryAllForCalendarId($calendarId)
+    public function queryAllForCalendarId()
     {
         $qb = $this->queryAll()->where('calendar_id = :calendarId')
             ->setParameter(':calendarId', $this->calendarId, \PDO::PARAM_INT);
 
         return $qb;
     }
+
+
 
     /**
      * Get record by Id
@@ -134,8 +162,42 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     {
         $qb = $this->queryAll()->where('e.id = :eventId')
             ->setParameter(':eventId', $eventId, \PDO::PARAM_INT);
+        $event = $qb->execute()->fetch();
+        $event['tags'] = $this->getLinkedTagsById($eventId);
+        $event['media'] = null !== $event['main_img'] ? $this->getMainImg($event['main_img']) : null;
 
-        return $qb->execute()->fetch();
+        return $event;
+    }
+
+    /**
+     * Get linked tags by eventId
+     * @param int $eventId
+     *
+     * @return array
+     */
+    public function getLinkedTagsById($eventId)
+    {
+        $qb = $this->db->createQueryBuilder();
+        $qb->select('t.name')->from('tags', 't')
+            ->join('t', 'event_tags', 'eT', 't.id = eT.tags_id')
+            ->where('eT.event_id = :eventId')
+            ->setParameter(':eventId', $eventId, \PDO::PARAM_INT);
+        $result = $qb->execute()->fetchAll();
+
+        return $result ? array_column($result, 'name') : [];
+    }
+
+    /**
+     * Get photo from db by event main_img id
+     * @param int $mainImg
+     *
+     * @return array|mixed
+     */
+    public function getMainImg($mainImg)
+    {
+        $result = $this->mediaRepository->findOneById($mainImg);
+
+        return $result;
     }
 
     /**
@@ -170,6 +232,9 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
         try {
             $tagsIds = isset($event['tags']) ? array_column($event['tags'], 'id') : [];
             unset($event['tags']);
+            if (isset($event['media'])) {
+                unset($event['media']);
+            }
 
             if (isset($event['id']) && ctype_digit((string) $event['id'])) {
                 $id = $event['id'];
@@ -230,7 +295,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      */
     public function getEvents(array $filters = array())
     {
-        $qb = $this->queryAllForCalendarId($this->calendarId)
+        $qb = $this->queryAllForCalendarId()
             ->andwhere('DATEDIFF(start, :toDate) <=0')
             ->andWhere('DATEDIFF(end, :fromDate) >=0')
             ->setParameter(':toDate', $filters['toDate'], \PDO::PARAM_STR)
@@ -246,7 +311,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
      * @param int   $eventId
      * @param mixed $tagIds
      */
-    public function addLinkedTags(int $eventId, $tagIds)
+    public function addLinkedTags($eventId, $tagIds)
     {
         if (!is_array($tagIds)) {
             $tagIds = [$tagIds];
@@ -264,12 +329,11 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
     }
 
     /**
-     * Gets data used to create Calendar\Events objects
-     * in specific time range passend in $filters array
+     * Optional for recurrent events using Calendarfull
      *
      * @param array $filters
      *
-     * @return array|EventInterface[]
+     * @return array
      */
     public function getRecurrentEvents(array $filters = array())
     {
@@ -282,58 +346,19 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
         //        $result = $qb->execute()->fetchAll();
         //
         //        return $result;
+        return [];
     }
 
     /**
      *
      * @param int $eventId
      *
-     * @return int result
+     * @return mixed
      *
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
-    protected function removeLinkedTags(int $eventId)
+    protected function removeLinkedTags($eventId)
     {
         return $this->db->delete('event_tags', ['event_id' => $eventId]);
-    }
-
-    /**
-     * Converts string date start, end to \DateTimeObject
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    private function dateToDatetimeObject(array $data)
-    {
-        $results = $this->columnToDataTime($data, 'start');
-        $results = $this->columnToDataTime($data, 'end');
-
-        return $results;
-    }
-
-    /**
-     * Convert column of arrays to \DateTime Object
-     *
-     * @param array  $array
-     *
-     * @param string $column
-     *
-     * @return array
-     */
-    private function columnToDataTime(array $array, $column)
-    {
-        $result = $array;
-        $arrayColumn = array_column($array, $column);
-
-        foreach ($arrayColumn as $key => $value) {
-            $arrayColumn[$key] = new \DateTime($value);
-        }
-
-        foreach ($result as $key => &$val) {
-            $val[$column] = $arrayColumn[$key];
-        }
-
-        return $result;
     }
 }

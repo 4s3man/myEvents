@@ -45,4 +45,3 @@ $app->mount('/event', new EventController());
 $app->mount('/calendarUser', new CalendarUserController());
 $app->mount('/auth', new AuthController());
 $app->mount('/media', new MediaController());
-$app->mount('/token', new MailTokenController());

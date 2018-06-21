@@ -30,17 +30,17 @@ final class MyEventsUser implements AdvancedUserInterface
 
     /**
      * MyEventsUser constructor.
-     * @param int    $id
+     * @param int   $id
+     * @param int   $username
+     * @param int   $password
      *
-     * @param string $username
-     * @param string $password
+     * @param array $roles
+     * @param array $userCalendars
      *
-     * @param array  $roles
-     *
-     * @param bool   $enabled
-     * @param bool   $userNonExpired
-     * @param bool   $credentialsNonExpired
-     * @param bool   $userNonLocked
+     * @param bool  $enabled
+     * @param bool  $userNonExpired
+     * @param bool  $credentialsNonExpired
+     * @param bool  $userNonLocked
      */
     public function __construct($id, $username, $password, array $roles = array(), $userCalendars = array(), $enabled = true, $userNonExpired = true, $credentialsNonExpired = true, $userNonLocked = true)
     {
