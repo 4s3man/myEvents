@@ -206,7 +206,6 @@ class MediaController implements ControllerProviderInterface
      */
     public function editUserMediaAction(Application $app, $userId, $mediaId, Request $request)
     {
-        //todo checker
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {

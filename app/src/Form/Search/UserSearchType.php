@@ -8,7 +8,7 @@
 
 namespace Form\Search;
 
-use Form\Helpers\PopularAssertGroups;
+use Form\Helpers\Regexps;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -22,7 +22,7 @@ class UserSearchType extends AbstractType
 {
     /**
      *
-     * @var PopularAssertGroups|null
+     * @var Regexps|null
      */
     protected $popularAsserts = null;
 
@@ -31,7 +31,7 @@ class UserSearchType extends AbstractType
      */
     public function __construct()
     {
-        $this->popularAsserts = new PopularAssertGroups();
+        $this->popularAsserts = new Regexps();
     }
 
     /**
@@ -47,7 +47,20 @@ class UserSearchType extends AbstractType
             [
                 'label' => 'label.search_email',
                 'required' => false,
-                'constraints' => $this->popularAsserts->slugOptional(['search_default']),
+                'constraints' => [
+                    new Assert\Regex(
+                        [
+                            'groups' => ['search_default'],
+                            'pattern' => $this->popularAsserts->getSlugRegexp(),
+                        ]
+                    ),
+                    new Assert\Length(
+                        [
+                            'groups' => ['search_default'],
+                            'max' => 45,
+                        ]
+                    ),
+                ],
             ]
         );
         $builder->add(

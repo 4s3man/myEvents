@@ -92,6 +92,10 @@ FUN COLORS
   padding-top: 10px;
 }
 
+.has-error {
+  color: red;
+}
+
 .paginator-footer {
   display: flex;
   justify-content: center;
@@ -155,6 +159,10 @@ FUN COLORS
   display: inline-block;
 }
 
+.holiday:hover .day-holiday {
+  display: inline-block;
+}
+
 .day-events li:hover .day-events_details {
   display: inline-block;
 }
@@ -203,7 +211,7 @@ FUN COLORS
   justify-content: space-around;
 }
 
-.basic-calendar div, .res, .acc {
+.basic-calendar > div, .res, .acc {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
@@ -263,6 +271,22 @@ FUN COLORS
   position: relative;
   top: auto;
   z-index: 1;
+}
+
+.basic-calendar > div:nth-child(7n-1), .basic-calendar > div:nth-child(7n) {
+  background-color: #0d5c69;
+}
+
+.day-holiday {
+  display: none;
+  position: absolute;
+  border: 1px solid #ebebeb;
+  background-color: #ebebeb;
+  top: -30px;
+}
+
+.holiday {
+  color: chocolate;
 }
 
 @keyframes rotateLoader {
@@ -337,7 +361,7 @@ FUN COLORS
     font-size: 1em;
   }
 
-  .basic-calendar div, .weeks div {
+  .basic-calendar > div, .weeks div {
     width: 32px !important;
     height: 32px !important;
   }

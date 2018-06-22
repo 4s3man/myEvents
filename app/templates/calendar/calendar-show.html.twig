@@ -58,7 +58,7 @@
                             {% for day in calendar.days %}
                                 <div class="day-not_empty {% if day.holiday|length %}holiday {% elseif day.events|length %} event{% endif %}" >
                                     {{ loop.index }}
-                                        <div class="day-holiday"></div>
+                                        <div class="day-holiday">{% for key in day.holiday|keys %}{{ key|trans }}{% endfor %}</div>
                                     {% if day.events|length %}
                                         <ul class="day-events">
                                             {% for event in day.events %}

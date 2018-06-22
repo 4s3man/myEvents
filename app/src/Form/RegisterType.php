@@ -8,7 +8,7 @@
 
 namespace Form;
 
-use Form\Helpers\PopularAssertGroups;
+use Form\Helpers\Regexps;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -29,7 +29,7 @@ class RegisterType extends AbstractType
     /**
      * Asserts helper
      *
-     * @var PopularAssertGroups|null
+     * @var Regexps|null
      */
     private $popularAsserts = null;
 
@@ -38,7 +38,7 @@ class RegisterType extends AbstractType
      */
     public function __construct()
     {
-        $this->popularAsserts = new PopularAssertGroups();
+        $this->popularAsserts = new Regexps();
     }
     /**
      *
@@ -81,7 +81,25 @@ class RegisterType extends AbstractType
                 'label' => 'label.first_name',
                 'required' => true,
                 'attr' => [],
-                'constraints' => $this->popularAsserts->name([ 'register_default' ]),
+                'constraints' => [
+                    new Assert\NotBlank(
+                        [
+                            'groups' => [ 'register_default' ],
+                        ]
+                    ),
+                    new Assert\Regex(
+                        [
+                            'groups' => [ 'register_default' ],
+                            'pattern' => $this->popularAsserts->getNameRegexp(),
+                        ]
+                    ),
+                    new Assert\Length(
+                        [
+                            'groups' => [ 'register_default' ],
+                            'max' => 45,
+                        ]
+                    ),
+                ],
             ]
         );
         $builder->add(
@@ -91,7 +109,25 @@ class RegisterType extends AbstractType
                 'label' => 'label.last_name',
                 'required' => true,
                 'attr' => [],
-                'constraints' => $this->popularAsserts->name([ 'register_default' ]),
+                'constraints' => [
+                    new Assert\NotBlank(
+                        [
+                            'groups' => [ 'register_default' ],
+                        ]
+                    ),
+                    new Assert\Regex(
+                        [
+                            'groups' => [ 'register_default' ],
+                            'pattern' => $this->popularAsserts->getNameRegexp(),
+                        ]
+                    ),
+                    new Assert\Length(
+                        [
+                            'groups' => [ 'register_default' ],
+                            'max' => 45,
+                        ]
+                    ),
+                ],
             ]
         );
         $builder->add(
@@ -127,18 +163,28 @@ class RegisterType extends AbstractType
             [
                 'label' => 'label.login',
                 'required' => true,
-                'constraints' => array_merge(
-                    $this->popularAsserts->slug(['register_default']),
-                    [
-                        new CustomAsssert\Uniqueness(
-                            [
+                'constraints' => [
+                    new Assert\Regex(
+                        [
                             'groups' => [ 'register_default' ],
-                            'repository' => isset($options['repository']) ? $options['repository'] : null,
-                            'uniqueColumn' => 'login',
-                            ]
-                        ),
-                    ]
-                ),
+                            'pattern' => $this->popularAsserts->getSlugRegexp(),
+                        ]
+                    ),
+                    new Assert\Length(
+                        [
+                            'groups' => [ 'register_default' ],
+                            'max' => 45,
+                            'min' => 8,
+                        ]
+                    ),
+                    new CustomAsssert\Uniqueness(
+                        [
+                        'groups' => [ 'register_default' ],
+                        'repository' => isset($options['repository']) ? $options['repository'] : null,
+                        'uniqueColumn' => 'login',
+                        ]
+                    ),
+                ]
             ]
         );
         $builder->add(
@@ -153,6 +199,15 @@ class RegisterType extends AbstractType
                 'second_options' => [
                     'label' => 'label.retype_password',
                 ],
+                'constraints' => [
+                    new Assert\Length(
+                        [
+                            'groups' => [ 'register_default' ],
+                            'max' => 45,
+                            'min' => 8,
+                        ]
+                    ),
+                ]
             ]
         );
     }

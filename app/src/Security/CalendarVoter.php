@@ -5,7 +5,6 @@
  * Date: 17.06.18
  * Time: 18:23
  */
-//todo usuń lub zmień
 namespace Security;
 
 use Security\Core\User\MyEventsUser;

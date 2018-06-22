@@ -8,7 +8,7 @@
 
 namespace Form;
 
-use Form\Helpers\PopularAssertGroups;
+use Form\Helpers\Regexps;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,7 +26,7 @@ class DeleteUserType extends AbstractType
     /**
      * Asserts helper
      *
-     * @var PopularAssertGroups|null
+     * @var Regexps|null
      */
     private $popularAsserts = null;
 
@@ -35,7 +35,7 @@ class DeleteUserType extends AbstractType
      */
     public function __construct()
     {
-        $this->popularAsserts = new PopularAssertGroups();
+        $this->popularAsserts = new Regexps();
     }
     /**
      *

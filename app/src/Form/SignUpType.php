@@ -8,7 +8,7 @@
 
 namespace Form;
 
-use Form\Helpers\PopularAssertGroups;
+use Form\Helpers\Regexps;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -27,7 +27,7 @@ class SignUpType extends AbstractType
     /**
      * Asserts helper
      *
-     * @var PopularAssertGroups|null
+     * @var Regexps|null
      */
     private $popularAsserts = null;
 
@@ -36,7 +36,7 @@ class SignUpType extends AbstractType
      */
     public function __construct()
     {
-        $this->popularAsserts = new PopularAssertGroups();
+        $this->popularAsserts = new Regexps();
     }
     /**
      *
@@ -79,7 +79,25 @@ class SignUpType extends AbstractType
                 'label' => 'label.first_name',
                 'required' => true,
                 'attr' => [],
-                'constraints' => $this->popularAsserts->name([ 'sign_up_default' ]),
+                'constraints' => [
+                    new Assert\NotBlank(
+                        [
+                            'groups' => [ 'sign_up_default' ],
+                        ]
+                    ),
+                    new Assert\Regex(
+                        [
+                            'groups' => [ 'sign_up_default' ],
+                            'pattern' => $this->popularAsserts->getNameRegexp(),
+                        ]
+                    ),
+                    new Assert\Length(
+                        [
+                            'groups' => [ 'sign_up_default' ],
+                            'max' => 45,
+                        ]
+                    ),
+                ],
             ]
         );
         $builder->add(
@@ -89,7 +107,25 @@ class SignUpType extends AbstractType
                 'label' => 'label.last_name',
                 'required' => true,
                 'attr' => [],
-                'constraints' => $this->popularAsserts->name([ 'sign_up_default' ]),
+                'constraints' => [
+                    new Assert\NotBlank(
+                        [
+                            'groups' => [ 'sign_up_default' ],
+                        ]
+                    ),
+                    new Assert\Regex(
+                        [
+                            'groups' => [ 'sign_up_default' ],
+                            'pattern' => $this->popularAsserts->getNameRegexp(),
+                        ]
+                    ),
+                    new Assert\Length(
+                        [
+                            'groups' => [ 'sign_up_default' ],
+                            'max' => 45,
+                        ]
+                    ),
+                ],
             ]
         );
         $builder->add(

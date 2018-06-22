@@ -12,7 +12,7 @@ use Form\DataTransformer\BooleanDataTransformer;
 use Form\DataTransformer\DateDataTransformer;
 use Form\DataTransformer\MainImgDataTransformer;
 use Form\DataTransformer\MediaToChoicesDataTransformer;
-use Form\Helpers\PopularAssertGroups;
+use Form\Helpers\Regexps;
 use Repositiory\MediaRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -33,7 +33,7 @@ class EventType extends AbstractType
 
     /**
      *
-     * @var PopularAssertGroups|null
+     * @var Regexps|null
      */
     private $popularAsserts = null;
     /**
@@ -41,7 +41,7 @@ class EventType extends AbstractType
      */
     public function __construct()
     {
-        $this->popularAsserts = new PopularAssertGroups();
+        $this->popularAsserts = new Regexps();
     }
 
     /**
@@ -59,7 +59,20 @@ class EventType extends AbstractType
             [
                 'label' => 'label.event_title',
                 'required' => true,
-                'constraints' => $this->popularAsserts->title(['event_default', 'event_edit']),
+                'constraints' => [
+                    new Assert\Regex(
+                        [
+                            'groups' => ['event_default', 'event_edit'],
+                            'pattern' => $this->popularAsserts->getContentRegexp(),
+                        ]
+                    ),
+                    new Assert\Length(
+                        [
+                            'groups' => ['event_default', 'event_edit'],
+                            'max' => 128,
+                        ]
+                    ),
+                ],
             ]
         );
 
@@ -192,7 +205,7 @@ class EventType extends AbstractType
             'tags',
             TextType::class,
             [
-              'label' => 'label.tags',
+              'label' => 'label.tags_add',
               'required' => false,
               'attr' => [
                   'length' => 128,

@@ -5,7 +5,6 @@
  * Date: 17.06.18
  * Time: 18:23
  */
-//todo usuń lub zmień
 namespace Security;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -32,8 +31,6 @@ class UserVoter extends Voter
         if (!in_array($attribute, array(self::THIS_USER))) {
             return false;
         }
-
-        //todo dodać return false if subject is not instance of what i want
 
         return true;
     }

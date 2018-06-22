@@ -8,7 +8,7 @@
 
 namespace Form;
 
-use Form\Helpers\PopularAssertGroups;
+use Form\Helpers\Regexps;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -29,7 +29,7 @@ class EditUserType extends AbstractType
     /**
      * Asserts helper
      *
-     * @var PopularAssertGroups|null
+     * @var Regexps|null
      */
     private $popularAsserts = null;
 
@@ -38,7 +38,7 @@ class EditUserType extends AbstractType
      */
     public function __construct()
     {
-        $this->popularAsserts = new PopularAssertGroups();
+        $this->popularAsserts = new Regexps();
     }
     /**
      *
@@ -82,7 +82,25 @@ class EditUserType extends AbstractType
                 'label' => 'label.first_name',
                 'required' => true,
                 'attr' => [],
-                'constraints' => $this->popularAsserts->name([ 'editUser_default' ]),
+                'constraints' => [
+                    new Assert\NotBlank(
+                        [
+                            'groups' => ['editUser_default'],
+                        ]
+                    ),
+                    new Assert\Regex(
+                        [
+                            'groups' => ['editUser_default'],
+                            'pattern' => $this->popularAsserts->getNameRegexp(),
+                        ]
+                    ),
+                    new Assert\Length(
+                        [
+                            'groups' => ['editUser_default'],
+                            'max' => 45,
+                        ]
+                    ),
+                ],
             ]
         );
         $builder->add(
@@ -92,7 +110,25 @@ class EditUserType extends AbstractType
                 'label' => 'label.last_name',
                 'required' => true,
                 'attr' => [],
-                'constraints' => $this->popularAsserts->name([ 'editUser_default' ]),
+                'constraints' => [
+                    new Assert\NotBlank(
+                        [
+                            'groups' => ['editUser_default'],
+                        ]
+                    ),
+                    new Assert\Regex(
+                        [
+                            'groups' => ['editUser_default'],
+                            'pattern' => $this->popularAsserts->getNameRegexp(),
+                        ]
+                    ),
+                    new Assert\Length(
+                        [
+                            'groups' => ['editUser_default'],
+                            'max' => 45,
+                        ]
+                    ),
+                ],
             ]
         );
         $builder->add(
@@ -129,9 +165,24 @@ class EditUserType extends AbstractType
             [
                 'label' => 'label.login',
                 'required' => true,
-                'constraints' => array_merge(
-                    $this->popularAsserts->slug(['editUser_default']),
-                    [
+                'constraints' => [
+                    new Assert\NotBlank(
+                        [
+                            'groups' => [ 'editUser_default' ],
+                        ]
+                    ),
+                    new Assert\Regex(
+                        [
+                            'groups' => [ 'editUser_default' ],
+                            'pattern' => $this->popularAsserts->getNameRegexp(),
+                        ]
+                    ),
+                    new Assert\Length(
+                        [
+                            'groups' => [ 'editUser_default' ],
+                            'max' => 45,
+                        ]
+                    ),
                         new CustomAsssert\NotItselfUniqueness(
                             [
                             'groups' => [ 'editUser_default' ],
@@ -146,7 +197,6 @@ class EditUserType extends AbstractType
                             ]
                         ),
                     ]
-                ),
             ]
         );
         $builder->add(

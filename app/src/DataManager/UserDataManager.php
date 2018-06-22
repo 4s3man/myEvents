@@ -39,7 +39,6 @@ class UserDataManager
      */
     public function __construct($user, BCryptPasswordEncoder $encoder)
     {
-        //todo ogarnąć ten bajzel
         if (isset($user['id']) && !empty($user['new_password'])) {
         } else {
             $user['password'] = $encoder->encodePassword($user['password'], '');

@@ -31,7 +31,12 @@
 }
 
 .day-not_empty:hover {
-  .day-events {
+  .day-events{
+    display: inline-block;
+  }
+}
+.holiday:hover{
+  .day-holiday{
     display: inline-block;
   }
 }
@@ -75,7 +80,7 @@
 .months{
   justify-content: space-around;
 }
-.basic-calendar div, .res, .acc{
+.basic-calendar>div, .res, .acc{
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
@@ -139,6 +144,24 @@
     top: auto;
     z-index: 1;
   }
+}
+
+.basic-calendar>div{
+  &:nth-child(7n-1), &:nth-child(7n){
+    background-color: lighten($backgroundColor, 2%);
+  }
+}
+
+.day-holiday{
+  display: none;
+  position: absolute;
+  border: 1px solid $textColor;
+  background-color: $textColor;
+  top:-30px;
+}
+
+.holiday{
+  color: chocolate;
 }
 
 @keyframes rotateLoader {
@@ -226,7 +249,7 @@
   .basic-calendar,.weeks{
     font-size: 1em;
   }
-  .basic-calendar div, .weeks div{
+  .basic-calendar>div, .weeks div{
     width: 32px !important;
     height: 32px !important;
   }

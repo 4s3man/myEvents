@@ -119,8 +119,6 @@ class UserController implements ControllerProviderInterface
      */
     public function editAction(Application $app, $userId, Request $request)
     {
-        //TODO get id from logged user
-        //TODO get user_role of logged user
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
@@ -176,7 +174,6 @@ class UserController implements ControllerProviderInterface
      */
     public function deleteAction(Application $app, $userId, Request $request)
     {
-        //todo checker
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
@@ -235,7 +232,6 @@ class UserController implements ControllerProviderInterface
      */
     public function userCalendarIndexAction(Application $app, $userId, $page, Request $request)
     {
-        //TODO pierwszy checker
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {

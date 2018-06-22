@@ -83,19 +83,15 @@ class CalendarController implements ControllerProviderInterface
         $user = $token->getUser();
         $loggedUserId = $user instanceof MyEventsUser ? $user->getId() : null;
 
-        //TODO dodać styl dla świąt
-
         $calendarRepository = new CalendarRepository($app['db']);
         $calendar = $calendarRepository->findOneById($calendarId);
         if (!$calendar) {
             return new Response($app['twig']->render('errors/404.html.twig', ['userId' => $loggedUserId]), 404);
         }
 
-
         $eventRepository = new EventRepository($app['db'], (int) $calendarId);
         $calendarDataManager = new CalendarDataManager($eventRepository, $date);
         $calendarMonthPage = $calendarDataManager->makeCalendarMonthPage();
-
 
         return $app['twig']->render(
             'calendar/calendar-show.html.twig',

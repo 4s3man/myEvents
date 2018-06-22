@@ -53,7 +53,6 @@ class UserRoleType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //TODO wrzucić to do add
         $builder->add(
             'user_role',
             ChoiceType::class,

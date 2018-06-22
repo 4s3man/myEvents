@@ -456,6 +456,59 @@
                 <source>header.add_media_to_calendar</source>
                 <target>add media to calendar</target>
             </trans-unit>
+
+            <trans-unit id="internationalWorkersDay">
+                <source>internationalWorkersDay</source>
+                <target>international workers day</target>
+            </trans-unit>
+            <trans-unit id="constitutionDay">
+                <source>constitutionDay</source>
+                <target>constitution day</target>
+            </trans-unit>
+            <trans-unit id="pentecost">
+                <source>pentecost</source>
+                <target>pentecost</target>
+            </trans-unit>
+            <trans-unit id="corpusChristi">
+                <source>corpusChristi</source>
+                <target>corpus christi</target>
+            </trans-unit>
+            <trans-unit id="newYearsDay">
+                <source>newYearsDay</source>
+                <target>new years day</target>
+            </trans-unit>
+            <trans-unit id="epiphany">
+                <source>epiphany</source>
+                <target>epiphany</target>
+            </trans-unit>
+            <trans-unit id="easter">
+                <source>easter</source>
+                <target>easter</target>
+            </trans-unit>
+            <trans-unit id="easterMonday">
+                <source>easterMonday</source>
+                <target>easter monday</target>
+            </trans-unit>
+            <trans-unit id="assumptionOfMary">
+                <source>assumptionOfMary</source>
+                <target>assumption of mary</target>
+            </trans-unit>
+            <trans-unit id="allSaintsDay">
+                <source>allSaintsDay</source>
+                <target>all saints day</target>
+            </trans-unit>
+            <trans-unit id="independenceDay">
+                <source>independenceDay</source>
+                <target>independence day</target>
+            </trans-unit>
+            <trans-unit id="christmasDay">
+                <source>christmasDay</source>
+                <target>christmas day</target>
+            </trans-unit>
+            <trans-unit id="secondChristmasDay">
+                <source>secondChristmasDay</source>
+                <target>second christmas day</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

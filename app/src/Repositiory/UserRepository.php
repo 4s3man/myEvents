@@ -79,7 +79,6 @@ class UserRepository extends AbstractRepository implements UniquenessInterface, 
      */
     public function save($user, $encoder)
     {
-        //todo posprzątać to i user data managera
         $this->db->beginTransaction();
         try {
             if (isset($user['id']) && ctype_digit((string) $user['id'])) {
@@ -246,7 +245,6 @@ class UserRepository extends AbstractRepository implements UniquenessInterface, 
         return $qb->execute()->fetchAll();
     }
 
-    //todo add delete user role
     /**
      * Delete user and its links
      * @param int $userId

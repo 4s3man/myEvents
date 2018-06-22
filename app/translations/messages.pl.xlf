@@ -432,6 +432,60 @@
                 <source>action.login</source>
                 <target>zaloguj</target>
             </trans-unit>
+
+            <trans-unit id="internationalWorkersDay">
+                <source>internationalWorkersDay</source>
+                <target>święto pracy</target>
+            </trans-unit>
+            <trans-unit id="constitutionDay">
+                <source>constitutionDay</source>
+                <target>święto konstytucji 3 maja</target>
+            </trans-unit>
+            <trans-unit id="pentecost">
+                <source>pentecost</source>
+                <target>zielone świątki</target>
+            </trans-unit>
+            <trans-unit id="corpusChristi">
+                <source>corpusChristi</source>
+                <target>boże ciało</target>
+            </trans-unit>
+            <trans-unit id="newYearsDay">
+                <source>newYearsDay</source>
+                <target>sylwester</target>
+            </trans-unit>
+            <trans-unit id="epiphany">
+                <source>epiphany</source>
+                <target>trzech króli</target>
+            </trans-unit>
+            <trans-unit id="easter">
+                <source>easter</source>
+                <target>wielkanoc</target>
+            </trans-unit>
+            <trans-unit id="easterMonday">
+                <source>easterMonday</source>
+                <target>poniedziałek wielkanocny</target>
+            </trans-unit>
+            <trans-unit id="assumptionOfMary">
+                <source>assumptionOfMary</source>
+                <target>Wniebowzięcie Najświętszej Marii Panny</target>
+            </trans-unit>
+            <trans-unit id="allSaintsDay">
+                <source>allSaintsDay</source>
+                <target>wszystkich świętych</target>
+            </trans-unit>
+            <trans-unit id="independenceDay">
+                <source>independenceDay</source>
+                <target>dzień niepodległości</target>
+            </trans-unit>
+            <trans-unit id="christmasDay">
+                <source>christmasDay</source>
+                <target>boże narodzenie</target>
+            </trans-unit>
+            <trans-unit id="secondChristmasDay">
+                <source>secondChristmasDay</source>
+                <target>drugi dzień świąt</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
