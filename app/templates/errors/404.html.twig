@@ -1,5 +1,10 @@
 {% extends "layout.html.twig" %}
-
+{% block sidebar %}
+    {% include 'sidebar/sidebar-user.html.twig' %}
+{% endblock %}
 {% block content %}
-    Page not found.
+    <div class="container text-center">
+        <h1 class="mt-5 mb-5">Error 404</h1>
+        <h2>Page not found</h2>
+    </div>
 {% endblock %}

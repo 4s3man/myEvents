@@ -1,5 +1,11 @@
 {% extends "layout.html.twig" %}
 
+{% block sidebar %}
+    {% include 'sidebar/sidebar-user.html.twig' %}
+{% endblock %}
 {% block content %}
-    An error occurred on the server.
+<div class="container text-center">
+    <h1 class="mt-5 mb-5">Error 5xx</h1>
+    <h2>An error occurred on server.</h2>
+</div>
 {% endblock %}

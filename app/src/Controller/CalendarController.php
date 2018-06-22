@@ -15,14 +15,13 @@ use Form\CalendarType;
 use Repositiory\CalendarRepository;
 use Repositiory\EventRepository;
 use Repositiory\UserCaledarRepository;
-use Search\Criteria\TypeCriteria;
-use Search\CriteriaBuilder\TypeCriteriaBuilder;
 use Security\Core\User\MyEventsUser;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -85,12 +84,11 @@ class CalendarController implements ControllerProviderInterface
         $loggedUserId = $user instanceof MyEventsUser ? $user->getId() : null;
 
         //TODO dodać styl dla świąt
-        //todo  error 404
 
         $calendarRepository = new CalendarRepository($app['db']);
         $calendar = $calendarRepository->findOneById($calendarId);
         if (!$calendar) {
-            //redirect to 404
+            return new Response($app['twig']->render('errors/404.html.twig', ['userId' => $loggedUserId]), 404);
         }
 
 

@@ -13,6 +13,7 @@ use DataManager\SessionMessagesDataManager;
 use Form\EventType;
 use Form\Search\EventSearchType;
 use Form\SignUpType;
+use Repositiory\CalendarRepository;
 use Repositiory\EventRepository;
 use Repositiory\MediaRepository;
 use Repositiory\ParticipantRepository;
@@ -25,6 +26,7 @@ use Silex\Application;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class EventController
@@ -159,6 +161,12 @@ class EventController implements ControllerProviderInterface
         $user = $token->getUser();
         $loggedUserId = $user instanceof MyEventsUser ? $user->getId() : null;
 
+        $calendarRepository = new CalendarRepository($app['db']);
+        $calendar = $calendarRepository->findOneById($calendarId);
+        if (!$calendar) {
+            return new Response($app['twig']->render('errors/404.html.twig', ['userId' => $loggedUserId]), 404);
+        }
+
         $eventRepository = new EventRepository($app['db'], $calendarId);
         $tagRepository = new TagRepository($app['db']);
         $queryParams = ['calendarId' => $calendarId, 'page' => $page];
@@ -206,11 +214,15 @@ class EventController implements ControllerProviderInterface
         $user = $token->getUser();
         $loggedUserId = $user instanceof MyEventsUser ? $user->getId() : null;
 
-        //TODO spytać się jak by to lepiej
         $eventRepository = new EventRepository($app['db'], $calendarId);
         $participantRepository = new ParticipantRepository($app['db'], $eventId);
+
+        $event = $eventRepository->findOneById($eventId);
+        if (!$event) {
+            return new Response($app['twig']->render('errors/404.html.twig', ['userId' => $loggedUserId]), 404);
+        }
         $eventDataManager = new EventDataManager(
-            $eventRepository->findOneById($eventId),
+            $event,
             $calendarId
         );
 

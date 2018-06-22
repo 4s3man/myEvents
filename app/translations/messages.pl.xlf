@@ -428,6 +428,10 @@
                 <source>header.add_media_to_calendar</source>
                 <target>dodaj media do kalendarza</target>
             </trans-unit>
+            <trans-unit id="action.login">
+                <source>action.login</source>
+                <target>zaloguj</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

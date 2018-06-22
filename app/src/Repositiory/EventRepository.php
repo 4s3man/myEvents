@@ -164,7 +164,8 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
             ->setParameter(':eventId', $eventId, \PDO::PARAM_INT);
         $event = $qb->execute()->fetch();
         $event['tags'] = $this->getLinkedTagsById($eventId);
-        $event['media'] = null !== $event['main_img'] ? $this->getMainImg($event['main_img']) : null;
+        $event['media'] = isset($event['main_img']) && null !== $event['main_img'] ? $this->getMainImg($event['main_img']) : null;
+        $event = isset($event['id']) ? $event : [];
 
         return $event;
     }
