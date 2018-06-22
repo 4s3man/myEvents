@@ -22,7 +22,7 @@
                 {{ datum.title }}
             </div>
             <div class="paginator-item media_photo">
-                <img src="{{  asset(download_photos_directory ~ '/' ~ datum.photo) }}" alt="{{ datum.title }}">
+                <img src="{{  asset(probablyBadPhotoFix ~ '/' ~ datum.photo) }}" alt="{{ datum.title }}">
             </div>
         <div class="paginator-item edit">
             <a href="{{ url('editCalendarMedia', {'mediaId':datum.id, 'calendarId':calendarId}) }}">

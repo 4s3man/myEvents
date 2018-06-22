@@ -30,7 +30,7 @@
                         <i class="fa fa-flag fa-3x"></i>
                     {% else %}
                         <div class="media_photo">
-                            <img src="/uploads/photos/{{ datum.photo }}" alt="{{ datum.title}}">
+                            <img src="{{  asset(probablyBadPhotoFix ~ '/' ~ datum.photo) }}" alt="{{ datum.title}}">
                         </div>
                     {% endif %}
                 </div>
