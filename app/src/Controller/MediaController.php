@@ -214,7 +214,6 @@ class MediaController implements ControllerProviderInterface
 
         $sessionMessagesManager = new SessionMessagesDataManager($app['session']);
         $mediaRepository = new MediaRepository($app['db']);
-
         $media = $mediaRepository->findOneById($mediaId);
 
         if (!$media) {
@@ -422,7 +421,6 @@ class MediaController implements ControllerProviderInterface
         if (!$app['security.authorization_checker']->isGranted('this_user', $userId)) {
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
-
         $mediaRepository = new MediaRepository($app['db']);
 
         $queryParams = ['userId' => $userId, 'page' => $page];

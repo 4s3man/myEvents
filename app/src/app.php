@@ -21,11 +21,17 @@ $app->register(new HttpFragmentServiceProvider());
 
 $app['config.photos_directory'] = __DIR__.'/../web/uploads/photos';
 $app['config.download_photos_directory'] = '/uploads/photos';
+//TODO nie działają obrazki więc taki fix
+$app['config.photos_fix'] = isset($_SERVER['REQUEST_SCHEME']) ?
+    $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'].'/../uploads/photos'
+    : '/uploads/photos';
+
 $app['twig'] = $app->extend(
     'twig',
     function ($twig, $app) {
         $twig->addGlobal('photos_directory', $app['config.photos_directory']);
         $twig->addGlobal('download_photos_directory', $app['config.download_photos_directory']);
+        $twig->addGlobal('probablyBadPhotoFix', $app['config.photos_fix']);
 
         return $twig;
     }
