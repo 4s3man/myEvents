@@ -402,6 +402,32 @@
                 <source>sign_up.no_seats_left</source>
                 <target>brak miejsc</target>
             </trans-unit>
+
+            <trans-unit id="calendar.event_start_time">
+                <source>calendar.event_start_time</source>
+                <target>start</target>
+            </trans-unit>
+            <trans-unit id="calendar.event_end_time">
+                <source>calendar.event_end_time</source>
+                <target>koniec</target>
+            </trans-unit>
+            <trans-unit id="calendar.event_cost">
+                <source>calendar.event_cost</source>
+                <target>koszt</target>
+            </trans-unit>
+            <trans-unit id="calendar.seats_left">
+                <source>calendar.seats_left</source>
+                <target>pozostałe miejsca</target>
+            </trans-unit>
+
+            <trans-unit id="title.add_media_to_clendar">
+                <source>title.add_media_to_clendar</source>
+                <target>dodaj media do kalendarza</target>
+            </trans-unit>
+            <trans-unit id="header.add_media_to_calendar">
+                <source>header.add_media_to_calendar</source>
+                <target>dodaj media do kalendarza</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

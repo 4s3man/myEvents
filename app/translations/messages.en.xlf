@@ -431,7 +431,31 @@
                 <target>tickets left</target>
             </trans-unit>
 
+            <trans-unit id="title.add_calendar">
+                <source>title.add_calendar</source>
+                <target>add calendar</target>
+            </trans-unit>
+            <trans-unit id="header.add_calendar">
+                <source>header.add_calendar</source>
+                <target>add calendar</target>
+            </trans-unit>
+            <trans-unit id="label.calendar_title">
+                <source>label.calendar_title</source>
+                <target>title</target>
+            </trans-unit>
+            <trans-unit id="label.calendar_description">
+                <source>label.calendar_description</source>
+                <target>description</target>
+            </trans-unit>
 
+            <trans-unit id="title.add_media_to_clendar">
+                <source>title.add_media_to_clendar</source>
+                <target>add media to calendar</target>
+            </trans-unit>
+            <trans-unit id="header.add_media_to_calendar">
+                <source>header.add_media_to_calendar</source>
+                <target>add media to calendar</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

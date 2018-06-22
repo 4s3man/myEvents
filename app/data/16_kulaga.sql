@@ -240,26 +240,6 @@ CREATE TABLE IF NOT EXISTS `16_kulaga`.`user_calendars` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
--- Table `16_kulaga`.`event_child`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `16_kulaga`.`event_child` ;
-
-CREATE TABLE IF NOT EXISTS `16_kulaga`.`event_child` (
-  `event_id` INT NOT NULL,
-  `id` INT NOT NULL,
-  `date` DATETIME NOT NULL,
-  INDEX `fk_event_child_event1_idx` (`event_id` ASC),
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fk_event_child_event1`
-    FOREIGN KEY (`event_id`)
-    REFERENCES `16_kulaga`.`event` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
 -- -----------------------------------------------------
 -- Table `16_kulaga`.`calendar_media`
 -- -----------------------------------------------------

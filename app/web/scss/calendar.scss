@@ -6,8 +6,9 @@
     list-style: none;
   }
 }
-.day-not_empty{
-
+.calendar{
+  display: flex;
+  justify-content: center;
 }
 .event{
   color: red;

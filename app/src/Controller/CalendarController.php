@@ -225,7 +225,7 @@ class CalendarController implements ControllerProviderInterface
         $token = $app['security.token_storage']->getToken();
         $loggedUserId = $token->getUser()->getId();
 
-        if (!$app['security.authorization_checker']->isGranted('calendar_any_user', $calendarId)) {
+        if (!$app['security.authorization_checker']->isGranted('calendar_admin', $calendarId)) {
             return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]));
         }
 

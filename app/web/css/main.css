@@ -124,6 +124,11 @@ FUN COLORS
   list-style: none;
 }
 
+.calendar {
+  display: flex;
+  justify-content: center;
+}
+
 .event {
   color: red;
 }
