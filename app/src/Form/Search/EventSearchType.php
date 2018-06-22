@@ -40,7 +40,7 @@ class EventSearchType extends SearchType
             'start',
             TextType::class,
             [
-                'label' => 'label.searchYearMonth',
+                'label' => 'label.search_year_month',
                 'required' => false,
                 'constraints' => [
                     new Assert\Regex(

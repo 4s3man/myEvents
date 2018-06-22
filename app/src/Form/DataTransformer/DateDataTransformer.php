@@ -24,7 +24,7 @@ class DateDataTransformer implements DataTransformerInterface
      */
     public function transform($date)
     {
-        $date = new \DateTime('now');
+        $date = null === $date ? new \DateTime('now') : new \DateTime($date) ;
 
         return $date;
     }

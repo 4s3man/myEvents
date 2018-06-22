@@ -57,9 +57,9 @@ class UserSearchType extends AbstractType
                 'label' => 'label.user_role',
                 'required' => false,
                 'choices' => [
-                    'all' => '',
-                    'calendar admin' => 'calendar_admin',
-                    'calendar editor' => 'calendar_editor',
+                    'label.all' => '',
+                    'label.calendar_admin' => 'calendar_admin',
+                    'label.calendar_editor' => 'calendar_editor',
                 ],
                 'constraints' => [
                     new Assert\Choice(

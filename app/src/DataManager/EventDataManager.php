@@ -88,6 +88,14 @@ class EventDataManager
     }
 
     /**
+     * Decrement event seats by 1
+     */
+    public function decrementSeats()
+    {
+        $this->event['seats'] = $this->event['seats'] > 0 ? (int) $this->event['seats'] -= 1 : 0;
+    }
+
+    /**
      *
      * @return array|null
      */

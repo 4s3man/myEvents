@@ -7,8 +7,12 @@
     {% include 'sidebar/sidebar-user.html.twig' %}
 {% endblock %}
 {% block content%}
-    <div class="container">
-        <h3><a href="{{ url('editUser', {'userId':userId}) }}">{{ 'content.user-edit-link'|trans }}</a></h3>
-        <h3><a href="{{ url('deleteUser', {'userId':userId}) }}">{{ 'content.user-delete-link'|trans }}</a></h3>
+    <div class="container d-flex justify-content-sm-around">
+        <div class="btn btn-light">
+            <h3><a href="{{ url('editUser', {'userId':userId}) }}">{{ 'link.user-edit'|trans }}</a></h3>
+        </div>
+        <div class="btn btn-light">
+            <h3><a href="{{ url('deleteUser', {'userId':userId}) }}">{{ 'link.user-delete'|trans }}</a></h3>
+        </div>
     </div>
 {% endblock %}

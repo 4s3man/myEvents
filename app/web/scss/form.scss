@@ -1,3 +1,9 @@
 .form_submit:hover{
   background-color: #f2f1f0;
 }
+.form-group{
+  .control-label {
+    max-width: 100%;
+    padding-top: 10px;
+  }
+}

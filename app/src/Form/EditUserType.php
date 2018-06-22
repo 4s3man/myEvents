@@ -168,7 +168,7 @@ class EditUserType extends AbstractType
             PasswordType::class,
             [
                 'required' => false,
-                'label' => 'label.oldPassword',
+                'label' => 'label.old_password',
                 'constraints' => [
                     new Assert\NotBlank(
                         [

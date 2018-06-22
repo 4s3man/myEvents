@@ -11,6 +11,10 @@
                 <source>title.user_login</source>
                 <target>Log in, to your events site</target>
             </trans-unit>
+            <trans-unit id="auth.logout.label">
+                <source>auth.logout.label</source>
+                <target>logout</target>
+            </trans-unit>
 <!-- USER_END -->
             <trans-unit id="title.homepage">
                 <source>title.homepage</source>
@@ -136,6 +140,296 @@
                 <target>sun</target>
             </trans-unit>
 <!-- CALENDAR_END -->
+<!-- MESSAGES -->
+            <trans-unit id="message.added_succesfully">
+                <source>message.added_succesfully</source>
+                <target>added succesfully</target>
+            </trans-unit>
+            <trans-unit id="message.changed_succesfully">
+                <source>message.changed_succesfully</source>
+                <target>changed succesfully</target>
+            </trans-unit>
+            <trans-unit id="message.registered_succesfully">
+                <source>message.registered_succesfully</source>
+                <target>changed succesfully</target>
+            </trans-unit>
+            <trans-unit id="message.signed_up_succesfully">
+                <source>message.signed_up_succesfully</source>
+                <target>signed_up succesfully</target>
+            </trans-unit>
+            <trans-unit id="message.deleted_succesfully">
+                <source>message.deleted_succesfully</source>
+                <target>deleted succesfully</target>
+            </trans-unit>
+            <trans-unit id="message.record_not_found_error">
+                <source>message.record_not_found_error</source>
+                <target>record not found</target>
+            </trans-unit>
+            <trans-unit id="message.invalid_input_error">
+                <source>message.invalid_input_error</source>
+                <target>invalid input</target>
+            </trans-unit>
+            <trans-unit id="message.already_linked_error">
+                <source>message.already_linked_error</source>
+                <target>user already linked</target>
+            </trans-unit>
+            <trans-unit id="message.acces_denied_error">
+                <source>message.acces_denied_error</source>
+                <target>access denied</target>
+            </trans-unit>
+<!-- MESSAGES END-->
+            <trans-unit id="link.event_index">
+                <source>link.event_index</source>
+                <target>event index</target>
+            </trans-unit>
+            <trans-unit id="link.calendar_add">
+                <source>link.calendar_add</source>
+                <target>add calendar</target>
+            </trans-unit>
+            <trans-unit id="link.edit">
+                <source>link.edit</source>
+                <target>edit</target>
+            </trans-unit>
+            <trans-unit id="link.delete">
+                <source>link.delete</source>
+                <target>delete</target>
+            </trans-unit>
+            <trans-unit id="link.user-edit">
+                <source>link.user-edit</source>
+                <target>edit your accout</target>
+            </trans-unit>
+            <trans-unit id="link.user-delete">
+                <source>link.user-delete</source>
+                <target>delete your accout</target>
+            </trans-unit>
+            <trans-unit id="link.media_add_to_user">
+                <source>link.media_add_to_user</source>
+                <target>add media to user</target>
+            </trans-unit>
+            <trans-unit id="link.user_add">
+                <source>link.user_add</source>
+                <target>add user</target>
+            </trans-unit>
+            <trans-unit id="link.event_add">
+                <source>link.event_add</source>
+                <target>add event</target>
+            </trans-unit>
+            <trans-unit id="link.calendar_show">
+                <source>link.calendar_show</source>
+                <target>show calendar</target>
+            </trans-unit>
+            <trans-unit id="link.media_add_to_calendar">
+                <source>link.media_add_to_calendar</source>
+                <target>add media to calendar</target>
+            </trans-unit>
+
+            <trans-unit id="label.search">
+                <source>label.search</source>
+                <target>search</target>
+            </trans-unit>
+            <trans-unit id="label.search_title">
+                <source>label.search_title</source>
+                <target>search by title</target>
+            </trans-unit>
+            <trans-unit id="label.old_password">
+                <source>label.old_password</source>
+                <target>old password</target>
+            </trans-unit>
+            <trans-unit id="label.media_title">
+                <source>label.media_title</source>
+                <target>media title</target>
+            </trans-unit>
+            <trans-unit id="label.photo">
+                <source>label.photo</source>
+                <target>photo</target>
+            </trans-unit>
+            <trans-unit id="label.delete">
+                <source>label.delete</source>
+                <target>delete</target>
+            </trans-unit>
+            <trans-unit id="label.search_email">
+                <source>label.search_email</source>
+                <target>search by email</target>
+            </trans-unit>
+            <trans-unit id="label.user_role">
+                <source>label.user_role</source>
+                <target>user role</target>
+            </trans-unit>
+            <trans-unit id="label.all">
+                <source>label.all</source>
+                <target>all</target>
+            </trans-unit>
+            <trans-unit id="label.calendar_admin">
+                <source>label.calendar_admin</source>
+                <target>calendar admin</target>
+            </trans-unit>
+            <trans-unit id="label.calendar_editor">
+                <source>label.calendar_editor</source>
+                <target>calendar editor</target>
+            </trans-unit>
+            <trans-unit id="label.user_choice_type">
+                <source>label.user_choice_type</source>
+                <target>select new user role</target>
+            </trans-unit>
+            <trans-unit id="label.search_year_month">
+                <source>label.search_year_month</source>
+                <target>search by date format, example 2018-06</target>
+            </trans-unit>
+            <trans-unit id="label.tags">
+                <source>label.tags</source>
+                <target>search by tags</target>
+            </trans-unit>
+            <trans-unit id="label.event_title">
+                <source>label.event_title</source>
+                <target>event title</target>
+            </trans-unit>
+            <trans-unit id="label.content">
+                <source>label.content</source>
+                <target>event content</target>
+            </trans-unit>
+            <trans-unit id="label.event_start">
+                <source>label.event_start</source>
+                <target>event start</target>
+            </trans-unit>
+            <trans-unit id="label.event_end">
+                <source>label.event_end</source>
+                <target>event end</target>
+            </trans-unit>
+            <trans-unit id="label.event_cost">
+                <source>label.event_cost</source>
+                <target>event cost</target>
+            </trans-unit>
+            <trans-unit id="label.event_seats">
+                <source>label.event_seats</source>
+                <target>event seats</target>
+            </trans-unit>
+            <trans-unit id="label.sign_up">
+                <source>label.sign_up</source>
+                <target>display sign up form? </target>
+            </trans-unit>
+            <trans-unit id="label.main_img">
+                <source>label.main_img</source>
+                <target>select event img</target>
+            </trans-unit>
+            <trans-unit id="None">
+                <source>None</source>
+                <target>None</target>
+            </trans-unit>
+
+            <trans-unit id="title.user_calendar_index">
+                <source>title.user_calendar_index</source>
+                <target>calendar index</target>
+            </trans-unit>
+            <trans-unit id="title.user_edit">
+                <source>title.user_edit</source>
+                <target>edit your account</target>
+            </trans-unit>
+            <trans-unit id="title.user_media_index">
+                <source>title.user_media_index</source>
+                <target>user media index</target>
+            </trans-unit>
+            <trans-unit id="title.add_media_to_user">
+                <source>title.add_media_to_user</source>
+                <target>add media to user</target>
+            </trans-unit>
+            <trans-unit id="title.edit_media">
+                <source>title.edit_media</source>
+                <target>edit media</target>
+            </trans-unit>
+            <trans-unit id="title.media_delete">
+                <source>title.media_delete</source>
+                <target>delete media</target>
+            </trans-unit>
+            <trans-unit id="title.delete_my_account">
+                <source>title.delete_my_account</source>
+                <target>delete my account</target>
+            </trans-unit>
+            <trans-unit id="title.calendar_users_index">
+                <source>title.calendar_users_index</source>
+                <target>this calendar users index</target>
+            </trans-unit>
+            <trans-unit id="title.calendar_user_add">
+                <source>title.calendar_user_add</source>
+                <target>link to calendar</target>
+            </trans-unit>
+            <trans-unit id="title.calendar_user_edit">
+                <source>title.calendar_user_edit</source>
+                <target>edit user</target>
+            </trans-unit>
+            <trans-unit id="title.delete_link">
+                <source>title.delete_link</source>
+                <target>delete linked user</target>
+            </trans-unit>
+            <trans-unit id="title.event_edit">
+                <source>title.event_edit</source>
+                <target>edit event</target>
+            </trans-unit>
+            <trans-unit id="title.calendar_media_index">
+                <source>title.calendar_media_index</source>
+                <target>this calendar media index</target>
+            </trans-unit>
+            <trans-unit id="title.auth_login">
+                <source>title.auth_login</source>
+                <target>log in</target>
+            </trans-unit>
+
+            <trans-unit id="action.login">
+                <source>action.login</source>
+                <target>submit</target>
+            </trans-unit>
+
+            <trans-unit id="header.add_media_to_user">
+                <source>header.add_media_to_user</source>
+                <target>add media to user</target>
+            </trans-unit>
+            <trans-unit id="header.edit_media">
+                <source>header.edit_media</source>
+                <target>edit media</target>
+            </trans-unit>
+
+            <trans-unit id="paginator.prev">
+                <source>paginator.prev</source>
+                <target>Prev</target>
+            </trans-unit>
+            <trans-unit id="paginator.next">
+                <source>paginator.next</source>
+                <target>Next</target>
+            </trans-unit>
+            <trans-unit id="paginator.no_sites_were_found">
+                <source>paginator.no_sites_were_found</source>
+                <target>found nothing to display</target>
+            </trans-unit>
+
+            <trans-unit id="event.start">
+                <source>event.start</source>
+                <target>event starts at</target>
+            </trans-unit>
+            <trans-unit id="event.end">
+                <source>event.end</source>
+                <target>event ends at</target>
+            </trans-unit>
+
+            <trans-unit id="sign_up.no_seats_left">
+                <source>sign_up.no_seats_left</source>
+                <target>no seats left</target>
+            </trans-unit>
+
+            <trans-unit id="calendar.event_start_time">
+                <source>calendar.event_start_time</source>
+                <target>start</target>
+            </trans-unit>
+            <trans-unit id="calendar.event_end_time">
+                <source>calendar.event_end_time</source>
+                <target>end</target>
+            </trans-unit>
+            <trans-unit id="calendar.event_cost">
+                <source>calendar.event_cost</source>
+                <target>cost</target>
+            </trans-unit>
+            <trans-unit id="calendar.seats_left">
+                <source>calendar.seats_left</source>
+                <target>tickets left</target>
+            </trans-unit>
 
 
         </body>

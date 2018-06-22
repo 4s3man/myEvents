@@ -57,14 +57,6 @@ class SessionMessagesDataManager
     }
 
     /**
-     * Add flash message messsage.mail_send_success
-     */
-    public function emailSend()
-    {
-        $this->success('email_send');
-    }
-
-    /**
      * Add flash message message.signed_up_success
      */
     public function signedUp()

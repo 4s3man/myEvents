@@ -39,8 +39,6 @@ class ParticipantRepository extends AbstractRepository implements UniquenessInte
         $this->eventId = $eventId;
     }
 
-    //TODO z rejestracją i partycypowaniem zrobić tak żeby user wysyłał email i wtedy następowało potwierdzenie
-
     /**
      *
      * @param array $participant
@@ -51,14 +49,11 @@ class ParticipantRepository extends AbstractRepository implements UniquenessInte
     public function save($participant, array $event)
     {
         $this->db->beginTransaction();
-        if (isset($event['media'])) {
-            unset($event['media']);
-        }
+        unset($event['media']);
         unset($event['tags']);
         $participant['event_id'] = $event['id'];
         try {
-            $event['seats'] -= 1;
-            if (isset($event['seats']) && 0 < $event['seats']) {
+            if (isset($event['seats'])) {
                 $this->eventRepository->updateEvent($event);
                 $this->db->insert('participant', $participant);
                 $this->db->commit();

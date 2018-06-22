@@ -90,9 +90,17 @@ class LinkUserCalendarType extends AbstractType
             [
                 'label' => 'label.user_choice_type',
                 'choices' => [
-                    'calendar editor' => 'calendar_editor',
-                    'calendar admin' => 'calendar_admin',
+                    'label.calendar_editor' => 'calendar_editor',
+                    'label.calendar_admin' => 'calendar_admin',
                 ],
+                'constraints' => [
+                    new Assert\Choice(
+                        [
+                            'groups' => ['link_user_calendar_default'],
+                            'choices' => ['calendar_editor', 'calendar_admin'],
+                        ]
+                    )
+                ]
             ]
         );
     }

@@ -44,7 +44,7 @@ class SearchType extends AbstractType
             'title',
             TextType::class,
             [
-                'label' => 'search',
+                'label' => 'label.search_title',
                 'required' => false,
                 'constraints' => $this->popularAsserts->slugOptional(['search_default']),
             ]

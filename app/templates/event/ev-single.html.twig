@@ -6,6 +6,14 @@
     {% include 'sidebar/sidebar-calendar.html.twig' %}
 {% endblock %}
 {% block content %}
+    <nav class="viewer-menu">
+        <div class="btn btn-light">
+            <a href="{{ url('eventIndex', {'calendarId':calendarId, 'page':1}) }}">{{ 'link.event_index'|trans }}</a>
+        </div>
+        <div class="btn btn-light">
+            <a href="{{ url('calendarShow', {'calendarId':calendarId, 'date':'now'|date('Y-m')}) }}">{{ 'link.calendar_show'|trans }}</a>
+        </div>
+    </nav>
     <article class="container event-container">
         <h2 class="text-center">{{ event.title }}</h2>
         <section class="event-details">
@@ -34,11 +42,12 @@
             {{ event.content }}
         </section>
 
-        {% if signUp is not null %}
-            {% set form = signUp %}
-            <section class="event-singUp">
+        <section class="event-singUp">
+            {% if form is not null and seatsRemains%}
                 {% include 'form/form.html.twig' %}
-            </section>
-        {% endif %}
+            {% elseif signUp is not null and not seatsRemains %}
+                {{ 'sign_up.no_seats_left'|trans }}
+            {% endif %}
+        </section>
     </article>
 {% endblock %}

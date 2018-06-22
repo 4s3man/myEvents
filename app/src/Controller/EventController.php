@@ -221,8 +221,10 @@ class EventController implements ControllerProviderInterface
                 ->getForm();
 
             $form->handleRequest($request);
+
             if ($form->isSubmitted() && $form->isValid()) {
                 $sessionMessagesMenager = new SessionMessagesDataManager($app['session']);
+                $eventDataManager->decrementSeats();
                 $participantRepository->save($form->getData(), $eventDataManager->getEvent());
                 $sessionMessagesMenager->signedUp();
 
@@ -232,17 +234,13 @@ class EventController implements ControllerProviderInterface
             $signUpFormView = $form->createView();
         }
 
-        $info = null;
-        if (!$eventDataManager->seatsRemain() && $eventDataManager->getSignUp()) {
-            $info = 'info.no_seats_left';
-        }
-
         return $app['twig']->render(
             'event/ev-single.html.twig',
             [
                 'event' => $eventDataManager->makeEvent(),
-                'signUp' => $signUpFormView,
-                'info' => $info,
+                'seatsRemains' => $eventDataManager->seatsRemain(),
+                'signUp' => $eventDataManager->getSignUp(),
+                'form' => $signUpFormView,
                 'calendarId' => $calendarId,
                 'eventId' => $eventId,
                 'userId' => $loggedUserId,

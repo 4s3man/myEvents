@@ -86,13 +86,18 @@ class CalendarController implements ControllerProviderInterface
 
         //TODO dodać styl dla świąt
         //todo  error 404
-//        $calendarRepository = new CalendarRepository($app['db']);
-//        if (!$calendarRepository->findOneById($calendarId)) {
-//            throw new NotFoundHttpException('Resource not found');
-//        }
+
+        $calendarRepository = new CalendarRepository($app['db']);
+        $calendar = $calendarRepository->findOneById($calendarId);
+        if (!$calendar) {
+            //redirect to 404
+        }
+
+
         $eventRepository = new EventRepository($app['db'], (int) $calendarId);
         $calendarDataManager = new CalendarDataManager($eventRepository, $date);
         $calendarMonthPage = $calendarDataManager->makeCalendarMonthPage();
+
 
         return $app['twig']->render(
             'calendar/calendar-show.html.twig',
@@ -102,6 +107,7 @@ class CalendarController implements ControllerProviderInterface
                 'calendarId' => $calendarId,
                 'calendar' => $calendarMonthPage,
                 'userId' => $loggedUserId,
+                'calendarText' => $calendar,
             ]
         );
     }
@@ -240,7 +246,7 @@ class CalendarController implements ControllerProviderInterface
             $userCalendarRepository->delete($calendar);
             $sessionMessages->deleted();
 
-            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['page' => 1]), 301);
+            return $app->redirect($app['url_generator']->generate('userCalendarIndex', ['userId' => $loggedUserId, 'page' => 1]), 301);
         }
 
         return $app['twig']->render(

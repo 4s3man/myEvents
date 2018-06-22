@@ -15,6 +15,9 @@
             <a href="{{ url('eventAdd', {'calendarId':calendarId} ) }}">{{ 'link.event_add'|trans }}</a>
         </div>
     {% endif %}
+        <div class="btn btn-light">
+            <a href="{{ url('calendarShow', {'calendarId':calendarId, 'date':'now'|date('Y-m')}) }}">{{ 'link.calendar_show'|trans }}</a>
+        </div>
     {% include 'form/searchForm.html.twig' %}
 {% endblock %}
 

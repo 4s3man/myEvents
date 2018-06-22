@@ -232,9 +232,7 @@ class EventRepository extends AbstractRepository implements EventRegistryInterfa
         try {
             $tagsIds = isset($event['tags']) ? array_column($event['tags'], 'id') : [];
             unset($event['tags']);
-            if (isset($event['media'])) {
-                unset($event['media']);
-            }
+            unset($event['media']);
 
             if (isset($event['id']) && ctype_digit((string) $event['id'])) {
                 $id = $event['id'];

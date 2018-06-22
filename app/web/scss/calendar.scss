@@ -9,6 +9,12 @@
 .day-not_empty{
 
 }
+.event{
+  color: red;
+  ul{
+    color: $textColor;
+  }
+}
 .day-events{
   background-color: #00aa88;
   border: $textColor 1px solid;

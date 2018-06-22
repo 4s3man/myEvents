@@ -87,6 +87,11 @@ FUN COLORS
   background-color: #f2f1f0;
 }
 
+.form-group .control-label {
+  max-width: 100%;
+  padding-top: 10px;
+}
+
 .paginator-footer {
   display: flex;
   justify-content: center;
@@ -117,6 +122,13 @@ FUN COLORS
   padding: 0px;
   margin: 0px;
   list-style: none;
+}
+
+.event {
+  color: red;
+}
+.event ul {
+  color: #ebebeb;
 }
 
 .day-events {

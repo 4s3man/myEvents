@@ -2,12 +2,21 @@
 
 {% extends 'layout.html.twig' %}
 {% block title %}
-    {{ 'title.calendarTitle'|trans }}
+    {{ calendarText.title }}
 {% endblock %}
 {% block sidebar %}
     {% include 'sidebar/sidebar-calendar.html.twig' %}
 {% endblock %}
 {% block content %}
+    <header class="text-center">
+        <h3>{{ calendarText.title }}</h3>
+        <h5>{{ calendarText.description }}</h5>
+    </header>
+    <nav class="viewer-menu">
+        <div class="btn btn-light">
+            <a href="{{ url('eventIndex', {'calendarId':calendarId, 'page':1}) }}">{{ 'link.event_index'|trans }}</a>
+        </div>
+    </nav>
     <div id="calendar" class="calendar">
             <div class="col-md-8 col-xs-12">
                 <div class="kalendarz-builder">

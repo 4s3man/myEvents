@@ -13,12 +13,12 @@
 <ul class="pagination">
     {% if currentPage == 1 %}
         <li class="page-item prev disabled">
-            <span class="page-link">←Poprzednia</span>
+            <span class="page-link">{{ 'paginator.prev'|trans }}</span>
         </li>
     {% else %}
         <li class="page-item prev">
             <a class="page-link" href="{{ url(routeName, routeVariables|merge({'page':pagerfanta.getPreviousPage})) }}" rel="next">
-                ←Poprzednia
+                {{ 'paginator.prev'|trans }}
             </a>
         </li>
     {% endif %}
@@ -38,12 +38,12 @@
     {% endfor %}
     {% if currentPage == pages %}
         <li class="page-item prev disabled">
-            <span class="page-link next disabled">Następna→</span>
+            <span class="page-link next disabled">{{ 'paginator.next'|trans }}</span>
         </li>
     {% else %}
         <li class="page-item prev">
             <a class="page-link" href="{{ url(routeName, routeVariables|merge({'page':pagerfanta.getNextPage})) }}" rel="next">
-                Następna→
+                {{ 'paginator.next'|trans }}
             </a>
         </li>
     {% endif %}

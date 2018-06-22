@@ -53,14 +53,13 @@ class EventType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //TODO dodać media w osobnym linku ma się otwierać nowe okno
         $builder->add(
             'title',
             TextType::class,
             [
                 'label' => 'label.event_title',
                 'required' => true,
-                'constraints' => $this->popularAsserts->title(['event_default']),
+                'constraints' => $this->popularAsserts->title(['event_default', 'event_edit']),
             ]
         );
 
@@ -72,7 +71,7 @@ class EventType extends AbstractType
                 'constraints' => [
                     new Assert\Regex(
                         [
-                          'groups' => 'event_default',
+                          'groups' => ['event_default', 'event_edit'],
                           'pattern' => $this->popularAsserts->getContentRegexp(),
                             ]
                     ),
@@ -105,7 +104,7 @@ class EventType extends AbstractType
                     ),
                     new Assert\NotBlank(
                         [
-                            'groups' => 'event_default',
+                            'groups' => ['event_default', 'event_edit'],
                         ]
                     ),
                 ],
@@ -127,18 +126,18 @@ class EventType extends AbstractType
                 'constraints' => [
                     new Assert\DateTime(
                         [
-                            'groups' => ['event_default'],
+                            'groups' => ['event_default', 'event_edit'],
                         ]
                     ),
                     new Assert\NotBlank(
                         [
-                            'groups' => ['event_default'],
+                            'groups' => ['event_default', 'event_edit'],
                         ]
                     ),
                     new CustomAssert\DateRange(
                         [
                             'groups' => ['event_default'],
-                            'min' => isset($options['start']) ? $options['start'] : date('Y-m-d G:i'),
+                            'min' => isset($options['data']['start']) ? $options['data']['start'] : date('Y-m-d G:i'),
                         ]
                     ),
                 ],
@@ -149,12 +148,12 @@ class EventType extends AbstractType
             'cost',
             IntegerType::class,
             [
-                'label' => 'label.events_cost',
+                'label' => 'label.event_cost',
                 'required' => false,
                 'constraints' => [
                     new Assert\Range(
                         [
-                            'groups' => ['event_default'],
+                            'groups' => ['event_default', 'event_edit'],
                             'min' => 0,
                         ]
                     ),
@@ -166,12 +165,12 @@ class EventType extends AbstractType
             'seats',
             IntegerType::class,
             [
-                'label' => 'label.events_seats',
+                'label' => 'label.event_seats',
                 'required' => false,
                 'constraints' => [
                     new Assert\Range(
                         [
-                            'groups' => ['event_default'],
+                            'groups' => ['event_default', 'event_edit'],
                             'min' => 0,
                         ]
                     ),
@@ -207,10 +206,16 @@ class EventType extends AbstractType
             'main_img',
             MainImgType::class,
             [
+              'label' => 'label.main_img',
               'choices' => $choices,
               'media' => $media,
               'constraints' => [
-                  new Assert\Choice(['choices' => array_column($choices, 'id')]),
+                  new Assert\Choice(
+                      [
+                          'groups' => ['event_default', 'event_edit'],
+                          'choices' => $choices,
+                      ]
+                  ),
               ],
             ]
         );
@@ -239,7 +244,7 @@ class EventType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'validation_groups' => 'event_default',
+                'validation_groups' => ['event_default', 'event_edit'],
                 'event_repository' => null,
                 'tag_repository' => null,
                 'media_repository' => null,
@@ -259,9 +264,7 @@ class EventType extends AbstractType
         return 'event_type';
     }
 
-    //todo gdzie to powinno być?
     /**
-     *
      * @param mixed $media gotten from database
      *
      * @return array
@@ -277,8 +280,6 @@ class EventType extends AbstractType
     }
 
     /**
-     * TODO gdzie to ma być?
-     *
      * @param MediaRepository $repository
      *
      * @param int             $calendarId
