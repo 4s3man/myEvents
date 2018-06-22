@@ -30,7 +30,6 @@
 </head>
 <body class="{% if is_granted('ROLE_USER') %}logged{% endif %}">
     {% include 'default/_flash_messages.html.twig' %}
-    {#TODO If user is logged to pod spodem źle kiedy jest zalogowany a nie kiedy jest Id#}
     {% if is_granted('ROLE_USER') %}
         {% block sidebar %}
         {% endblock %}

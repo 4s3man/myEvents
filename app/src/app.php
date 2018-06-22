@@ -117,15 +117,4 @@ $app['security.voters'] = $app->extend(
     }
 );
 
-$app->register(new \Silex\Provider\SwiftmailerServiceProvider());
-$app['swiftmailer.options'] = array(
-    'host' => 'smtp.gmail.com',
-    'port' => 465,
-    'username' => 'testQbainy@gmail.com',
-    'password' => 'nakurwiamy_735tin',
-    'encryption' => 'ssl',
-    'auth_mode' => null,
-);
-
-
 return $app;
