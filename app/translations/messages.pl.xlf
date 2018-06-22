@@ -15,6 +15,10 @@
                 <source>auth.logout.label</source>
                 <target>wyloguj</target>
             </trans-unit>
+            <trans-unit id="title.auth_login">
+                <source>title.auth_login</source>
+                <target>zaloguj się</target>
+            </trans-unit>
 <!-- USER_END -->
 <!-- REGISTER -->
                 <trans-unit id="label.first_name">
@@ -361,6 +365,7 @@
                 <source>title.calendar_media_index</source>
                 <target>index zdjęć tego kalendarza</target>
             </trans-unit>
+
 
             <trans-unit id="header.add_media_to_user">
                 <source>header.add_media_to_user</source>
