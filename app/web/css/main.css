@@ -133,10 +133,10 @@ FUN COLORS
   justify-content: center;
 }
 
-.event {
+.basic-calendar .event {
   color: red;
 }
-.event ul {
+.basic-calendar .event ul {
   color: #ebebeb;
 }
 
