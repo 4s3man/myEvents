@@ -196,7 +196,7 @@ class EditUserType extends AbstractType
                                 'groups' => ['editUser_default'],
                             ]
                         ),
-                    ]
+                    ],
             ]
         );
         $builder->add(

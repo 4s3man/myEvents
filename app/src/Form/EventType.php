@@ -223,12 +223,12 @@ class EventType extends AbstractType
               'choices' => $choices,
               'media' => $media,
               'constraints' => [
-                  new Assert\Choice(
-                      [
-                          'groups' => ['event_default', 'event_edit'],
-                          'choices' => $choices,
-                      ]
-                  ),
+                new Assert\Choice(
+                    [
+                      'groups' => ['event_default', 'event_edit'],
+                      'choices' => $choices,
+                    ]
+                ),
               ],
             ]
         );

@@ -99,8 +99,8 @@ class LinkUserCalendarType extends AbstractType
                             'groups' => ['link_user_calendar_default'],
                             'choices' => ['calendar_editor', 'calendar_admin'],
                         ]
-                    )
-                ]
+                    ),
+                ],
             ]
         );
     }

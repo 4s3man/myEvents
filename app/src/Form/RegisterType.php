@@ -184,7 +184,7 @@ class RegisterType extends AbstractType
                         'uniqueColumn' => 'login',
                         ]
                     ),
-                ]
+                ],
             ]
         );
         $builder->add(
@@ -207,7 +207,7 @@ class RegisterType extends AbstractType
                             'min' => 8,
                         ]
                     ),
-                ]
+                ],
             ]
         );
     }
